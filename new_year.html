@@ -1,45 +1,45 @@
 <meta name="viewport" content="width=device-width height=devive-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
-<h1>����ҳ��ѧ��������������ң�</h1>
-<h2>��ֻ���ŵ�����0:00����Ŷ~</h2>
-<h3><input type="checkbox" id="q1">��������ۡ���</h3>
-<h3><input type="checkbox" id="q2">���ǲ��ǻ�����Ʊ�����԰�����</h3>
-<h3><input type="checkbox" id="q3">���и�����������ƻ�</h3>
-<h3><input type="checkbox" id="q4">�������ǲ��Ǹø����ˣ�</h3>
-<h3><input type="checkbox" id="q5">��ţ�ƣ�</h3>
-<button type="button" onclick="fx()"><h3>��ȡר��ף��</h3></button><br>
+<h1>本网页现学现做，还不快夸我！</h1>
+<h2>我只开放到今天0:00左右哦~</h2>
+<h3><input type="checkbox" id="q1">我最近好累……</h3>
+<h3><input type="checkbox" id="q2">你是不是还在设计编程语言啊？！</h3>
+<h3><input type="checkbox" id="q3">我有个完美的新年计划</h3>
+<h3><input type="checkbox" id="q4">我想你是不是该更文了？</h3>
+<h3><input type="checkbox" id="q5">你牛逼！</h3>
+<button type="button" onclick="fx()"><h3>获取专属祝福</h3></button><br>
 @2020 by <a href="https://github.com/aarwoo">master aarwoo</a>
 <script>
 function fx(){
 	var doc="<meta name=\"viewport\" content=\"width=device-width height=devive-height initial-scale=1.0"
 	       +"minimum-scale=1.0 maximum-scale=1.0 user-scalable=no\"/>\n<h1>";
 	if(document.getElementById("q1").checked){
-		doc=doc+"��ѽ��ע����Ϣ���������ˣ�<br>";
+		doc=doc+"你呀！注意休息，别累着了！<br>";
 	}else{
-		doc=doc+"��������ͦ������<br>";
+		doc=doc+"哎……你挺精神的嘛！<br>";
 	}
 	if(document.getElementById("q2").checked){
-		doc=doc+"˵��������԰������Ǽƻ����ڿ���ʱ��ơ�<br>";
+		doc=doc+"说到编程语言啊，我是计划着在空闲时设计。<br>";
 	}else{
-		doc=doc+"��������ô֪�������û����Ʊ�������ˣ�<br>";
+		doc=doc+"还有你怎么知道我最近没在设计编程语言了？<br>";
 	}
 	if(document.getElementById("q3").checked){
-		doc=doc+"������������ƻ�ͨ��ֻ�ǰ��裬�����㻹��������ʵ�ɣ�<br>";
+		doc=doc+"至于你的完美计划通常只是摆设，所以你还是认清现实吧！<br>";
 	}else{
-		doc=doc+"���ڼƻ��ͱ����ˣ����ڵ��±�Ϲչ���������壬�����𣿣�<br>";
+		doc=doc+"至于计划就别想了，活在当下比瞎展望更有意义，不是吗？！<br>";
 	}
 	if(document.getElementById("q4").checked){
-		doc=doc+"�����Ҹ��ģ���ʵû���ϸ�ļƻ���<br>";
+		doc=doc+"就像我更文，其实没有严格的计划。<br>";
 	}else{
-		doc=doc+"�����Ҹ��ġ��������ԣ���û����������û��ϵ���ҵ���Ҳ�����ʺ���Ŷ~<br>";
+		doc=doc+"就像我更文……哎不对，你没看啊！不过没关系，我的文也许不适合你哦~<br>";
 	}
 	if(document.getElementById("q5").checked){
-		doc=doc+"���лл����ң�";
-	}else{
-		doc=doc+"������ǲ������ǿ����ˣ���";
+		doc=doc+"最后，谢谢你夸我！";
+	}else{ 
+		doc=doc+"最后，你是不是忘记夸我了？！";
 	}
 
-	doc=doc+"</h1><h2><a href=\"new_year.html\">����һ�Σ�</a></h2>@2020 by <a href=\"https://github.com/aarwoo\">master aarwoo</a>";
+	doc=doc+"</h1><h2><a href=\"new_year.html\">再来一次！</a></h2>@2020 by <a href=\"https://github.com/aarwoo\">master aarwoo</a>";
 	document.write(doc);
 }
 </script>
