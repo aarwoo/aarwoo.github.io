@@ -12,11 +12,10 @@ function choose(){
 document.getElementById("fdialog").click();
 }
 function write(){
-var text=new Blob([document.getElementById("edit").value]);
+var text=new Blob([document.getElementById("edit").innerHTML]);
  var eleLink = document.createElement("a");
     eleLink.download ="tmp.txt";
     eleLink.style.display = "none";
-    var blob = new Blob([content]);
     eleLink.href = URL.createObjectURL(text);
     document.body.appendChild(eleLink);
     eleLink.click();
