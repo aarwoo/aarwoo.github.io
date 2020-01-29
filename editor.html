@@ -14,7 +14,7 @@ document.getElementById("fdialog").click();
 }
 function write(){
 var text=new Blob([document.getElementById("edit").value],{type: "text/plain;charset=utf-8"});
-saveAs(tmp, "temp.txt");
+saveAs(text, "temp.txt");
 }
 </script>
 <body style="background:green;color:yellow">
