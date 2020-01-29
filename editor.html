@@ -1,5 +1,4 @@
 <head>
-<script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script>
 <script>
 function ftab(obj){
 	if(String.fromCharCode(event.keyCode)=="\t"){
@@ -13,8 +12,15 @@ function choose(){
 document.getElementById("fdialog").click();
 }
 function write(){
-var text=new Blob([document.getElementById("edit").value],{type: "text/plain;charset=utf-8"});
-saveAs(text, "temp.txt");
+var text=new Blob([document.getElementById("edit").value]);
+ var eleLink = document.createElement("a");
+    eleLink.download ="tmp.txt";
+    eleLink.style.display = "none";
+    var blob = new Blob([content]);
+    eleLink.href = URL.createObjectURL(blob);
+    document.body.appendChild(eleLink);
+    eleLink.click();
+    document.body.removeChild(eleLink);
 }
 </script>
 <body style="background:green;color:yellow">
