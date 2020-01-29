@@ -1,5 +1,4 @@
 <head>
-<script src="//cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.js"></script>
 <script>
 function ftab(obj){
@@ -14,14 +13,8 @@ function choose(){
 document.getElementById("fdialog").click();
 }
 function write(){
-var text=new Blob([document.getElementById("edit").value]);
-var vlink=document.createElement("a");
-vlink.sytle.display="none";
-vlink.download=document.getElementById("fname").innerText;
-vlink.href=URL.createobjectURL(text);
-body.appendChild(vlink);
-vlink.click();
-document.removeChild(vlink);
+var text=new Blob([document.getElementById("edit").value],{type: "text/plain;charset=utf-8"});
+saveAs(tmp, "temp.txt");
 }
 </script>
 <body style="background:green;color:yellow">
