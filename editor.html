@@ -14,10 +14,10 @@ function choose(){
 document.getElementById("fdialog").click();
 }
 function write(){
-var text=new Blob([document.getElementById("edit")]);
+var text=new Blob([document.getElementById("edit").value]);
 var vlink=document.createElement("a");
 vlink.sytle.display="none";
-vlink.download=document.getElementById("edit");
+vlink.download=document.getElementById("fname").innerText;
 vlink.href=URL.createobjectURL(text);
 body.appendChild(vlink);
 vlink.click();
