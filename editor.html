@@ -17,7 +17,7 @@ var text=new Blob([document.getElementById("edit").value]);
     eleLink.download ="tmp.txt";
     eleLink.style.display = "none";
     var blob = new Blob([content]);
-    eleLink.href = URL.createObjectURL(blob);
+    eleLink.href = URL.createObjectURL(text);
     document.body.appendChild(eleLink);
     eleLink.click();
     document.body.removeChild(eleLink);
