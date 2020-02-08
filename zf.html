@@ -1,3 +1,5 @@
+<head>
+<title>元宵祝福</title>
 <script>
 function f(it){
 var zf=["祝你元宵节快乐！","今天你吃汤圆了吗？","元宵了……待在家这么久，不Happy一下吗？",
@@ -6,6 +8,7 @@ var zf=["祝你元宵节快乐！","今天你吃汤圆了吗？","元宵了…�
 it.innerHTML=zf[Math.round(Math.random()*8.9+0.5)-1];
 }
 </script>
+</head>
 <body onload="f(document.getElementById('zf'))">
 <h1 id="zf" onclick="f('zf')"></h1>
 <button onclick="document.getElementById('myself').click()"><h2>换一个！</h2></button>
