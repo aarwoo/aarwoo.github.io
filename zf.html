@@ -1,23 +1,27 @@
-<head>
+﻿<head>
 <title>元宵祝福</title>
 <script>
-var ans;
+var ans=-1;
 function gans(){
+if(ans==-1){
 ans=Math.round(Math.random()*2020.9+0.5)-1;
+}else{
+/*PASS*/
+}
 }
 function game(it,ntt){
 var yans=document.getElementById(it);
 var nt=document.getElementById(ntt);
 var ic=String.fromCharCode(event.keyCode);
 if(ic=="\r"){
-if(Number(yans)<ans){
-nt.innerHTML="小了！<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\" onload=\"gans()\" autofocus></textarea>";
+if(Number(yans.value)<ans){
+nt.innerHTML="小了！<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\" autofocus></textarea>";
 yans.value="";
 }else{
-if(Number(yans)==ans){
+if(Number(yans.value)==ans){
 nt.innerHTML="哈哈！猜对了！";
 }else{
-nt.innerHTML="大了！<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\" onload=\"gans()\" autofocus></textarea>";
+nt.innerHTML="大了！<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\"  autofocus></textarea>";
 yans.value="";
 }
 }
@@ -32,8 +36,8 @@ var zf=["祝你元宵节快乐！","今天你吃汤圆了吗？","元宵了…�
         "今天的元宵节很别致呢~","你今天有网课吗？反正我没有……哈哈哈……","我想……你会把健康、快乐、祥和的心态分享给我！嘻嘻~",
         "不高兴就笑一笑啊！（话说你真的会笑吗？！）","无聊吗？要不要陪我聊天？！","玩个猜数游戏吧！答案可是在0-2020之间哦~<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\" autofocus></textarea>",
         "听听音乐吧！……<br><audio src=\"信仰【全职高手 】.mp3\" preload controls></audio>","别换来换去，就几个而已……","<img src=\"zf.jpg\" width=\"60%\" alt=\"\"/>"];
-it.innerHTML=zf[Math.round(Math.random()*11.9+0.5)-1];
 gans();
+it.innerHTML=zf[Math.round(Math.random()*11.9+0.5)-1];
 }
 </script>
 </head>
