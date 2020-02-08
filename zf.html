@@ -1,4 +1,4 @@
-﻿<head>
+<head>
 <title>元宵祝福</title>
 <script>
 var ans=-1;
@@ -25,7 +25,7 @@ gans();
 }else{
 /*PASS*/
 }
-nt.innerHTML=tx[]+"<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\" autofocus></textarea>";
+nt.innerHTML=tx[txd]+"<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\" autofocus></textarea>";
 yans.value="";
 }else{
 if(Number(yans.value)==ans){
@@ -38,12 +38,12 @@ gans();
 }else{
 /*PASS*/
 }
-nt.innerHTML=tx[+"<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\"  autofocus></textarea>";
+nt.innerHTML=tx[txd]+"<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\"  autofocus></textarea>";
 yans.value="";
 }
 }
 }else if(ic<"0"||ic>"9"){
-return;
+event.keyCode="\0";
 }else{
 /*PASS*/
 }
