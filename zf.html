@@ -13,15 +13,32 @@ function game(it,ntt){
 var yans=document.getElementById(it);
 var nt=document.getElementById(ntt);
 var ic=String.fromCharCode(event.keyCode);
+var tx=["","你没猜中！","我改答案了！嘻嘻~"];
+var txd=0;
 if(ic=="\r"){
+txd=Math.round(Math.random()*2.9+0.5)-1;
 if(Number(yans.value)<ans){
-nt.innerHTML="小了！<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\" autofocus></textarea>";
+tx[0]="小了！";
+if(txd==2){
+ans=-1;
+gans();
+}else{
+/*PASS*/
+}
+nt.innerHTML=tx[]+"<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\" autofocus></textarea>";
 yans.value="";
 }else{
 if(Number(yans.value)==ans){
 nt.innerHTML="哈哈！猜对了！";
 }else{
-nt.innerHTML="大了！<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\"  autofocus></textarea>";
+tx[0]="大了！";
+if(txd==2){
+ans=-1;
+gans();
+}else{
+/*PASS*/
+}
+nt.innerHTML=tx[+"<br><textarea id=\"in\" style=\"width:25%\" onkeydown=\"game('in','zf')\"  autofocus></textarea>";
 yans.value="";
 }
 }
