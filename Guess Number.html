@@ -1,9 +1,28 @@
-<head>
+﻿<head>
 <meta name="viewport" content="width=device-width height=devive-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <title>Guess Number!</title>
 <script>
-var ans;
+var ans=0;
+var en_note="Let's guess number!<br>The answer is between 0-9999 but don't expect to you guess it!";
+var zh_note="一起来猜数字吧！<br>答案介于0-9999之间，但不要期望你能猜到！";
+var en_log="";
+var zh_log="";
+var en_i_go_play="Start";
+var zh_i_go_play="开始";
+var en_yans_placeholder="a Number You Imagine";
+var zh_yans_placeholder="你想像的数字";
+var en_i_check="";
+var zh_i_check="";
+var en_i_cheat="";
+var zh_i_cheat="";
+var en_i_believe="";
+var zh_i_believe="";
+var en_i_dont_believe="";
+var zh_i_dont_believe="";
+var en_i_modify_lang="<h1>View in English</h1>";
+var zh_i_modify_lang="<h1>用中文查看</h1>";
+var lang="en";
 function rand(a){
 	return Math.round(Math.random()*(Math.round(a)+0.9)+0.5)-1;
 }
@@ -14,52 +33,345 @@ function sgn(a){
 		return a/Math.abs(a);
 	}
 }
-function new_ans(mark){
+function new_ans(){
+	return rand(9999);
+}
+function update_ans(mark){
+	var tmp=ans;
 	if(mark==0){
-		ans=rand(9999);
+		while(tmp==ans){
+			tmp=new_ans();
+		}
+		ans=tmp;
 	}else{
 		/*PASS*/
 	}
 }
-function check(){
-	var yans=Number(document.getElementById("yans").value);
-	var showbase=["less than","equal to","greater than"];
-	var show=["What makes it more fun is that I have changed the answer!",
-		  "Aha! It # the answer!",
-		  "Would you believe it if I tell you that the input is # the answer?",
-		  "I couldn't tell you whether you guess the number!"];
-	var show_index=rand(3);
+function update_note_and_log(){
+	var note=document.getElementById("note");
 	var log=document.getElementById("log");
-	show[1]=show[1].replace("#",showbase[sgn(yans-ans)+1]);
-	show[2]=show[2].replace("#",showbase[rand(2)]);
-	new_ans(show_index);
-	document.getElementById("show").innerHTML=show[show_index];
-	log.innerHTML=log.innerHTML+"[You]<br>The answer is "+yans+" !<br>[Me]<br>"+show[show_index]+"<br>";
+	if(lang=="zh"){
+		note.innerHTML=zh_note;
+		log.innerHTML=zh_log;
+	}else{
+		note.innerHTML=en_note;
+		log.innerHTML=en_log;
+	}
+}
+function update_i_check(){
+	var i_check=document.getElementById("i_check");
+	if(lang=="zh"){
+		i_check.innerHTML="<h1>"+zh_i_check+"</h1>";
+	}else{
+		i_check.innerHTML="<h1>"+en_i_check+"</h1>";
+	}
+}
+function update_i_cheat(){
+	var i_cheat=document.getElementById("i_cheat");
+	if(lang=="zh"){
+		i_cheat.innerHTML="<h1>"+zh_i_cheat+"</h1>";
+	}else{
+		i_cheat.innerHTML="<h1>"+en_i_cheat+"</h1>";
+	}
+}
+function update_pages(){
+	var input=document.getElementById("yans");
+	var i_go_play=document.getElementById("i_go_play");
+	var i_believe=document.getElementById("i_believe");
+	var i_dont_believe=document.getElementById("i_dont_believe");
+	var i_modify_lang=document.getElementById("i_modify_lang");
+	if(lang=="zh"){
+		update_note_and_log();
+		update_i_check();
+		update_i_cheat();
+		input.placeholder=zh_yans_placeholder;
+		i_go_play.innerHTML="<h1>"+zh_i_go_play+"</h1>";
+		i_believe.innerHTML="<h1>"+zh_i_believe+"</h1>";
+		i_dont_believe.innerHTML="<h1>"+zh_i_dont_believe+"</h1>";
+		i_modify_lang.innerHTML="<h1>"+en_i_modify_lang+"</h1>";
+	}else{
+		update_note_and_log();
+		update_i_check();
+		update_i_cheat();
+		input.placeholder=en_yans_placeholder;
+		i_go_play.innerHTML="<h1>"+en_i_go_play+"</h1>";
+		i_believe.innerHTML="<h1>"+en_i_believe+"</h1>";
+		i_dont_believe.innerHTML="<h1>"+en_i_dont_believe+"</h1>";
+		i_modify_lang.innerHTML="<h1>"+zh_i_modify_lang+"</h1>";
+	}
+}
+function decide_show_peek(want_to_peek){
+	var peek=document.getElementById("peek");
+	var en_show=["Peek at the answer!",
+		       "Peek at the answer when I am not attention!",
+		       "I will peek at the answer!",
+		       "Let me have a look!"];
+	var zh_show=["偷看答案！",
+		       "趁我不注意偷看答案！",
+		       "我将偷看答案！",
+		       "让我看看！"];
+	var show_index=rand(3);
+	if(want_to_peek==true){
+		en_i_cheat=en_show[show_index];
+		zh_i_cheat=zh_show[show_index];
+		update_i_cheat();
+		peek.style.display="inline";
+	}else{
+		peek.style.display="none";
+	}
+}
+function decide_show_are_you_believe(mark,fact,can_end){
+	var are_you_believe=document.getElementById("are_you_believe");
+	var i_believe=document.getElementById("i_believe");
+	var i_dont_believe=document.getElementById("i_dont_believe");
+	var en_believe=["I believe!",
+	                          "Yes!",
+	                          "Hopeful you're honest!",
+	                          "I choose believe because I hope that I could get the answer soon!"];
+	var zh_believe=["我相信！",
+	                          "是的！",
+	                          "希望你是诚实的！",
+	                          "我选择相信——因为我希望我能尽快得到答案！"];
+	var believe_index=rand(3);
+	var en_dont_believe=["I don't believe!",
+	                                  "No!",
+	                                  "Are you kidding me?",
+	                                  "I choose don't believe because I hope that I could get the answer soon!"];
+	var zh_dont_believe=["我不信！",
+	                                  "不！",
+                                                  "你在跟我开玩笑吗？",
+                                                  "我选择不相信——因为我希望我能尽快得到答案！"];
+	var dont_believe_index=rand(3);
+	if(mark==2){
+		en_i_believe=en_believe[believe_index];
+		zh_i_believe=zh_believe[believe_index];
+		en_i_dont_believe=en_dont_believe[dont_believe_index];
+		zh_i_dont_believe=zh_dont_believe[dont_believe_index];
+		update_pages();
+		i_believe.onclick=Function("believe("+fact+","+(believe_index==3)+","+can_end+")");
+		i_dont_believe.onclick=Function("dont_believe("+fact+","+(dont_believe_index==3)+","+can_end+")");
+		are_you_believe.style.display="inline";
+	}else{
+		i_believe.style.onclick=Function("");
+		i_dont_believe.style.onclick=Function("");
+		are_you_believe.style.display="none";
+	}
+}
+function init_play(){
+	var input=document.getElementById("yans");
+	en_note="Let's guess number!<br>The answer is between 0-9999 but don't expect to you guess it!";
+	zh_note="一起来猜数字吧！<br>答案介于0-9999之间，但不要期望你能猜到！";
+	en_log="";
+	zh_log="";
+	en_yans_placeholder="a Number You Imagine";
+	zh_yans_placeholder="你想像的数字";
+	en_i_check="";
+	zh_i_check="";
+	en_i_cheat="";
+	zh_i_cheat="";
+	en_i_believe="";
+	zh_i_believe="";
+	en_i_dont_believe="";
+	zh_i_dont_believe="";
+	update_ans(0);
+	decide_show_are_you_believe(0,true,false);
+	decide_show_peek(false);
+	update_note_and_log();
+	input.value="";
+	input.oninput();
+	document.getElementById("go_play").style.display="none";
+	document.getElementById("play").style.display="inline";
+}
+function try_end_play(mark){
+	if(mark==true){
+		en_i_go_play="Restart";
+		zh_i_go_play="重新开始";
+		update_pages();
+		document.getElementById("go_play").style.display="inline";
+		document.getElementById("play").style.display="none";
+	}else{
+		/*PASS*/
+	}
+}
+function change_input(){
+	var input=document.getElementById("yans");
+	var ok_input=document.getElementById("ok_input");
+	var en_show=["I think is # !",
+		       "The answer must be # !",
+	                       "Maybe is # !",
+		       "Is it # ?"];
+	var zh_show=["我认为是 # ！",
+		       "答案一定是 # ！",
+	                       "可能是 # ！",
+		       "是 # 吗？"];
+	var show_index=rand(3);
+	var iter=0;
+	for(iter=0;iter<=3;iter=iter+1){
+		en_show[iter]=en_show[iter].replace("#","\""+input.value+"\"");
+		zh_show[iter]=zh_show[iter].replace("#","“"+input.value+"”");
+	}
+	en_i_check=en_show[show_index];
+	zh_i_check=zh_show[show_index];
+	update_i_check();
+	if(input.value==""){
+		ok_input.style.display="none";
+	}else{
+		ok_input.style.display="inline";
+	}
+}
+function check_input(it){
+	return (isNaN(Number(it))==false);
+}
+function check(){
+	var input=document.getElementById("yans");
+	var yans=Number(input.value);
+	var en_showbase=["less than","equal to","greater than"];
+	var zh_showbase=["小于","等于","大于"];
+	var fact=sgn(yans-ans)+1;
+	var fact_maked=rand(2);
+	var en_show=["What makes it more fun is that I have changed the answer!",
+		       "Aha! It # the answer!",
+		       "Would you believe it if I tell you that the input is # the answer?",
+		       "I couldn't tell you whether you guess the number!"];
+	var zh_show=["是什么让这游戏变得更有趣？是答案被我改了！",
+                                      "啊哈！输入#答案！",
+		      "你会相信我告诉你输入#答案吗？",
+		      "我不能告诉你是否猜中数字！"];
+	var show_index=rand(3);
+	var en_err=["What you input is not number!",
+		   "Are you kidding?",
+		   "Do you know that we are playing a game named \"Guess Number\" ?",
+		   "…"];
+	var zh_err=["你输入的不是数字！",
+		   "你在开玩笑吗？",
+		   "你知道我们正在玩名为 “猜数” 的游戏吗？",
+		   "……"];
+	var err_index=rand(3);
+	if(check_input(input.value)==true){
+		en_show[1]=en_show[1].replace("#",en_showbase[fact]);
+		zh_show[1]=zh_show[1].replace("#",zh_showbase[fact]);
+		en_show[2]=en_show[2].replace("#",en_showbase[fact_maked]);
+		zh_show[2]=zh_show[2].replace("#",zh_showbase[fact_maked]);
+		update_ans(show_index);
+		decide_show_are_you_believe(show_index,(fact==fact_maked),(fact==1));
+		try_end_play((show_index==1)&&(fact==1));
+		en_note=en_show[show_index];
+		zh_note=zh_show[show_index];
+		en_log=en_log+"[You]<br>"+en_i_check+"<br>[Me]<br>"+en_show[show_index]+"<br>";
+		zh_log=zh_log+"【你】<br>"+zh_i_check+"<br>【我】<br>"+zh_show[show_index]+"<br>";
+	}else{
+		en_note=en_err[err_index];
+		zh_note=zh_err[err_index];
+		en_log=en_log+"[You]<br>"+en_i_check+"<br>[Me]<br>"+en_err[err_index]+"<br>";
+		zh_log=zh_log+"【你】<br>"+zh_i_check+"<br>【我】<br>"+zh_err[err_index]+"<br>";
+	}
+	input.value="";
+	input.oninput();
+	update_note_and_log();
 }
 function cheat(){
-	var show=["You have peeked the answer is # ,but I changed answer!",
-		  "You have peeked the answer is # !",
-		  "Would you believe it if I tell you that the answer is # ?",
-		  "Don't peek the answer!"];
+	var en_show=["You have peeked the answer is # ,but I changed answer!",
+		       "You have peeked the answer is # !",
+		       "Would you believe it if I tell you that the answer is # ?",
+		       "Don't peek the answer!"];
+	var zh_show=["你已偷看到答案是#，但是我修改了答案！",
+		       "你偷看到答案是#！",
+		       "你会相信我告诉你答案是#吗？",
+		       "不要偷看答案！"];
 	var show_index=rand(3);
-	var log=document.getElementById("log");
-	show[0]=show[0].replace("#",ans);
-	show[1]=show[1].replace("#",ans);
-	show[2]=show[2].replace("#",rand(9999));
-	new_ans(show_index);
-	document.getElementById("show").innerHTML=show[show_index];
-	log.innerHTML=log.innerHTML+"[You]<br>I have tried to peek at the answer!<br>[Me]<br>"+show[show_index]+"<br>";
+	var ans_maked=new_ans();
+	en_show[0]=en_show[0].replace("#",ans);
+	zh_show[0]=zh_show[0].replace("#",ans);
+	en_show[1]=en_show[1].replace("#",ans);
+	zh_show[1]=zh_show[1].replace("#",ans);
+	en_show[2]=en_show[2].replace("#",ans_maked);
+	zh_show[2]=zh_show[2].replace("#",ans_maked);
+	update_ans(show_index);
+	decide_show_peek((show_index!=3));
+	decide_show_are_you_believe(show_index,(ans==ans_maked),(ans==ans_maked));
+	en_note=en_show[show_index];
+	zh_note=zh_show[show_index];
+	en_log=en_log+"[You]<br>"+en_i_cheat+"<br>[Me]<br>"+en_show[show_index]+"<br>";
+	zh_log=zh_log+"【你】<br>"+zh_i_cheat+"<br>【我】<br>"+zh_show[show_index]+"<br>";
+	update_note_and_log();
+}
+function believe_base(are_you_right,can_end,en_text,zh_text){
+	var en_showbase=["right","wrong"];
+	var zh_showbase=["是对的","错了"];
+	var fact=(are_you_right==true)?(0):(1);
+	var fact_maked=rand(1);
+	var en_show=["You're #, but answer has changed!",
+                                       "You're #!",
+		       "Would you believe that you're #?",
+		       "Did you thought I would tell you?"];
+	var zh_show=["你#，但是答案已更改！",
+                                      "你#！",
+	                      "你会相信你#吗？",
+	                      "你以为我会告诉你吗？"];
+	var show_index=rand(3);
+	en_show[0]=en_show[0].replace("#",en_showbase[fact]);
+	zh_show[0]=zh_show[0].replace("#",zh_showbase[fact]);
+	en_show[1]=en_show[1].replace("#",en_showbase[fact]);
+	zh_show[1]=zh_show[1].replace("#",zh_showbase[fact]);
+	en_show[2]=en_show[2].replace("#",en_showbase[fact_maked]);
+	zh_show[2]=zh_show[2].replace("#",zh_showbase[fact_maked]);
+	update_ans(show_index);
+	decide_show_are_you_believe(show_index,(fact==fact_maked),can_end);
+	try_end_play((show_index==1)&&(fact==0)&&(can_end==true));
+	en_note=en_show[show_index];
+	zh_note=zh_show[show_index];
+	en_log=en_log+"[You]<br>"+en_text+"<br>[Me]<br>"+en_show[show_index]+"<br>";
+	zh_log=zh_log+"【你】<br>"+zh_text+"<br>【我】<br>"+zh_show[show_index]+"<br>";
+	update_note_and_log();
+}
+function believe(fact,want_to_peek,can_end){
+	decide_show_peek(want_to_peek);
+	believe_base((fact==true),can_end,en_i_believe,zh_i_believe);
+}
+function dont_believe(fact,want_to_peek,can_end){
+	decide_show_peek(want_to_peek);
+	believe_base((fact==false),can_end,en_i_dont_believe,zh_i_dont_believe);
+}
+function modify_lang(){	
+	if(lang=="zh"){
+		lang="en";
+		update_pages();
+	}else{
+		lang="zh";
+		update_pages();
+	}
 }
 </script>
 </head>
-<body style="background:black;color:white" onload="new_ans(0)">
-<h1 id="show">Let's guess number!<br>The answer is between 0-9999 but don't expect to you guess it!</h1>
-<input id="yans" type="number" 
-style="background:yellow;border-color:yellow;color:blue;font-size:48px;font-weight:blod" value="0"/>
+<body style="background:black;color:white" onload="update_pages()">
+<h1 id="note"></h1>
+<div id="go_play" style="display:inline">
+<button id="i_go_play" style="color:RGB(127,200,127)" onclick="init_play()"></button>
 <br><br>
-<button style="color:red" onclick="check()"><h1>That's it!</h1></button>
+</div>
+<div id="play" style="display:none">
+<input id="yans" type="text" 
+style="background:yellow;border-color:yellow;color:blue;font-size:48px;font-weight:blod"
+oninput="change_input()"
+value="" placeholder=""
+autofocus/>
 <br><br>
-<button style="color:green" onclick="cheat()"><h1>Peek at the answer</h1></button>
+<div id="ok_input" style="display:none">
+<button id="i_check" style="color:red" onclick="check()"></button>
+<br><br>
+</div>
+<div id="peek" style="display:none">
+<button id="i_cheat" style="color:green" onclick="cheat()"></button>
+<br><br>
+</div>
+<div id="are_you_believe" style="display:none">
+<button id="i_believe" style="color:orange" onclick=""></button>
+<br><br>
+<button id="i_dont_believe" style="color:purple" onclick=""></button>
+<br><br>
+</div>
+</div>
+<button id="i_modify_lang" style="color:blue" onclick="modify_lang()"><h1>中文查看</h1></button>
 <h2 id="log"></h2>
 @2020 by <a href="https://github.com/aarwoo" style="color:RGB(0,255,0)">master aarwoo</a>
 </body>
