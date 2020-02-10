@@ -1,4 +1,4 @@
-<head>
+﻿<head>
 <meta name="viewport" content="width=device-width height=devive-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <title>Guess Number!</title>
@@ -218,8 +218,10 @@ function change_input(){
 	zh_i_check=zh_show[show_index];
 	update_i_check();
 	if(input.value==""){
+		input.onkeydown=Function("");
 		ok_input.style.display="none";
 	}else{
+		input.onkeydown=Function("(((event.KeyCode)?(event.KeyCode):((event.which)?(event.which):(event.charCode)))==13)?(document.getElementById(\"i_check\").click()):(0);");
 		ok_input.style.display="inline";
 	}
 }
@@ -347,7 +349,7 @@ function modify_lang(){
 }
 </script>
 </head>
-<body style="background:black;color:white" onload="update_pages()">
+<body style="background:black;color:white" width="100%" onload="update_pages()">
 <h1 id="note"></h1>
 <div id="go_play" style="display:inline">
 <button id="i_go_play" style="color:RGB(127,200,127)" onclick="init_play()"></button>
@@ -355,7 +357,7 @@ function modify_lang(){
 </div>
 <div id="play" style="display:none">
 <input id="yans" type="text" 
-style="background:yellow;border-color:yellow;color:blue;font-size:48px;font-weight:blod"
+style="background:yellow;border-color:yellow;color:blue;font-size:24px;font-weight:blod"
 oninput="change_input()"
 value="" placeholder=""
 autofocus/>
@@ -375,7 +377,7 @@ autofocus/>
 <br><br>
 </div>
 </div>
-<button id="i_modify_lang" style="color:blue" onclick="modify_lang()"><h1>中文查看</h1></button>
+<button id="i_modify_lang" style="color:blue" onclick="modify_lang()"></button>
 <h2 id="log"></h2>
 @2020 by <a href="https://github.com/aarwoo" style="color:RGB(0,255,0)">master aarwoo</a>
 </body>
