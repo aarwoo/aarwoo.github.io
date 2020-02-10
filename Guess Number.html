@@ -1,4 +1,4 @@
-<head>
+﻿<head>
 <meta name="viewport" content="width=device-width height=devive-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <title>Guess Number!</title>
@@ -111,13 +111,17 @@ function decide_show_peek(want_to_peek){
 		       "我将偷看答案！",
 		       "让我看看！"];
 	var show_index=rand(3);
-	if(want_to_peek==true){
+	if((want_to_peek==true)){
 		en_i_cheat=en_show[show_index];
 		zh_i_cheat=zh_show[show_index];
 		update_i_cheat();
 		peek.style.display="inline";
 	}else{
-		peek.style.display="none";
+		if(want_to_peek==false){
+			peek.style.display="none";
+		}else{
+			/*PASS*/
+		}
 	}
 }
 function decide_show_are_you_believe(mark,fact,can_end){
@@ -148,7 +152,7 @@ function decide_show_are_you_believe(mark,fact,can_end){
 		en_i_dont_believe=en_dont_believe[dont_believe_index];
 		zh_i_dont_believe=zh_dont_believe[dont_believe_index];
 		update_pages();
-		i_believe.onclick=Function("believe("+fact+","+(believe_index==3)+","+can_end+")");
+		i_believe.onclick=Function("believe("+fact+","+((believe_index==3)?(true):(undefined))+","+can_end+")");
 		i_dont_believe.onclick=Function("dont_believe("+fact+","+(dont_believe_index==3)+","+can_end+")");
 		are_you_believe.style.display="inline";
 	}else{
