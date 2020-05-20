@@ -1,0 +1,119 @@
+<head>
+<meta name="viewport" content="width=device-width height=devive-height initial-scale=1.0
+                               minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
+<script>
+var n=0;
+var tag_x=0,me_x=0;
+var tag_w=20,me_w=20;
+var stag_x=0,stag_y=0;
+var sme_x=0,sme_y=0;
+function make(left,width){
+	return Math.floor((left+width>100)?(100-width):(left));
+}
+function end(msg){
+	alert(msg);
+}
+function tag_move(){
+	var tag=document.getElementById("tag");
+	var stag=document.getElementById("stag");
+	n=n+0.001;
+	tag_x=(100-tag_w)*Math.abs(Math.sin(n));
+	tag.style.left=tag_x+"%";
+	tag.style.top="25%";
+	tag.style.width=tag_w+"%";
+	if(Math.floor((me_x+me_w/2)-(tag_x+tag_w/2))==0&&stag_y==0){
+		stag_x=tag_x+tag_w/2-1;
+		stag.style.left=stag_x+"%";
+		stag.style.display="inline";
+		stag_y=30;
+	}else{
+		/*PASS*/
+	}
+}
+function stag_move(){
+	if(stag_y!=0){
+		var stag=document.getElementById("stag");
+		var me=document.getElementById("me");
+		stag_y=stag_y+1;
+		stag.style.top=stag_y+"%";
+		if(stag_y>75){
+			var tmp=stag_x+1;
+			stag_y=0;
+			stag.style.display="none";
+			if(me_x<=tmp&&tmp<=me_x+me_w){
+				me_w=me_w-2;
+				me.style.width=me_w+"%";
+				if(me_w==0){
+					end("You loss!");
+				}else{
+					/*PASS*/
+				}
+			}else{
+				/*PASS*/
+			}                                                                                                                                                                                                                                                               
+		}else{
+			/*PASS*/
+		}
+	}else{
+		/*PASS*/
+	}
+}
+function me_move(g){
+	var e=document.getElementById("me");
+	me_x=(100-me_w)*event.clientX/document.body.clientWidth;
+	console.log(me_x);
+	e.style.left=me_x+"%";
+	e.style.width=me_w+"%";
+}
+function sme_move(){
+	if(sme_y!=0){
+		var sme=document.getElementById("sme");
+		var tag=document.getElementById("tag");
+		sme_y=sme_y-1;
+		sme.style.top=sme_y+"%";
+		if(sme_y<30){
+			var tmp=sme_x+1;
+			sme_y=0;
+			sme.style.display="none";
+			if(tag_x<=tmp&&tmp<=tag_x+tag_w){
+				tag_w=tag_w-2;
+				tag.style.width=tag_w+"%";
+				if(tag_w==0){
+					end("You win!");
+				}else{
+					/*PASS*/
+				}
+			}else{
+				/*PASS*/
+			}                                                                                                                                                                                                                                                               
+		}else{
+			/*PASS*/
+		}
+	}else{
+		/*PASS*/
+	}
+}
+function send_sme(){
+	if(sme_y==0){
+	var sme=document.getElementById("sme");
+	sme_x=me_x+me_w/2-1;
+	sme.style.left=sme_x+"%";
+	sme_y=75;
+	sme.style.display="inline";
+	}else{
+		/*PASS*/
+	}
+}
+function tdo(){
+	tag_move();
+	stag_move();
+	sme_move();
+}
+</script>
+</head>
+<body onload="setInterval(tdo,5)" onmousemove="me_move(this)" onclick="send_sme()">
+<div id="tag" style="background:red;display:inline;height:5%;top:25%;position:absolute"></div>
+<div id="stag" style="background:red;display:none;height:2%;width:2%;position:absolute"></div>
+<div id="sme" style="background:blue;display:none;height:2%;width:2%;position:absolute"></div>
+<div id="me"  style="background:blue;display:inline;height:5%;top:75%;position:absolute"></div>
+</body>
