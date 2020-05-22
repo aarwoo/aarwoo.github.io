@@ -2,118 +2,80 @@
 <meta name="viewport" content="width=device-width height=devive-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <script>
-var n=0;
-var tag_x=0,me_x=0;
-var tag_w=20,me_w=20;
-var stag_x=0,stag_y=0;
-var sme_x=0,sme_y=0;
-function make(left,width){
-	return Math.floor((left+width>100)?(100-width):(left));
+var height="2%";
+var width="2%";
+function tonum(x){
+	return Number.parseFloat(x);
 }
-function end(msg){
-	alert(msg);
+function rand(a){
+	return Math.round(Math.random()*(Math.round(a)+0.9)+0.5)-1;
+}
+function belongs(a,b){
+	return function (c){
+		return a<=c&&c<=b;
+	           };
 }
 function tag_move(){
-	var tag=document.getElementById("tag");
-	var stag=document.getElementById("stag");
-	n=n+0.001;
-	tag_x=(100-tag_w)*Math.abs(Math.sin(n));
-	tag.style.left=tag_x+"%";
-	tag.style.top="25%";
-	tag.style.width=tag_w+"%";
-	if(Math.floor((me_x+me_w/2)-(tag_x+tag_w/2))==0&&stag_y==0){
-		stag_x=tag_x+tag_w/2-1;
-		stag.style.left=stag_x+"%";
-		stag.style.display="inline";
-		stag_y=30;
-	}else{
-		/*PASS*/
-	}
-}
-function stag_move(){
-	if(stag_y!=0){
-		var stag=document.getElementById("stag");
-		var me=document.getElementById("me");
-		stag_y=stag_y+1;
-		stag.style.top=stag_y+"%";
-		if(stag_y>75){
-			var tmp=stag_x+1;
-			stag_y=0;
-			stag.style.display="none";
-			if(me_x<=tmp&&tmp<=me_x+me_w){
-				me_w=me_w-2;
-				me.style.width=me_w+"%";
-				if(me_w==0){
-					end("You loss!");
-				}else{
-					/*PASS*/
-				}
-			}else{
-				/*PASS*/
-			}                                                                                                                                                                                                                                                               
+	var tags=document.getElementsByName("tag");
+	for(var i=0;i<tags.length;i=i+1){
+		if(tags[i].value>=(100-tonum(width))){
+			tags[i].value=-(100-tonum(width));
 		}else{
 			/*PASS*/
 		}
-	}else{
-		/*PASS*/
+		tags[i].value=tags[i].value+0.1;
+		tags[i].style.left=Math.abs(tags[i].value)+"%";
 	}
 }
-function me_move(g){
-	var e=document.getElementById("me");
-	me_x=(100-me_w)*event.clientX/document.body.clientWidth;
-	console.log(me_x);
-	e.style.left=me_x+"%";
-	e.style.width=me_w+"%";
+function new_tags(counts){
+	for(/*PASS*/;counts>0;counts=counts-1){
+		var tag=document.createElement("div");
+		tag.style="background:blue;display:inline;height:"+height+";width:"+width+";position:absolute;top:"+rand(60)+"%";
+		tag.value=(100-tonum(width))*Math.random();
+		tag.style.left=Math.abs(tag.value)+"%";
+		tag.setAttribute("name","tag");
+		document.body.appendChild(tag);
+	}
 }
-function sme_move(){
-	if(sme_y!=0){
-		var sme=document.getElementById("sme");
-		var tag=document.getElementById("tag");
-		sme_y=sme_y-1;
-		sme.style.top=sme_y+"%";
-		if(sme_y<30){
-			var tmp=sme_x+1;
-			sme_y=0;
-			sme.style.display="none";
-			if(tag_x<=tmp&&tmp<=tag_x+tag_w){
-				tag_w=tag_w-2;
-				tag.style.width=tag_w+"%";
-				if(tag_w==0){
-					end("You win!");
-				}else{
-					/*PASS*/
-				}
+function bullet_move(){
+	var bullets=document.getElementsByName("bullet");
+	var hits=0;
+	var mark=document.getElementById("mark");
+	for(var i=0;i<bullets.length;i=i+1){
+		bullets[i].style.top=tonum(bullets[i].style.top)-1+"%";
+		var tags=document.getElementsByName("tag");
+		hits=0;
+		for(var j=0;j<tags.length;j=j+1){
+			if(Math.abs(tonum(tags[j].style.top)-tonum(bullets[i].style.top))<=tonum(height)&&
+			   Math.abs(tonum(tags[j].style.left)-tonum(bullets[i].style.left))<=tonum(width)){
+				document.body.removeChild(tags[j]);
+				hits=hits+1;
+				mark.innerHTML=tonum(mark.innerHTML)+1;
 			}else{
 				/*PASS*/
-			}                                                                                                                                                                                                                                                               
+			}
+		}
+		if(hits>0||tonum(bullets[i].style.top)<=0){
+			document.body.removeChild(bullets[i]);
+			new_tags(hits);
 		}else{
 			/*PASS*/
 		}
-	}else{
-		/*PASS*/
 	}
 }
-function send_sme(){
-	if(sme_y==0){
-	var sme=document.getElementById("sme");
-	sme_x=me_x+me_w/2-1;
-	sme.style.left=sme_x+"%";
-	sme_y=75;
-	sme.style.display="inline";
-	}else{
-		/*PASS*/
-	}
+function send_bullet(){
+	var bullet=document.createElement("div");
+	bullet.style="background:red;display:inline;height:"+height+";width:"+width+";position:absolute;top:"+(100-tonum(height))+"%";
+	bullet.style.left=(100*event.clientX/document.body.clientWidth)+"%";
+	bullet.setAttribute("name","bullet");
+	document.body.appendChild(bullet);
 }
 function tdo(){
 	tag_move();
-	stag_move();
-	sme_move();
+	bullet_move();
 }
 </script>
 </head>
-<body onload="setInterval(tdo,5)" onmousemove="me_move(this)" onclick="send_sme()">
-<div id="tag" style="background:red;display:inline;height:5%;top:25%;position:absolute"></div>
-<div id="stag" style="background:red;display:none;height:2%;width:2%;position:absolute"></div>
-<div id="sme" style="background:blue;display:none;height:2%;width:2%;position:absolute"></div>
-<div id="me"  style="background:blue;display:inline;height:5%;top:75%;position:absolute"></div>
+<body onload="setInterval(tdo,5);new_tags(10)" onclick="send_bullet()">
+<h1 id="mark">0</h1>
 </body>
