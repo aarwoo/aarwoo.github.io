@@ -1,0 +1,105 @@
+﻿<head>
+<meta name="viewport" content="width=device-width height=devive-height initial-scale=1.0
+                               minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
+<title>Hit the Block!</title>
+<script>
+var min_bullet_width="1%";
+var max_bullet_width="1.5%";
+var bullet_Der_Const=1/3;
+var min_tag_width="1.2%";
+var max_tag_width="1.7%";
+var tag_Der_Const=1/8;
+var total_hits=0;
+var total_bullets=0;
+function tonum(x){
+	return Number.parseFloat(x);
+}
+function rand(min,max){
+	return min+(max-min)*Math.random();
+}
+function has_mix(a_min,a_max,b_min,b_max){
+	return !(a_max<b_min||b_max<a_min);
+}
+function update_vmark(){
+	document.getElementById("vmark").style.width=(100*(total_hits/total_bullets))+"%";
+}
+function tag_virtual_move(tag,t){
+	var max=100-tonum(tag.style.width);
+	return tag.title*((t+(tag.value+max)/tag.title)%((2*max)/tag.title))-max;
+}
+function tag_move(){
+	var tags=document.getElementsByName("tag");
+	for(var i=0;i<tags.length;i=i+1){
+		tags[i].value=tag_virtual_move(tags[i],1);
+		tags[i].style.left=Math.abs(tags[i].value)+"%";
+	}
+}
+function new_tags(counts){
+	for(/*PASS*/;counts>0;counts=counts-1){
+		var tag=document.createElement("div");
+		tag.style="background:blue;display:inline;width:"+rand(tonum(min_tag_width),tonum(max_tag_width))+"%;position:absolute";
+		tag.value=rand(0,100-tonum(tag.style.width));
+		tag.title=tonum(tag.style.width)*tag_Der_Const;
+		tag.style.left=Math.abs(tag.value)+"%";
+		tag.style.height=(tonum(tag.style.width)*document.body.clientWidth/document.body.clientHeight)+"%";
+		tag.style.top=rand(0,100-tonum(tag.style.height))+"%";
+		tag.setAttribute("name","tag");
+		document.body.appendChild(tag);
+	}
+}
+function bullet_move(){
+	var bullets=document.getElementsByName("bullet");
+	var hits=0;
+	var mark=document.getElementById("mark");
+	for(var i=0;i<bullets.length;i=i+1){
+		bullets[i].style.top=(tonum(bullets[i].style.top)-bullets[i].title)+"%";
+		var tags=document.getElementsByName("tag");
+		hits=0;
+		for(var j=0;j<tags.length;j=j+1){
+			if(has_mix(tonum(tags[j].style.top),tonum(tags[j].style.top)+tonum(tags[j].style.height),
+				 tonum(bullets[i].style.top),tonum(bullets[i].style.top)+tonum(bullets[i].style.height))&&
+			   has_mix(tonum(tags[j].style.left),tonum(tags[j].style.left)+tonum(tags[j].style.width),
+				 tonum(bullets[i].style.left),tonum(bullets[i].style.left)+tonum(bullets[i].style.width))){
+				document.body.removeChild(tags[j]);
+				hits=hits+1;
+				total_hits=total_hits+1;
+				update_vmark();
+			}else{
+				/*PASS*/
+			}
+		}
+		if(hits>0||tonum(bullets[i].style.top)<=0){
+			document.body.removeChild(bullets[i]);
+			new_tags(hits);
+		}else{
+			/*PASS*/
+		}
+	}
+}
+function send_bullet(){
+	var bullet=document.createElement("div");
+	bullet.style="background:red;display:inline"+";width:"+rand(tonum(min_bullet_width),tonum(max_bullet_width))+"%;position:absolute";
+	var left=(100*event.clientX/document.body.clientWidth)-(tonum(bullet.style.width)/2);
+	var max_left=100-tonum(bullet.style.width);
+	left=(0<=left)?(left):(0);
+	left=(left<=max_left)?(left):(max_left);
+	bullet.style.left=left+"%";
+	bullet.style.height=(tonum(bullet.style.width)*document.body.clientWidth/document.body.clientHeight)+"%";
+	bullet.title=tonum(bullet.style.height)*bullet_Der_Const;
+	bullet.style.top=(100-tonum(bullet.style.height))+"%";
+	bullet.setAttribute("name","bullet");
+	document.body.appendChild(bullet);
+	total_bullets=total_bullets+1;
+	update_vmark();
+}
+function tdo(){
+	tag_move();
+	bullet_move();
+}
+</script>
+</head>
+<body onload="setInterval(tdo,5);new_tags(10)" onclick="send_bullet()">
+<div id="vmark" style="display:inline;background:red;position:absolute;top:0%;left:0%;height:1%;width:0%"></div>
+<h3 style="display:inline;user-select:none">Click to send the red block to hit the blue block.<br>
+	                                                    The red bar at the top reflects the hit rate.</h5>
+</body>
