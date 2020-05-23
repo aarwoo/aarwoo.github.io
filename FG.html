@@ -2,37 +2,46 @@
 <meta name="viewport" content="width=device-width height=devive-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <script>
+var time_work=setInterval(tdo,5);
 var height="2%";
 var width="2%";
+var min_bullet_width="2%";
+var max_bullet_width="3%";
+var min_tag_width="2%";
+var max_tag_width="3%";
+var min_tag_speed="0.1%";
+var max_tag_speed="0.2%";
+var min_bullet_speed="0.8%";
+var max_bullet_speed="1%"
 function tonum(x){
 	return Number.parseFloat(x);
 }
-function rand(a){
-	return Math.round(Math.random()*(Math.round(a)+0.9)+0.5)-1;
+function rand(min,max){
+	return min+(max-min)*Math.random();
 }
-function belongs(a,b){
-	return function (c){
-		return a<=c&&c<=b;
-	           };
+function has_mix(a_min,a_max,b_min,b_max){
+	return !(a_max<b_min||b_max<a_min);
+}
+function tag_virtual_move(tag,t){
+	var max=100-tonum(tag.style.width);
+	return tag.title*((t+(tag.value+max)/tag.title)%((2*max)/tag.title))-max;
 }
 function tag_move(){
 	var tags=document.getElementsByName("tag");
 	for(var i=0;i<tags.length;i=i+1){
-		if(tags[i].value>=(100-tonum(width))){
-			tags[i].value=-(100-tonum(width));
-		}else{
-			/*PASS*/
-		}
-		tags[i].value=tags[i].value+0.1;
+		tags[i].value=tag_virtual_move(tags[i],1);
 		tags[i].style.left=Math.abs(tags[i].value)+"%";
 	}
 }
 function new_tags(counts){
 	for(/*PASS*/;counts>0;counts=counts-1){
 		var tag=document.createElement("div");
-		tag.style="background:blue;display:inline;height:"+height+";width:"+width+";position:absolute;top:"+rand(60)+"%";
-		tag.value=(100-tonum(width))*Math.random();
+		tag.style="background:blue;display:inline;width:"+rand(tonum(min_tag_width),tonum(max_tag_width))+"%;position:absolute";
+		tag.value=rand(0,100-tonum(tag.style.width));
+		tag.title=rand(tonum(min_tag_speed),tonum(max_tag_speed));
 		tag.style.left=Math.abs(tag.value)+"%";
+		tag.style.height=(tonum(tag.style.width)*document.body.clientWidth/document.body.clientHeight)+"%";
+		tag.style.top=rand(0,100-tonum(tag.style.height))+"%";
 		tag.setAttribute("name","tag");
 		document.body.appendChild(tag);
 	}
@@ -42,22 +51,25 @@ function bullet_move(){
 	var hits=0;
 	var mark=document.getElementById("mark");
 	for(var i=0;i<bullets.length;i=i+1){
-		bullets[i].style.top=tonum(bullets[i].style.top)-1+"%";
+		bullets[i].style.top=(tonum(bullets[i].style.top)-bullets[i].title)+"%";
 		var tags=document.getElementsByName("tag");
 		hits=0;
 		for(var j=0;j<tags.length;j=j+1){
-			if(Math.abs(tonum(tags[j].style.top)-tonum(bullets[i].style.top))<=tonum(height)&&
-			   Math.abs(tonum(tags[j].style.left)-tonum(bullets[i].style.left))<=tonum(width)){
+			if(has_mix(tonum(tags[j].style.top),tonum(tags[j].style.top)+tonum(tags[j].style.height),
+				 tonum(bullets[i].style.top),tonum(bullets[i].style.top)+tonum(bullets[i].style.height))&&
+			   has_mix(tonum(tags[j].style.left),tonum(tags[j].style.left)+tonum(tags[j].style.width),
+				 tonum(bullets[i].style.left),tonum(bullets[i].style.left)+tonum(bullets[i].style.width))){
 				document.body.removeChild(tags[j]);
 				hits=hits+1;
+				console.log(hits);
 				mark.innerHTML=tonum(mark.innerHTML)+1;
 			}else{
 				/*PASS*/
 			}
 		}
-		if(hits>0||tonum(bullets[i].style.top)<=0){
+		if(tonum(bullets[i].style.top)<=0){
 			document.body.removeChild(bullets[i]);
-			new_tags(hits);
+			new_tags(rand(1,hits));
 		}else{
 			/*PASS*/
 		}
@@ -65,8 +77,15 @@ function bullet_move(){
 }
 function send_bullet(){
 	var bullet=document.createElement("div");
-	bullet.style="background:red;display:inline;height:"+height+";width:"+width+";position:absolute;top:"+(100-tonum(height))+"%";
-	bullet.style.left=(100*event.clientX/document.body.clientWidth)+"%";
+	bullet.style="background:red;display:inline"+";width:"+rand(tonum(min_bullet_width),tonum(max_bullet_width))+"%;position:absolute";
+	bullet.title=rand(tonum(min_bullet_speed),tonum(max_bullet_speed));
+	var left=(100*event.clientX/document.body.clientWidth)-(tonum(bullet.style.width)/2);
+	var max_left=100-tonum(bullet.style.width);
+	left=(0<=left)?(left):(0);
+	left=(left<=max_left)?(left):(max_left);
+	bullet.style.left=left+"%";
+	bullet.style.height=(tonum(bullet.style.width)*document.body.clientWidth/document.body.clientHeight)+"%";
+	bullet.style.top=(100-tonum(bullet.style.height))+"%";
 	bullet.setAttribute("name","bullet");
 	document.body.appendChild(bullet);
 }
@@ -74,8 +93,24 @@ function tdo(){
 	tag_move();
 	bullet_move();
 }
+function end(){
+	clearInterval(time_work);
+	var tags=document.getElementsByName("tag");
+	for(var i=0;i<tags.length;i=i+1){
+		document.body.removeChild(tags[i]);
+	}
+	var bullets=document.getElementsByName("bullet");
+	for(var i=0;i<bullets.length;i=i+1){
+		document.body.removeChild(bullets[i]);
+	}
+	var mark=document.getElementById("mark");
+	mark.innerHTML="Game over!<br>Your scroe:"+mark.innerHTML+"<br>"+tags.length;
+}
 </script>
 </head>
-<body onload="setInterval(tdo,5);new_tags(10)" onclick="send_bullet()">
-<h1 id="mark">0</h1>
+<body onload="new_tags(10)" onclick="send_bullet()">
+<h1>Alpha Version!!!</h1>
+<h3 style="display:inline">You scroe:</h3>
+<h3 id="mark" style="display:inline">0</h3><br>
+<h3 style="display:inline">Click to send the red block and hit the blue block to get a score.</h5>
 </body>
