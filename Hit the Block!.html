@@ -9,6 +9,7 @@ var bullet_Der_Const=1/3;
 var min_tag_width="1.2%";
 var max_tag_width="1.7%";
 var tag_Der_Const=1/8;
+var tag_K_Const=10;
 var total_hits=0;
 var total_bullets=0;
 function tonum(x){
@@ -26,7 +27,7 @@ function update_vmark(){
 function tag_virtual_move(tag,t){
 	var max=100-tonum(tag.style.width);
 	var v=tonum(tag.style.width)*tag_Der_Const;
-	return v*((t+(tag.value+max)/v)%((2*max)/v))-max;
+	return ((v==0)?(tag.value):(v*((t+(tag.value+max)/v)%((2*max)/v))-max));
 }
 function tag_move(){
 	var tags=document.getElementsByName("tag");
@@ -35,41 +36,50 @@ function tag_move(){
 		tags[i].style.left=Math.abs(tags[i].value)+"%";
 	}
 }
-function new_tags(counts){
-	for(/*PASS*/;counts>0;counts=counts-1){
-		var tag=document.createElement("div");
-		tag.style="background:blue;display:inline;width:"+rand(tonum(min_tag_width),tonum(max_tag_width))+"%;position:absolute";
-		tag.value=rand(0,100-tonum(tag.style.width));
-		tag.style.left=Math.abs(tag.value)+"%";
-		tag.style.height=(tonum(tag.style.width)*document.body.clientWidth/document.body.clientHeight)+"%";
-		tag.style.top=rand(0,100-tonum(tag.style.height))+"%";
-		tag.setAttribute("name","tag");
-		document.body.appendChild(tag);
+function new_tags(){
+	var tags=document.getElementsByName("tag");
+	var counts=tag_K_Const-tags.length;
+	if(counts>0){
+		for(/*PASS*/;counts>0;counts=counts-1){
+			var tag=document.createElement("div");
+			tag.style="background:blue;display:inline;width:"+rand(tonum(min_tag_width),tonum(max_tag_width))+"%;position:absolute";
+			tag.value=rand(0,100-tonum(tag.style.width));
+			tag.style.left=Math.abs(tag.value)+"%";
+			tag.style.height=(tonum(tag.style.width)*document.body.clientWidth/document.body.clientHeight)+"%";
+			tag.style.top=rand(0,100-tonum(tag.style.height))+"%";
+			tag.setAttribute("name","tag");
+			document.body.appendChild(tag);
+		}
+	}else{
+		while(counts<0){
+			document.body.removeChild(tags[Math.abs(counts+1)]);
+			counts=counts+1;
+		}
 	}
 }
 function bullet_move(){
 	var bullets=document.getElementsByName("bullet");
-	var hits=0;
+	var hits=false;
 	for(var i=0;i<bullets.length;i=i+1){
 		bullets[i].style.top=(tonum(bullets[i].style.top)-(tonum(bullets[i].style.height)*bullet_Der_Const))+"%";
 		var tags=document.getElementsByName("tag");
-		hits=0;
+		hits=false;
 		for(var j=0;j<tags.length;j=j+1){
 			if(has_mix(tonum(tags[j].style.top),tonum(tags[j].style.top)+tonum(tags[j].style.height),
 				 tonum(bullets[i].style.top),tonum(bullets[i].style.top)+tonum(bullets[i].style.height))&&
 			   has_mix(tonum(tags[j].style.left),tonum(tags[j].style.left)+tonum(tags[j].style.width),
 				 tonum(bullets[i].style.left),tonum(bullets[i].style.left)+tonum(bullets[i].style.width))){
 				document.body.removeChild(tags[j]);
-				hits=hits+1;
+				hits=true;
 				total_hits=total_hits+1;
 				update_vmark();
 			}else{
 				/*PASS*/
 			}
 		}
-		if(hits>0||tonum(bullets[i].style.top)<=0){
+		if(hits==true||tonum(bullets[i].style.top)<=0){
 			document.body.removeChild(bullets[i]);
-			new_tags(hits);
+			new_tags();
 		}else{
 			/*PASS*/
 		}
@@ -96,12 +106,14 @@ function tdo(){
 }
 </script>
 </head>
-<body onload="setInterval(tdo,5);new_tags(10)" onclick="send_bullet()">
+<body onload="setInterval(tdo,5);new_tags()" onclick="send_bullet()">
 <div id="vmark" style="display:inline;background:red;position:absolute;top:0%;left:0%;height:1%;width:0%"></div>
 <h3 style="display:inline;user-select:none">Click to send the red block to hit the blue block.<br>
 	                                                    The red bar at the top reflects the hit rate.</h3><br>
-<h3 style="display:inline;user-select:none">Drag to change the speed of blue blocks:
-<input style="width:20%" type="range" min="0" max="1" step="0.001" value="tag_Der_Const" onchange="tag_Der_Const=this.value"></h3><br>
-<h3 style="display:inline;user-select:none">Drag to change the speed of red blocks:&nbsp;&nbsp;
-<input style="width:20%" type="range" min="0" max="1" step="0.001" value="bullet_Der_Const" onchange="bullet_Der_Const=this.value"></h3>
+<h3 style="display:inline;user-select:none">Drag to change the speed of blue blocks:<br>
+<input style="width:20%" type="range" min="0" max="1" step="0.001" value="tag_Der_Const" oninput="tag_Der_Const=this.value"></h3><br>
+<h3 style="display:inline;user-select:none">Drag to change the number of blue blocks:<br>
+<input style="width:20%" type="range" min="0" max="100" step="1" value="tag_K_Const" oninput="tag_K_Const=this.value;new_tags()"></h3><br>
+<h3 style="display:inline;user-select:none">Drag to change the speed of red blocks:<br>
+<input style="width:20%" type="range" min="0" max="1" step="0.001" value="bullet_Der_Const" oninput="bullet_Der_Const=this.value"></h3>
 </body>
