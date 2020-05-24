@@ -104,16 +104,23 @@ function tdo(){
 	tag_move();
 	bullet_move();
 }
+function prepare(){
+	setInterval(tdo,5);
+	new_tags();
+	document.getElementById("tag_Der_Const").value=tag_Der_Const;
+	document.getElementById("tag_K_Const").value=tag_K_Const;
+	document.getElementById("bullet_Der_Const").value=bullet_Der_Const;
+}
 </script>
 </head>
-<body onload="setInterval(tdo,5);new_tags()" onclick="send_bullet()">
+<body onload="prepare()" onclick="send_bullet()" style="background:black;color:white">
 <div id="vmark" style="display:inline;background:red;position:absolute;top:0%;left:0%;height:1%;width:0%"></div>
 <h3 style="display:inline;user-select:none">Click to send the red block to hit the blue block.<br>
 	                                                    The red bar at the top reflects the hit rate.</h3><br>
 <h3 style="display:inline;user-select:none">Drag to change the speed of blue blocks:<br>
-<input style="width:20%" type="range" min="0" max="1" step="0.001" value="tag_Der_Const" oninput="tag_Der_Const=this.value"></h3><br>
+<input id="tag_Der_Const" style="width:20%" type="range" min="0" max="1" step="0.001" oninput="tag_Der_Const=this.value"></h3><br>
 <h3 style="display:inline;user-select:none">Drag to change the number of blue blocks:<br>
-<input style="width:20%" type="range" min="0" max="100" step="1" value="tag_K_Const" oninput="tag_K_Const=this.value;new_tags()"></h3><br>
+<input id="tag_K_Const" style="width:20%" type="range" min="0" max="100" step="1" oninput="tag_K_Const=this.value;new_tags()"></h3><br>
 <h3 style="display:inline;user-select:none">Drag to change the speed of red blocks:<br>
-<input style="width:20%" type="range" min="0" max="1" step="0.001" value="bullet_Der_Const" oninput="bullet_Der_Const=this.value"></h3>
+ <input id="bullet_Der_Const" style="width:20%" type="range" min="0" max="1" step="0.001" oninput="bullet_Der_Const=this.value"></h3>
 </body>
