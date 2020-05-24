@@ -25,7 +25,8 @@ function update_vmark(){
 }
 function tag_virtual_move(tag,t){
 	var max=100-tonum(tag.style.width);
-	return tag.title*((t+(tag.value+max)/tag.title)%((2*max)/tag.title))-max;
+	var v=tonum(tag.style.width)*tag_Der_Const;
+	return v*((t+(tag.value+max)/v)%((2*max)/v))-max;
 }
 function tag_move(){
 	var tags=document.getElementsByName("tag");
@@ -39,7 +40,6 @@ function new_tags(counts){
 		var tag=document.createElement("div");
 		tag.style="background:blue;display:inline;width:"+rand(tonum(min_tag_width),tonum(max_tag_width))+"%;position:absolute";
 		tag.value=rand(0,100-tonum(tag.style.width));
-		tag.title=tonum(tag.style.width)*tag_Der_Const;
 		tag.style.left=Math.abs(tag.value)+"%";
 		tag.style.height=(tonum(tag.style.width)*document.body.clientWidth/document.body.clientHeight)+"%";
 		tag.style.top=rand(0,100-tonum(tag.style.height))+"%";
@@ -50,9 +50,8 @@ function new_tags(counts){
 function bullet_move(){
 	var bullets=document.getElementsByName("bullet");
 	var hits=0;
-	var mark=document.getElementById("mark");
 	for(var i=0;i<bullets.length;i=i+1){
-		bullets[i].style.top=(tonum(bullets[i].style.top)-bullets[i].title)+"%";
+		bullets[i].style.top=(tonum(bullets[i].style.top)-(tonum(bullets[i].style.height)*bullet_Der_Const))+"%";
 		var tags=document.getElementsByName("tag");
 		hits=0;
 		for(var j=0;j<tags.length;j=j+1){
@@ -85,7 +84,6 @@ function send_bullet(){
 	left=(left<=max_left)?(left):(max_left);
 	bullet.style.left=left+"%";
 	bullet.style.height=(tonum(bullet.style.width)*document.body.clientWidth/document.body.clientHeight)+"%";
-	bullet.title=tonum(bullet.style.height)*bullet_Der_Const;
 	bullet.style.top=(100-tonum(bullet.style.height))+"%";
 	bullet.setAttribute("name","bullet");
 	document.body.appendChild(bullet);
@@ -101,5 +99,9 @@ function tdo(){
 <body onload="setInterval(tdo,5);new_tags(10)" onclick="send_bullet()">
 <div id="vmark" style="display:inline;background:red;position:absolute;top:0%;left:0%;height:1%;width:0%"></div>
 <h3 style="display:inline;user-select:none">Click to send the red block to hit the blue block.<br>
-	                                                    The red bar at the top reflects the hit rate.</h5>
+	                                                    The red bar at the top reflects the hit rate.</h3><br>
+<h3 style="display:inline;user-select:none">Drag to change the speed of blue blocks:
+<input style="width:20%" type="range" min="0" max="1" step="0.001" value="tag_Der_Const" onchange="tag_Der_Const=this.value"></h3><br>
+<h3 style="display:inline;user-select:none">Drag to change the speed of red blocks:&nbsp;&nbsp;
+<input style="width:20%" type="range" min="0" max="1" step="0.001" value="bullet_Der_Const" onchange="bullet_Der_Const=this.value"></h3>
 </body>
