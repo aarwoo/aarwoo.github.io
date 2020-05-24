@@ -104,6 +104,16 @@ function tdo(){
 	tag_move();
 	bullet_move();
 }
+function resize_blocks(){
+	var tags=document.getElementsByName("tag");
+	var bullets=document.getElementsByName("bullet");
+	for(i=0;i<tags.length;i=i+1){
+		tags[i].style.height=(tonum(tags[i].style.width)*document.body.clientWidth/document.body.clientHeight)+"%";
+	}
+	for(i=0;i<bullets.length;i=i+1){
+		bullets[i].style.height=(tonum(bullets[i].style.width)*document.body.clientWidth/document.body.clientHeight)+"%";
+	}
+}
 function prepare(){
 	setInterval(tdo,5);
 	new_tags();
@@ -113,7 +123,7 @@ function prepare(){
 }
 </script>
 </head>
-<body onload="prepare()" onclick="send_bullet()" style="background:black;color:white">
+<body onload="prepare()" onclick="send_bullet()" onresize="resize_blocks()" style="background:black;color:white">
 <div id="vmark" style="display:inline;background:red;position:absolute;top:0%;left:0%;height:1%;width:0%"></div>
 <h3 style="display:inline;user-select:none">Click to send the red block to hit the blue block.<br>
 	                                                    The red bar at the top reflects the hit rate.</h3><br>
