@@ -85,10 +85,10 @@ function bullet_move(){
 		}
 	}
 }
-function send_bullet(){
+function send_bullet(x_pos){
 	var bullet=document.createElement("div");
 	bullet.style="background:red;display:inline"+";width:"+rand(tonum(min_bullet_width),tonum(max_bullet_width))+"%;position:absolute";
-	var left=(100*event.clientX/document.body.clientWidth)-(tonum(bullet.style.width)/2);
+	var left=(100*x_pos/document.body.clientWidth)-(tonum(bullet.style.width)/2);
 	var max_left=100-tonum(bullet.style.width);
 	left=(0<=left)?(left):(0);
 	left=(left<=max_left)?(left):(max_left);
@@ -123,14 +123,15 @@ function prepare(){
 }
 </script>
 </head>
-<body onload="prepare()" onclick="send_bullet()" onresize="resize_blocks()" style="background:black;color:white;cursor:pointer">
+<body onload="prepare()" onresize="resize_blocks()" style="background:black;color:white;">
 <div id="vmark" style="display:inline;background:red;position:absolute;top:0%;left:0%;height:1%;width:0%"></div>
-<h3 style="display:inline;user-select:none">Click to send the red block to hit the blue block.<br>
+<h3 style="display:inline;user-select:none">Drag the bottom slider to a new position to send the red block from this position to hit the blue block.<br>
 	                                                    The red bar at the top reflects the hit rate.</h3><br>
 <h3 style="display:inline;user-select:none">Drag to change the speed of blue blocks:<br>
 <input id="tag_Der_Const" style="width:20%" type="range" min="0" max="1" step="0.001" oninput="tag_Der_Const=this.value"></h3><br>
 <h3 style="display:inline;user-select:none">Drag to change the number of blue blocks:<br>
-<input id="tag_K_Const" style="width:20%" type="range" min="0" max="100" step="1" oninput="tag_K_Const=this.value;new_tags()"></h3><br>
+<input id="tag_K_Const" style="width:20%" type="range" min="0" max="50" step="1" oninput="tag_K_Const=this.value;new_tags()"></h3><br>
 <h3 style="display:inline;user-select:none">Drag to change the speed of red blocks:<br>
  <input id="bullet_Der_Const" style="width:20%" type="range" min="0" max="1" step="0.001" oninput="bullet_Der_Const=this.value"></h3>
+<input style="height:4%;width:100%;position:absolute;top:96%;left:0%" type="range" min="0" max="1" step="0.000001" onchange="send_bullet(this.value*document.body.clientWidth)">
 </body>
