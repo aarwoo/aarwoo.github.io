@@ -1,0 +1,114 @@
+﻿<head>
+<meta name="viewport" content="width=device-width height=devive-height initial-scale=1.0
+                               minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
+<title>Snake</title>
+<script>
+var food_name="food";
+var food_color="blue";
+var snake_name="snake";
+var snake_color="green";
+var block_width="2%";
+var block_height="2%";
+var button_name="button";
+var button_height="5%";
+var button_top=(100-Number.parseFloat(button_height))+"%";
+var x_max=100-Number.parseFloat(block_width);
+var y_max=100-Number.parseFloat(block_height)-Number.parseFloat(button_height);
+var dx_move=Number.parseFloat(block_width)/x_max;
+var dy_move=Number.parseFloat(block_height)/y_max;
+function adjust_pos(t_pos){
+	if(t_pos<0){
+		return t_pos-Math.floor(t_pos);
+	}else if(t_pos>1){
+		return t_pos-Math.floor(t_pos);
+	}else{
+		return t_pos;
+	}
+}
+function pos(x_pos,y_pos){
+	return {x:adjust_pos(x_pos),y:adjust_pos(y_pos)};
+}
+function overlap_pos(a,b){
+	return (Math.abs(a.x-b.x)<=(dx_move/2))&&
+	          (Math.abs(a.y-b.y)<=(dy_move/2));
+}
+function random_pos(){
+	return pos(Math.random(),Math.random());
+}
+function get_pos(element){
+	return pos(Number.parseFloat(element.style.left)/x_max,Number.parseFloat(element.style.top)/y_max);
+}
+var next=pos(0,0);
+function new_element(name,pos,color){
+	document.writeln(`<div name="${name}" style="display:inline;position:absolute;left:${pos.x*x_max}%;width:${block_width};top:${pos.y*y_max}%;height:${block_height};background:${color}"></div>`);
+}
+function move(){
+	var snake=document.getElementsByName(snake_name);
+	var food=document.getElementsByName(food_name);
+	var last_pos=get_pos(snake[snake.length-1]);
+	for(var i=snake.length-1;i>0;i=i-1){
+		snake[i].style.left=snake[i-1].style.left;
+		snake[i].style.top=snake[i-1].style.top;
+	}
+	var tmp=get_pos(snake[0]);
+	tmp=pos(tmp.x+next.x,tmp.y+next.y);
+	snake[i].style.left=(tmp.x*x_max)+"%";
+	snake[i].style.top=(tmp.y*y_max)+"%";
+	for(var i=1;i<snake.length;i=i+1){
+		if(overlap_pos(get_pos(snake[i]),get_pos(snake[0]))==true){
+			end("You Lose");
+		}else{
+			/*PASS*/
+		}
+	}
+	for(var i=0;i<food.length;i=i+1){
+		if(overlap_pos(get_pos(food[i]),get_pos(snake[0]))==true){
+			tmp=random_pos();
+			food[i].style.left=(tmp.x*x_max)+"%";
+			food[i].style.top=(tmp.y*y_max)+"%";
+			new_element(snake_name,last_pos,snake_color);
+		}else{
+			/*PASS*/
+		}
+	}
+}
+function up(){
+	next=pos(0,-dy_move);
+}
+function down(){
+	next=pos(0,+dy_move);
+}
+function left(){
+	next=pos(-dx_move,0);
+}
+function right(){
+	next=pos(+dx_move,0);
+}
+function end(msg){
+	var elements=[document.getElementsByName(snake_name),
+		        document.getElementsByName(food_name),
+		        document.getElementsByName(button_name)];
+	clearInterval(time_work);
+	for(var i=0;i<3;i=i+1){
+		for(var j=0;j<elements[i].length;j=j+1){
+			document.body.removeChild(elements[i][j]);
+		}
+	}
+	document.writeln(`<h1>${msg}</h1>`);
+}
+function init(){
+	var func_list=["up","down","left","right"];
+	var tag_list=["↑","↓","←","→"];
+	for(var i=0;i<=3;i=i+1){
+		document.writeln(`<button name="${button_name}"
+			            style="display:inline;position:absolute;left:${i*25}%;width:25%;top:${button_top};height:${button_height};font-size:150%;color:red"
+			            onclick="${func_list[i]}()">${tag_list[i]}</button>`);
+	}
+	new_element(snake_name,random_pos(),snake_color);
+	new_element(food_name,random_pos(),food_color);
+	time_work=setInterval(move,200);
+}
+</script>
+</head>
+<body onload="init()">
+</body>
