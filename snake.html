@@ -7,15 +7,32 @@ var food_name="food";
 var food_color="blue";
 var snake_name="snake";
 var snake_color="green";
-var block_width="2%";
-var block_height="2%";
 var button_name="button";
-var button_height="5%";
-var button_top=(100-Number.parseFloat(button_height))+"%";
-var x_max=100-Number.parseFloat(block_width);
-var y_max=100-Number.parseFloat(block_height)-Number.parseFloat(button_height);
-var dx_move=Number.parseFloat(block_width)/x_max;
-var dy_move=Number.parseFloat(block_height)/y_max;
+var side_color="black";
+var side_width="12%";
+var block_length="8px";
+var cycle_time="80ms";
+var side_left=(100-Number.parseFloat(side_width))+"%";
+function block_width(){
+	var area_width=document.body.clientWidth*(Number.parseFloat(side_left)/100);
+	return (100*Number.parseFloat(block_length)/area_width)+"%";
+}
+function block_height(){
+	var area_height=document.body.clientHeight;
+	return (100*Number.parseFloat(block_length)/area_height)+"%";
+}
+function x_max(){
+	return 100-Number.parseFloat(block_width())-Number.parseFloat(side_width);
+}
+function y_max(){
+	return 100-Number.parseFloat(block_height());
+}
+function dx_move(){
+	return (Number.parseFloat(block_width())/x_max());
+}
+function dy_move(){
+	return (Number.parseFloat(block_height())/y_max());
+}
 function adjust_pos(t_pos){
 	if(t_pos<0){
 		return t_pos-Math.floor(t_pos);
@@ -28,87 +45,159 @@ function adjust_pos(t_pos){
 function pos(x_pos,y_pos){
 	return {x:adjust_pos(x_pos),y:adjust_pos(y_pos)};
 }
-function overlap_pos(a,b){
-	return (Math.abs(a.x-b.x)<=(dx_move/2))&&
-	          (Math.abs(a.y-b.y)<=(dy_move/2));
+function get_key_pos(obj,next){
+	var k_x=(next.x<0)?(0):((next.x==0)?(1/2):(1));
+	var k_y=(next.y<0)?(0):((next.y==0)?(1/2):(1));
+	return pos(obj.x+k_x*Number.parseFloat(block_width()),
+		  obj.y+k_y*Number.parseFloat(block_height()));
+}
+function overlap_pos(a,b,next){
+	a=get_key_pos(a,next);
+	b=get_key_pos(b,next);
+	var width=Number.parseFloat(block_width())/x_max();
+	var height=Number.parseFloat(block_height())/y_max();
+	return (Math.abs(a.x-b.x)<=width/2)&&
+	          (Math.abs(a.y-b.y)<=height/2);
 }
 function random_pos(){
 	return pos(Math.random(),Math.random());
 }
 function get_pos(element){
-	return pos(Number.parseFloat(element.style.left)/x_max,Number.parseFloat(element.style.top)/y_max);
+	return pos(Number.parseFloat(element.style.left)/x_max(),Number.parseFloat(element.style.top)/y_max());
+}
+function new_element(name,pos,color){
+	document.writeln(`<div name="${name}" 
+			style="display:inline;position:absolute;left:${pos.x*x_max()}%;width:${block_width()};
+						             top:${pos.y*y_max()}%;height:${block_height()};background:${color}"></div>`);
+}
+function resize_elements(){
+	var snake=document.getElementsByName(snake_name);
+	var food=document.getElementsByName(food_name);
+	for(var i=0;i<snake.length;i=i+1){
+		snake[i].style.width=block_width();
+		snake[i].style.height=block_height();
+	}
+	for(var i=0;i<food.length;i=i+1){
+		food[i].style.width=block_width();
+		food[i].style.height=block_height();
+	}
+}
+var high=0;
+var now=0;
+function update_board(){
+	var board=document.getElementById("board");
+	board.innerHTML=`HIGH ${high}<br>
+			NOW ${now}`;
 }
 var next=pos(0,0);
-function new_element(name,pos,color){
-	document.writeln(`<div name="${name}" style="display:inline;position:absolute;left:${pos.x*x_max}%;width:${block_width};top:${pos.y*y_max}%;height:${block_height};background:${color}"></div>`);
-}
 function move(){
 	var snake=document.getElementsByName(snake_name);
 	var food=document.getElementsByName(food_name);
-	var last_pos=get_pos(snake[snake.length-1]);
 	for(var i=snake.length-1;i>0;i=i-1){
 		snake[i].style.left=snake[i-1].style.left;
 		snake[i].style.top=snake[i-1].style.top;
 	}
 	var tmp=get_pos(snake[0]);
 	tmp=pos(tmp.x+next.x,tmp.y+next.y);
-	snake[i].style.left=(tmp.x*x_max)+"%";
-	snake[i].style.top=(tmp.y*y_max)+"%";
+	snake[0].style.left=(tmp.x*x_max())+"%";
+	snake[0].style.top=(tmp.y*y_max())+"%";
 	for(var i=1;i<snake.length;i=i+1){
-		if(overlap_pos(get_pos(snake[i]),get_pos(snake[0]))==true){
-			end("You Lose");
+		if(overlap_pos(get_pos(snake[i]),get_pos(snake[0]),next)==true){
+			var snake_length=snake.length;
+			for(var i=1;i<snake_length;i=i+1){
+				document.body.removeChild(snake[1]);
+			}
+			high=Math.max(high,now);
+			now=0;
+			update_board();
 		}else{
 			/*PASS*/
 		}
 	}
+	var last_pos=get_pos(snake[snake.length-1]);
 	for(var i=0;i<food.length;i=i+1){
-		if(overlap_pos(get_pos(food[i]),get_pos(snake[0]))==true){
+		if(overlap_pos(get_pos(food[i]),get_pos(snake[0]),next)==true){
 			tmp=random_pos();
-			food[i].style.left=(tmp.x*x_max)+"%";
-			food[i].style.top=(tmp.y*y_max)+"%";
+			food[i].style.left=(tmp.x*x_max())+"%";
+			food[i].style.top=(tmp.y*y_max())+"%";
+			last_pos=pos(last_pos.x-next.x,
+		      		      last_pos.y-next.y);
 			new_element(snake_name,last_pos,snake_color);
+			now=now+1;
+			update_board();
 		}else{
 			/*PASS*/
 		}
 	}
 }
 function up(){
-	next=pos(0,-dy_move);
+	next=pos(0,-dy_move());
 }
 function down(){
-	next=pos(0,+dy_move);
+	next=pos(0,+dy_move());
 }
 function left(){
-	next=pos(-dx_move,0);
+	next=pos(-dx_move(),0);
 }
 function right(){
-	next=pos(+dx_move,0);
+	next=pos(+dx_move(),0);
+}
+function end_base(elements){
+	var length=elements.length;
+	for(var i=0;i<length;i=i+1){
+		document.body.removeChild(elements[0]);
+	}
 }
 function end(msg){
-	var elements=[document.getElementsByName(snake_name),
-		        document.getElementsByName(food_name),
-		        document.getElementsByName(button_name)];
+	var snake=document.getElementsByName(snake_name);
+	var food=document.getElementsByName(food_name);
+	var button=document.getElementsByName(button_name);
 	clearInterval(time_work);
-	for(var i=0;i<3;i=i+1){
-		for(var j=0;j<elements[i].length;j=j+1){
-			document.body.removeChild(elements[i][j]);
-		}
-	}
+	/*end_base(snake);*/
+	end_base(food);
+	end_base(button);
 	document.writeln(`<h1>${msg}</h1>`);
+}
+function food_maker(food_length){
+	var food=document.getElementsByName(food_name);
+	food_length=food_length-food.length;
+	if(food_length>0){
+		for(var i=0;i<food_length;i=i+1){
+			new_element(food_name,random_pos(),food_color);
+		}
+	}else if(food_length<0){
+		for(var i=0;i>food_length;i=i-1){
+			document.body.removeChild(food[0]);
+		}
+	}else{
+		/*PASS*/
+	}
 }
 function init(){
 	var func_list=["up","down","left","right"];
 	var tag_list=["↑","↓","←","→"];
+	var left_list=["91.5%","91.5%","89%","94%"];
+	var top_list=["84%","94%","89%","89%"];
 	for(var i=0;i<=3;i=i+1){
 		document.writeln(`<button name="${button_name}"
-			            style="display:inline;position:absolute;left:${i*25}%;width:25%;top:${button_top};height:${button_height};font-size:150%;color:red"
+			            style="display:inline;position:absolute;left:${left_list[i]};width:5%;top:${top_list[i]};height:5%;font-size:150%;color:red"
 			            onclick="${func_list[i]}()">${tag_list[i]}</button>`);
 	}
+	document.writeln(`<div 
+			style="display:inline;position:absolute;left:${Number.parseFloat(side_left)}%;top:0%;width:0.5%;height:100%;background:${side_color}"></div>`);
+	document.writeln(`<h3 id="board" style="display:inline;position:absolute;left:${Number.parseFloat(side_left)+1}%;width:${Number.parseFloat(side_width)-2}%;height:10%;user-select:none">
+			High 0<br>
+			Now 0
+			</h3>`);
+	document.writeln(`<h3 style="display:inline;position:absolute;left:${Number.parseFloat(side_left)+1}%;top:11%;width:${Number.parseFloat(side_width)-2}%;height:10%;user-select:none">
+			Drag to change the number of food:<br>
+ 			<input id="food_length" type="range" 
+			  min="1" max="100" step="1" value="1" oninput="food_maker(this.value)"/></h3>`);
 	new_element(snake_name,random_pos(),snake_color);
-	new_element(food_name,random_pos(),food_color);
-	time_work=setInterval(move,200);
+	food_maker(document.getElementById("food_length").value);
+	time_work=setInterval(move,Number.parseFloat(cycle_time));
 }
 </script>
 </head>
-<body onload="init()">
+<body onload="init()" onresize="resize_elements()">
 </body>
