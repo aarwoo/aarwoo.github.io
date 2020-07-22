@@ -46,7 +46,8 @@ function adjust_pos(t_pos,id_length){
 	}else{
 		t_pos=t_pos;
 	}
-	return id_length*Math.round(t_pos/id_length);
+	t_pos=id_length*Math.round(t_pos/id_length);
+	return (t_pos<=1)?(t_pos):(0);
 }
 function pos(x_pos,y_pos){
 	return {x:adjust_pos(x_pos,dx_move()),y:adjust_pos(y_pos,dy_move())};
