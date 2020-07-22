@@ -9,12 +9,17 @@ var snake_name="snake";
 var snake_color="green";
 var button_name="button";
 var side_color="black";
-var side_width="12%";
+var side_length="200px";
 var block_length="8px";
 var cycle_time="80ms";
-var side_left=(100-Number.parseFloat(side_width))+"%";
+function side_width(){
+	return (100*Number.parseFloat(side_length)/document.body.clientWidth)+"%";
+}
+function side_left(){
+	return (100-Number.parseFloat(side_width()))+"%";
+}
 function block_width(){
-	var area_width=document.body.clientWidth*(Number.parseFloat(side_left)/100);
+	var area_width=document.body.clientWidth*(Number.parseFloat(side_left())/100);
 	return (100*Number.parseFloat(block_length)/area_width)+"%";
 }
 function block_height(){
@@ -22,7 +27,7 @@ function block_height(){
 	return (100*Number.parseFloat(block_length)/area_height)+"%";
 }
 function x_max(){
-	return 100-Number.parseFloat(block_width())-Number.parseFloat(side_width);
+	return 100-Number.parseFloat(block_width())-Number.parseFloat(side_width());
 }
 function y_max(){
 	return 100-Number.parseFloat(block_height());
@@ -69,18 +74,6 @@ function new_element(name,pos,color){
 	document.writeln(`<div name="${name}" 
 			style="display:inline;position:absolute;left:${pos.x*x_max()}%;width:${block_width()};
 						             top:${pos.y*y_max()}%;height:${block_height()};background:${color}"></div>`);
-}
-function resize_elements(){
-	var snake=document.getElementsByName(snake_name);
-	var food=document.getElementsByName(food_name);
-	for(var i=0;i<snake.length;i=i+1){
-		snake[i].style.width=block_width();
-		snake[i].style.height=block_height();
-	}
-	for(var i=0;i<food.length;i=i+1){
-		food[i].style.width=block_width();
-		food[i].style.height=block_height();
-	}
 }
 var high=0;
 var now=0;
@@ -173,23 +166,70 @@ function food_maker(food_length){
 		/*PASS*/
 	}
 }
+function resize_it(){
+	var button_length=Math.min(0.2,Number.parseFloat(side_width())*(0.9/2));
+	var left_list=[Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1)+(button_length/2),
+		     Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1)+(button_length/2),
+		     Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1),
+		     Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1)+button_length];
+	var top_list=[100-(3*button_length),
+		     100-button_length,
+		     100-(2*button_length),
+		     100-(2*button_length)];
+	var button=document.getElementsByName(button_name);
+	var line=document.getElementById("line");
+	var board=document.getElementById("board");
+	var control=document.getElementById("control");
+	var snake=document.getElementsByName(snake_name);
+	var food=document.getElementsByName(food_name);
+	for(var i=9;i<button.length;i=i+1){
+		button[i].style.left=`${left[i]}%`;
+		button[i].style.top=`${tpp[i]}%`;
+		button[i].style.width=`${button_length}%`;
+		button[i].style.height=`${button_length}%`;
+	}
+	line.style.left=`${Number.parseFloat(side_left())}%`;
+	line.style.width=`${Number.parseFloat(side_width())*0.1}%`;
+	board.style.left=`${Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1)}%`;
+	board.style.width=`${Number.parseFloat(side_width())*0.9}%`;
+	board.style.height=`${(100-(3*button_length))/2}%`;
+	control.style.left=`${Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1)}%`;
+	control.style.top=`${(100-(3*button_length))/2}%`;
+	control.style.width=`${Number.parseFloat(side_width())*0.9}%`;
+	control.style.height=`${(100-(3*button_length))/2}%`;
+	for(var i=0;i<snake.length;i=i+1){
+		snake[i].style.width=block_width();
+		snake[i].style.height=block_height();
+	}
+	for(var i=0;i<food.length;i=i+1){
+		food[i].style.width=block_width();
+		food[i].style.height=block_height();
+	}
+}
 function init(){
 	var func_list=["up","down","left","right"];
 	var tag_list=["↑","↓","←","→"];
-	var left_list=["91.5%","91.5%","89%","94%"];
-	var top_list=["84%","94%","89%","89%"];
+	var button_length=Math.min(20,Number.parseFloat(side_width())*(0.9/2));
+	var left_list=[Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1)+(button_length/2),
+		     Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1)+(button_length/2),
+		     Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1),
+		     Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1)+button_length];
+	var top_list=[100-(3*button_length),
+		     100-button_length,
+		     100-(2*button_length),
+		     100-(2*button_length)];
 	for(var i=0;i<=3;i=i+1){
 		document.writeln(`<button name="${button_name}"
-			            style="display:inline;position:absolute;left:${left_list[i]};width:5%;top:${top_list[i]};height:5%;font-size:150%;color:red"
+			            style="display:inline;position:absolute;left:${left_list[i]}%;width:${button_length}%;top:${top_list[i]}%;height:${button_length}%;color:red"
 			            onclick="${func_list[i]}()">${tag_list[i]}</button>`);
 	}
-	document.writeln(`<div 
-			style="display:inline;position:absolute;left:${Number.parseFloat(side_left)}%;top:0%;width:0.5%;height:100%;background:${side_color}"></div>`);
-	document.writeln(`<h3 id="board" style="display:inline;position:absolute;left:${Number.parseFloat(side_left)+1}%;width:${Number.parseFloat(side_width)-2}%;height:10%;user-select:none">
+	document.writeln(`<div id="line"
+			style="display:inline;position:absolute;left:${Number.parseFloat(side_left())}%;top:0%;width:${Number.parseFloat(side_width())*0.1}%;height:100%;background:${side_color}"></div>`);
+	document.writeln(`<h3 id="board" style="display:inline;position:absolute;left:${Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1)}%;top:0%;width:${Number.parseFloat(side_width())*0.9}%;height:${(100-(3*button_length))/2}%;user-select:none">
 			High 0<br>
 			Now 0
 			</h3>`);
-	document.writeln(`<h3 style="display:inline;position:absolute;left:${Number.parseFloat(side_left)+1}%;top:11%;width:${Number.parseFloat(side_width)-2}%;height:10%;user-select:none">
+	document.writeln(`<h3 id="control" style="display:inline;position:absolute;left:${Number.parseFloat(side_left())+(Number.parseFloat(side_width())*0.1)}%;top:${(100-(3*button_length))/2}%;width:${Number.parseFloat(side_width())*0.9}%;height:${(100-(3*button_length))/2}%;user-select:none">
 			Drag to change the number of food:<br>
  			<input id="food_length" type="range" 
 			  min="1" max="100" step="1" value="1" oninput="food_maker(this.value)"/></h3>`);
@@ -199,5 +239,5 @@ function init(){
 }
 </script>
 </head>
-<body onload="init()" onresize="resize_elements()">
+<body onload="init()" onresize="resize_it()">
 </body>
