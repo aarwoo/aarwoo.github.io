@@ -10,7 +10,7 @@ var snake_color="green";
 var button_name="button";
 var side_color="black";
 var side_length="200px";
-var block_length="8px";
+var block_length="10px";
 var cycle_time="80ms";
 function side_width(){
 	return (100*Number.parseFloat(side_length)/document.body.clientWidth)+"%";
@@ -38,17 +38,18 @@ function dx_move(){
 function dy_move(){
 	return (Number.parseFloat(block_height())/y_max());
 }
-function adjust_pos(t_pos){
+function adjust_pos(t_pos,id_length){
 	if(t_pos<0){
-		return t_pos-Math.floor(t_pos);
+		t_pos=t_pos-Math.floor(t_pos);
 	}else if(t_pos>1){
-		return t_pos-Math.floor(t_pos);
+		t_pos=t_pos-Math.floor(t_pos);
 	}else{
-		return t_pos;
+		t_pos=t_pos;
 	}
+	return id_length*Math.round(t_pos/id_length);
 }
 function pos(x_pos,y_pos){
-	return {x:adjust_pos(x_pos),y:adjust_pos(y_pos)};
+	return {x:adjust_pos(x_pos,dx_move()),y:adjust_pos(y_pos,dy_move())};
 }
 function get_key_pos(obj,next){
 	var k_x=(next.x<0)?(0):((next.x==0)?(1/2):(1));
@@ -56,13 +57,8 @@ function get_key_pos(obj,next){
 	return pos(obj.x+k_x*Number.parseFloat(block_width()),
 		  obj.y+k_y*Number.parseFloat(block_height()));
 }
-function overlap_pos(a,b,next){
-	a=get_key_pos(a,next);
-	b=get_key_pos(b,next);
-	var width=Number.parseFloat(block_width())/x_max();
-	var height=Number.parseFloat(block_height())/y_max();
-	return (Math.abs(a.x-b.x)<=width/2)&&
-	          (Math.abs(a.y-b.y)<=height/2);
+function overlap_pos(a,b){
+	return (a.x==b.x)&&(a.y==b.y);
 }
 function random_pos(){
 	return pos(Math.random(),Math.random());
@@ -82,7 +78,7 @@ function update_board(){
 	board.innerHTML=`HIGH ${high}<br>
 			NOW ${now}`;
 }
-var next=pos(0,0);
+var next;
 function move(){
 	var snake=document.getElementsByName(snake_name);
 	var food=document.getElementsByName(food_name);
@@ -95,7 +91,7 @@ function move(){
 	snake[0].style.left=(tmp.x*x_max())+"%";
 	snake[0].style.top=(tmp.y*y_max())+"%";
 	for(var i=1;i<snake.length;i=i+1){
-		if(overlap_pos(get_pos(snake[i]),get_pos(snake[0]),next)==true){
+		if(overlap_pos(get_pos(snake[i]),get_pos(snake[0]))==true){
 			var snake_length=snake.length;
 			for(var i=1;i<snake_length;i=i+1){
 				document.body.removeChild(snake[1]);
@@ -109,7 +105,7 @@ function move(){
 	}
 	var last_pos=get_pos(snake[snake.length-1]);
 	for(var i=0;i<food.length;i=i+1){
-		if(overlap_pos(get_pos(food[i]),get_pos(snake[0]),next)==true){
+		if(overlap_pos(get_pos(food[i]),get_pos(snake[0]))==true){
 			tmp=random_pos();
 			food[i].style.left=(tmp.x*x_max())+"%";
 			food[i].style.top=(tmp.y*y_max())+"%";
@@ -124,16 +120,16 @@ function move(){
 	}
 }
 function up(){
-	next=pos(0,-dy_move());
+	next={x:0,y:-dy_move()};
 }
 function down(){
-	next=pos(0,+dy_move());
+	next={x:0,y:+dy_move()};
 }
 function left(){
-	next=pos(-dx_move(),0);
+	next={x:-dx_move(),y:0};
 }
 function right(){
-	next=pos(+dx_move(),0);
+	next={x:+dx_move(),y:0};
 }
 function end_base(elements){
 	var length=elements.length;
@@ -235,6 +231,7 @@ function init(){
 			  min="1" max="100" step="1" value="1" oninput="food_maker(this.value)"/></h3>`);
 	new_element(snake_name,random_pos(),snake_color);
 	food_maker(document.getElementById("food_length").value);
+	next=pos(0,0);
 	time_work=setInterval(move,Number.parseFloat(cycle_time));
 }
 </script>
