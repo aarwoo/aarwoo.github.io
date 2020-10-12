@@ -1,4 +1,5 @@
 <head>
+<script type="text/javascript" src="FileSaver.js"></script>
 <script>
 function ftab(obj){
 	if(String.fromCharCode(event.keyCode)=="\t"){
@@ -8,13 +9,19 @@ function ftab(obj){
 		/*PASS*/
 	}
 }
+function save(text){
+	var file = new File([content], "text.txt", { type: "text/plain;charset=utf-8" });
+	saveAs(file);
+}
 </script>
 <body style="background:green;color:yellow">
-<textarea id="edit" style="width:100%;height:93%;background:green;border-color:white;color:yellow;
+<textarea id="edit" style="width:100%;height:90%;background:green;border-color:white;color:yellow;
 			   font-size:50px;font-weight:bold;font-family:Monospace;warp:off;overflow:auto"
 	  wrap="off" onkeydown="ftab(this)" title="Sorry for it can't save or read file." autofocus></textarea>
 <br>
-<label style="height:7%;font-size:50px;font-weight:bold;font-family:Monospace"> @2020 by </label>
-<a href="https://github.com/aarwoo" style="height:7%;color:yellow;
+<label style="height:5%;font-size:50px;font-weight:bold;font-family:Monospace"> @2020 by </label>
+<a href="https://github.com/aarwoo" style="height:5%;color:yellow;
 					   font-size:50px;font-weight:bold;font-family:Monospace">master aarwoo</a>
+<br>
+<button onclick="save(document.getElementsById('edit').value)" style="height:5%;color:yellow;font-size:50px;font-weight:bold;font-family:Monospace">Save the Text</button>
 </body>
