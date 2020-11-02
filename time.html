@@ -4,6 +4,7 @@
 <script>
 function time(){
 let t=new Date();
+let md=(new Date(t.getFullYear(),t.getMonth()+1,0)).getDate();
 let tm=t.getMilliseconds();
 tm=t.getSeconds()+tm/1000;
 document.getElementById("secs").style.top=`${tm/60*100}%`;
@@ -14,6 +15,12 @@ document.getElementById("mins").style.height=`${100-tm/60*100}%`;
 tm=t.getHours()+tm/60;
 document.getElementById("hors").style.top=`${tm/24*100}%`;
 document.getElementById("hors").style.height=`${100-tm/24*100}%`;
+tm=t.getDate()+tm/24;
+document.getElementById("days").style.top=`${tm/md*100}%`;
+document.getElementById("days").style.height=`${100-tm/md*100}%`;
+tm=t.getMonth()+tm/md;
+document.getElementById("mons").style.top=`${tm/12*100}%`;
+document.getElementById("mons").style.height=`${100-tm/12*100}%`;
 }
 function init(){
 time();
@@ -40,11 +47,16 @@ setInterval(time,1);
             width:20%;height:100%;
             background:rgb(0,255,0)">
 </div>
-<div id="ins" style="display:inline;
+<div id="days" style="display:inline;
             position:absolute;
             left:60%;top:0%;
             width:20%;height:100%;
-            background:rgb(255,255,255)">
-The time goes by……
+            background:blue">
+</div>
+<div id="mons" style="display:inline;
+            position:absolute;
+            left:60%;top:0%;
+            width:20%;height:100%;
+            background:green">
 </div>
 </body>
