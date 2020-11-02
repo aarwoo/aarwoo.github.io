@@ -4,7 +4,7 @@
 <script>
 function time(){
 let t=new Date();
-tm=t.getMilliseconds();
+let tm=t.getMilliseconds();
 tm=t.getSeconds()+tm/1000;
 document.getElementById("secs").style.top=`${tm/60*100}%`;
 tm=t.getMinutes()+tm/60;
