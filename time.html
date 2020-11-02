@@ -4,6 +4,7 @@
 <script>
 function time(){
 let t=Date();
+document.getElementById("mins").innerHTML=t.getMinutes();
 document.getElementById("mins").style.height=`${(60-t.getMinutes())/60*100}%`;
 }
 </script>
