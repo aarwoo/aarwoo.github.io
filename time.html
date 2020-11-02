@@ -3,7 +3,7 @@
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <script>
 function time(){
-let t=Date();
+let t=new Date();
 document.getElementById("mins").innerHTML=t.getMinutes();
 document.getElementById("mins").style.height=`${(60-t.getMinutes())/60*100}%`;
 }
