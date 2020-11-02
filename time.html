@@ -4,13 +4,13 @@
 <script>
 function time(){
 let t=new Date();
-document.getElementById("secs").style.top=`${t.getSeconds()/60*100}%`;
+document.getElementById("secs").style.top=`${(t.getSeconds()+t.getMilliseconds()/1000)/60*100}%`;
 document.getElementById("mins").style.top=`${t.getMinutes()/60*100}%`;
 document.getElementById("hors").style.top=`${t.getHours()/24*100}%`;
 }
 function init(){
 time();
-setInterval(time,1000);
+setInterval(time,1);
 }
 </script>
 </head>
