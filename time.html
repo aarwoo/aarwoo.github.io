@@ -8,25 +8,29 @@ document.getElementById("secs").style.top=`${t.getSeconds()/60*100}%`;
 document.getElementById("mins").style.top=`${t.getMinutes()/60*100}%`;
 document.getElementById("hors").style.top=`${t.getHours()/24*100}%`;
 }
+function init(){
+time();
+setInterval(time,1000);
+}
 </script>
 </head>
-<body onload="setInterval(time,1000)">
+<body onload="init()">
 <div id="secs" style="display:inline;
             position:absolute;
             left:0%;top:0%;
-            width:20%;height:100%;
+            width:20%;height:0%;
             background:red">
 </div>
 <div id="mins" style="display:inline;
             position:absolute;
             left:20%;top:0%;
-            width:20%;height:100%;
+            width:20%;height:0%;
             background:green">
 </div>
 <div id="hors" style="display:inline;
             position:absolute;
             left:40%;top:0%;
-            width:20%;height:100%;
+            width:20%;height:0%;
             background:blue">
 </div>
 </body>
