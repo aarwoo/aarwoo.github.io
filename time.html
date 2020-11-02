@@ -6,11 +6,14 @@ function time(){
 let t=new Date();
 let tm=t.getMilliseconds();
 tm=t.getSeconds()+tm/1000;
-document.getElementById("secs").style.top=`${tm/60*100}%`;
+document.getElementById("secs").style=`top:${tm/60*100}%;
+                                       height:${100-tm/60*100}%`;
 tm=t.getMinutes()+tm/60;
-document.getElementById("mins").style.top=`${tm/60*100}%`;
+document.getElementById("mins").style=`top:${tm/60*100}%;
+                                       height:${100-tm/60*100}%`;
 tm=t.getHours()+tm/60;
-document.getElementById("hors").style.top=`${tm/24*100}%`;
+document.getElementById("hors").style=`top:${tm/24*100}%;
+                                       height:${100-tm/24*100}%`;
 }
 function init(){
 time();
@@ -36,5 +39,12 @@ setInterval(time,1);
             left:40%;top:0%;
             width:20%;height:100%;
             background:rgb(0,255,0)">
+</div>
+<div id="ins" style="display:inline;
+            position:absolute;
+            left:60%;top:0%;
+            width:20%;height:100%;
+            background:rgb(255,255,255)">
+The time goes by……
 </div>
 </body>
