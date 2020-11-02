@@ -4,16 +4,15 @@
 <script>
 function time(){
 let t=new Date();
-document.getElementById("mins").innerHTML=t.getMinutes();
-document.getElementById("mins").style.height=`${(60-t.getMinutes())/60*100}%`;
+document.getElementById("secs").style.height=`${(60-t.getSeconds())/60*100}%`;
 }
 </script>
 </head>
 <body onload="setInterval(time,1000)">
-<div id="mins" style="display:inline;
+<div id="secs" style="display:inline;
             position:absolute;
             left:0%;top:0%;
             width:20%;height:100%;
-            background:blue">
+            background:red">
 </div>
 </body>
