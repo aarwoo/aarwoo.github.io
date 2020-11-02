@@ -3,24 +3,30 @@
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <script>
 function time(){
+const dtm=24*3600*1000;
 let t=new Date();
 let md=(new Date(t.getFullYear(),t.getMonth()+1,0)).getDate();
-let tm=t.getMilliseconds();
-tm=t.getSeconds()+tm/1000;
-document.getElementById("secs").style.top=`${tm/60*100}%`;
-document.getElementById("secs").style.height=`${100-tm/60*100}%`;
-tm=t.getMinutes()+tm/60;
-document.getElementById("mins").style.top=`${tm/60*100}%`;
-document.getElementById("mins").style.height=`${100-tm/60*100}%`;
-tm=t.getHours()+tm/60;
-document.getElementById("hors").style.top=`${tm/24*100}%`;
-document.getElementById("hors").style.height=`${100-tm/24*100}%`;
-tm=t.getDate()+tm/24;
-document.getElementById("days").style.top=`${tm/md*100}%`;
-document.getElementById("days").style.height=`${100-tm/md*100}%`;
-tm=t.getMonth()+tm/md;
-document.getElementById("mons").style.top=`${tm/12*100}%`;
-document.getElementById("mons").style.height=`${100-tm/12*100}%`;
+let t11=new Date(t.getFullYear(),1,1);
+let t1231=new Date(t.getFullYear(),12,31);
+let yd=Math.floor((t1231.getTime()-t11.getTime())/dtm);
+alert(yd);
+let Days=Math.floor((t.getTime()-t11.getTime())/dtm);
+let tmp=t.getMilliseconds()/1000;
+tmp=(t.getSeconds()+tmp)/60;
+document.getElementById("secs").style.top=`${tmp*100}%`;
+document.getElementById("secs").style.height=`${100-tmp*100}%`;
+tmp=(t.getMinutes()+tmp)/60;
+document.getElementById("mins").style.top=`${tmp*100}%`;
+document.getElementById("mins").style.height=`${100-tmp*100}%`;
+tmp=(t.getHours()+tmp)/24;
+document.getElementById("hors").style.top=`${tmp*100}%`;
+document.getElementById("hors").style.height=`${100-tmp*100}%`;
+let ytmp=(t.getDate()+tmp)/md;
+document.getElementById("days").style.top=`${ytmp*100}%`;
+document.getElementById("days").style.height=`${100-ytmp*100}%`;
+tmp=(Days+tmp)/yd;
+document.getElementById("mons").style.top=`${tmp*100}%`;
+document.getElementById("mons").style.height=`${100-tmp*100}%`;
 }
 function init(){
 time();
