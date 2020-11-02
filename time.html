@@ -9,7 +9,6 @@ let md=(new Date(t.getFullYear(),t.getMonth()+1,0)).getDate();
 let t11=new Date(t.getFullYear(),1,1);
 let t111=new Date(t.getFullYear()+1,1,1);
 let yd=Math.floor((t111.getTime()-t11.getTime())/dtm);
-alert([yd,md]);
 let Days=Math.floor((t.getTime()-t11.getTime())/dtm);
 let tmp=t.getMilliseconds()/1000;
 tmp=(t.getSeconds()+tmp)/60;
