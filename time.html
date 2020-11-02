@@ -8,7 +8,7 @@ document.getElementById("mins").style.height=`${(60-t.getMinutes())/60*100}%`;
 }
 </script>
 </head>
-<body onload="SetInterval('time()',1000)">
+<body onload="setInterval(time,1000)">
 <div id="mins" style="display:inline;
             position:absolute;
             left:0%;top:0%;
