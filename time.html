@@ -4,11 +4,11 @@
 <script>
 function time(){
 let t=new Date();
-document.getElementById("secs").style.height=`${(60-t.getSeconds())/60*100}%`;
+document.getElementById("secs").style.top=`${t.getSeconds()/60*100}%`;
 }
 </script>
 </head>
-<body onload="setInterval(time,1000)">
+<body onload="setInterval(time,100)">
 <div id="secs" style="display:inline;
             position:absolute;
             left:0%;top:0%;
