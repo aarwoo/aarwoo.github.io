@@ -9,10 +9,11 @@ const rp=0.45;
 return (rp*Math.cos(thetap*Math.PI*2-Math.PI/2)+ad)*100;
 }
 function fyp(thetap,id){
+const xyp=document.body.clientWidth/document.body.clientHeight;
 const adp=2*100;
 let ad=0.5-Number.parseFloat(document.getElementById(id).style.height)/adp;
 const rp=0.45;
-return (rp*Math.sin(thetap*Math.PI*2-Math.PI/2)+ad)*100;
+return (rp*Math.sin(thetap*Math.PI*2-Math.PI/2)+ad)*100*xyp;
 }
 function time(){
 const dtm=24*3600*1000;
@@ -45,6 +46,7 @@ const xyp=document.body.clientWidth/document.body.clientHeight;
 for(let i=0;i<obj.length;i=i+1){
 obj[i].style.height=`${Number.parseFloat(obj[i].style.width)*xyp}%`;
 }
+document.getElementById("rods").style.top=`${Number.parseFloat(document.getElementById("rods").style.left)*xyp}%`
 }
 function init(){
 resize_obj();
@@ -54,7 +56,7 @@ setInterval(time,1);
 </script>
 </head>
 <body onload="init()" onresize="resize_obj()">
-<div id="rods" style="display:inline;
+<div name="obj" id="rods" style="display:inline;
             position:absolute;
             left:5%;top:5%;
             width:90%;height:90%;
