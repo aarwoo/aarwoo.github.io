@@ -8,7 +8,8 @@ return (rp*Math.cos(thetap*Math.PI*2-Math.PI/2)+ad)*100;
 }
 function fyp(thetap,rp){
 const ad=0.5-0.05;
-return (rp*Math.sin(thetap*Math.PI*2-Math.PI/2)+ad)*100*document.body.clientWidth/document.body.clientHeight;
+const xyp=document.body.clientWidth/document.body.clientHeight;
+return (rp*Math.sin(thetap*Math.PI*2-Math.PI/2)+ad)*100*xyp;
 }
 function time(){
 const dtm=24*3600*1000;
@@ -37,11 +38,13 @@ document.getElementById("mons").style.top=`${fyp(tmp,0.05)}%`;
 }
 function resize_obj(){
 let obj=document.getElementsByName("obj");
+const ht=10*document.body.clientWidth/document.body.clientHeight;
 for(let i=0;i<obj.length;i=i+1){
-obj[i].style.height=`${Number.parseFloat(tags[i].style.width)*document.body.clientWidth/document.body.clientHeight}%`;
+obj[i].style.height=`${ht}%`;
 }
 }
 function init(){
+resize_obj();
 time();
 setInterval(time,1);
 }
