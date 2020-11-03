@@ -10,8 +10,7 @@ const r=document.getElementById("r");
 const g=document.getElementById("g");
 const b=document.getElementById("b");
 const a=document.getElementById("a");
-alert(58);
-document.getElementById("res").style.background=rgba(f(r),f(g),f(b),f(a));
+document.getElementById("res").style.backgroundColor=rgba(f(r),f(g),f(b),f(a));
 }
 </script>
 </head>
@@ -19,8 +18,8 @@ document.getElementById("res").style.background=rgba(f(r),f(g),f(b),f(a));
 <div id="res" style="width:10%;height:10%;
                      border:medium double rgb(0,0,0)">
 </div>
-R <input id="r" onchange="new_color()" type="number" value="0" min="0" max="255" step="1"/><br>
-G <input id="g" onchange="new_color()" type="number" value="0" min="0" max="255" step="1"/><br>
-B <input id="b" onchange="new_color()" type="number" value="0" min="0" max="255" step="1"/><br>
-A <input id="a" onchange="new_color()" type="number" value="0" min="0" max="1"/><br>
+R <input id="r" oninput="new_color()" type="number" value="0" min="0" max="255" step="1"/><br>
+G <input id="g" oninput="new_color()" type="number" value="0" min="0" max="255" step="1"/><br>
+B <input id="b" oninput="new_color()" type="number" value="0" min="0" max="255" step="1"/><br>
+A <input id="a" oninput="new_color()" type="number" value="0" min="0" max="1"/><br>
 @2020 by <a href="https://github.com/aarwoo">master aarwoo</a>
