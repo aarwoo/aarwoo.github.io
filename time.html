@@ -20,57 +20,63 @@ let yd=Math.floor((t111.getTime()-t11.getTime())/dtm);
 let Days=Math.floor((t.getTime()-t11.getTime())/dtm);
 let tmp=t.getMilliseconds()/1000;
 tmp=(t.getSeconds()+tmp)/60;
-document.getElementById("secs").style.left=`${fxp(tmp,0.05)}%`;
-document.getElementById("secs").style.top=`${fyp(tmp,0.05)}%`;
+document.getElementById("secs").style.left=`${fxp(tmp,0.45)}%`;
+document.getElementById("secs").style.top=`${fyp(tmp,0.45)}%`;
 tmp=(t.getMinutes()+tmp)/60;
-document.getElementById("mins").style.left=`${fxp(tmp,0.15)}%`;
-document.getElementById("mins").style.top=`${fyp(tmp,0.15)}%`;
+document.getElementById("mins").style.left=`${fxp(tmp,0.35)}%`;
+document.getElementById("mins").style.top=`${fyp(tmp,0.35)}%`;
 tmp=(t.getHours()+tmp)/24;
 document.getElementById("hors").style.left=`${fxp(tmp,0.25)}%`;
 document.getElementById("hors").style.top=`${fyp(tmp,0.25)}%`;
 let ytmp=(t.getDate()+tmp)/md;
-document.getElementById("days").style.left=`${fxp(ytmp,0.35)}%`;
-document.getElementById("days").style.top=`${fyp(ytmp,0.35)}%`;
+document.getElementById("days").style.left=`${fxp(ytmp,0.15)}%`;
+document.getElementById("days").style.top=`${fyp(ytmp,0.15)}%`;
 tmp=(Days+tmp)/yd;
-document.getElementById("mons").style.left=`${fxp(tmp,0.45)}%`;
-document.getElementById("mons").style.top=`${fyp(tmp,0.45)}%`;
+document.getElementById("mons").style.left=`${fxp(tmp,0.05)}%`;
+document.getElementById("mons").style.top=`${fyp(tmp,0.05)}%`;
 }
 function init(){
 time();
 setInterval(time,1);
 }
+function resize_obj(){
+let obj=document.getElementsByName("obj");
+for(let i=0;i<obj.length;i=i+1){
+obj[i].style.height=`${Number.parseFloat(tags[i].style.width)*document.body.clientWidth/document.body.clientHeight}%`;
+}
+}
 </script>
 </head>
-<body onload="init()">
-<div id="secs" style="display:inline;
+<body onload="init()" onresize>
+<div name="obj" id="secs" style="display:inline;
             position:absolute;
             left:0%;top:0%;
             width:10%;height:10%;
             border-radius:50%;
             background:red">
 </div>
-<div id="mins" style="display:inline;
+<div name="obj" id="mins" style="display:inline;
             position:absolute;
             left:0%;top:0%;
             width:10%;height:10%;
             border-radius:50%;
             background:yellow">
 </div>
-<div id="hors" style="display:inline;
+<div name="obj" id="hors" style="display:inline;
             position:absolute;
             left:0%;top:0%;
             width:10%;height:10%;
             border-radius:50%;
             background:rgb(0,255,0)">
 </div>
-<div id="days" style="display:inline;
+<div name="obj" id="days" style="display:inline;
             position:absolute;
             left:0%;top:0%;
             width:10%;height:10%;
             border-radius:50%;
             background:blue">
 </div>
-<div id="mons" style="display:inline;
+<div name="obj" id="mons" style="display:inline;
             position:absolute;
             left:0%;top:0%;
             width:10%;height:10%;
