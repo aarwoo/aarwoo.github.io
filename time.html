@@ -2,6 +2,14 @@
 <meta name="viewport" content="width=device-width height=device-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <script>
+function fxp(thetap,rp){
+const ad=0.5-0.05;
+return (rp*Math.cos(thetap*Math.PI*2-Math.PI/2)+ad)*100;
+}
+function fyp(thetap,rp){
+const ad=0.5-0.05;
+return (rp*Math.sin(thetap*Math.PI*2-Math.PI/2)+ad)*100;
+}
 function time(){
 const dtm=24*3600*1000;
 let t=new Date();
@@ -12,20 +20,20 @@ let yd=Math.floor((t111.getTime()-t11.getTime())/dtm);
 let Days=Math.floor((t.getTime()-t11.getTime())/dtm);
 let tmp=t.getMilliseconds()/1000;
 tmp=(t.getSeconds()+tmp)/60;
-document.getElementById("secs").style.top=`${tmp*100}%`;
-document.getElementById("secs").style.height=`${100-tmp*100}%`;
+document.getElementById("secs").style.left=`${fxp(tmp,0.05)}%`;
+document.getElementById("secs").style.top=`${fyp(tmp,0.05)}%`;
 tmp=(t.getMinutes()+tmp)/60;
-document.getElementById("mins").style.top=`${tmp*100}%`;
-document.getElementById("mins").style.height=`${100-tmp*100}%`;
+document.getElementById("mins").style.left=`${fxp(tmp,0.15)}%`;
+document.getElementById("mins").style.top=`${fyp(tmp,0.15)}%`;
 tmp=(t.getHours()+tmp)/24;
-document.getElementById("hors").style.top=`${tmp*100}%`;
-document.getElementById("hors").style.height=`${100-tmp*100}%`;
+document.getElementById("hors").style.left=`${fxp(tmp,0.25)}%`;
+document.getElementById("hors").style.top=`${fyp(tmp,0.25)}%`;
 let ytmp=(t.getDate()+tmp)/md;
-document.getElementById("days").style.top=`${ytmp*100}%`;
-document.getElementById("days").style.height=`${100-ytmp*100}%`;
+document.getElementById("days").style.left=`${fxp(ytmp,0.35)}%`;
+document.getElementById("days").style.top=`${fyp(ytmp,0.35)}%`;
 tmp=(Days+tmp)/yd;
-document.getElementById("mons").style.top=`${tmp*100}%`;
-document.getElementById("mons").style.height=`${100-tmp*100}%`;
+document.getElementById("mons").style.left=`${fxp(tmp,0.45)}%`;
+document.getElementById("mons").style.top=`${fyp(tmp,0.45)}%`;
 }
 function init(){
 time();
@@ -37,31 +45,36 @@ setInterval(time,1);
 <div id="secs" style="display:inline;
             position:absolute;
             left:0%;top:0%;
-            width:20%;height:100%;
+            width:10%;height:10%;
+            border-radius:50%;
             background:red">
 </div>
 <div id="mins" style="display:inline;
             position:absolute;
-            left:20%;top:0%;
-            width:20%;height:100%;
+            left:0%;top:0%;
+            width:10%;height:10%;
+            border-radius:50%;
             background:yellow">
 </div>
 <div id="hors" style="display:inline;
             position:absolute;
-            left:40%;top:0%;
-            width:20%;height:100%;
+            left:0%;top:0%;
+            width:10%;height:10%;
+            border-radius:50%;
             background:rgb(0,255,0)">
 </div>
 <div id="days" style="display:inline;
             position:absolute;
-            left:60%;top:0%;
-            width:20%;height:100%;
+            left:0%;top:0%;
+            width:10%;height:10%;
+            border-radius:50%;
             background:blue">
 </div>
 <div id="mons" style="display:inline;
             position:absolute;
-            left:80%;top:0%;
-            width:20%;height:100%;
+            left:0%;top:0%;
+            width:10%;height:10%;
+            border-radius:50%;
             background:green">
 </div>
 </body>
