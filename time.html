@@ -2,18 +2,11 @@
 <meta name="viewport" content="width=device-width height=device-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <script>
-function fxp(thetap,id){
-const adp=2*100;
-let ad=0.5-Number.parseFloat(document.getElementById(id).style.width)/adp;
-const rp=0.45;
-return (rp*Math.cos(thetap*Math.PI*2-Math.PI/2)+ad)*100;
-}
-function fyp(thetap,id){
-const xyp=document.body.clientWidth/document.body.clientHeight;
-const adp=2*100;
-let ad=0.5-Number.parseFloat(document.getElementById(id).style.height)/adp;
-const rp=0.45;
-return (rp*Math.sin(thetap*Math.PI*2-Math.PI/2)+ad)*100*xyp;
+function f(tmp,id){
+let it=document.getElementById(id);
+tmp=tmp*100;
+it.style.top=`${tmp}%`;
+it.style.height=`${100-tmp}%`;
 }
 function time(){
 const dtm=24*3600*1000;
@@ -25,14 +18,11 @@ let yd=Math.floor((t111.getTime()-t11.getTime())/dtm);
 let Days=Math.floor((t.getTime()-t11.getTime())/dtm);
 let tmp=t.getMilliseconds()/1000;
 tmp=(t.getSeconds()+tmp)/60;
-document.getElementById("secs").style.left=`${fxp(tmp,"secs")}%`;
-document.getElementById("secs").style.top=`${fyp(tmp,"secs")}%`;
+f(tmp,"")
 tmp=(t.getMinutes()+tmp)/60;
-document.getElementById("mins").style.left=`${fxp(tmp,"mins")}%`;
-document.getElementById("mins").style.top=`${fyp(tmp,"mins")}%`;
+
 tmp=(t.getHours()+tmp)/24;
-document.getElementById("hors").style.left=`${fxp(tmp,"hors")}%`;
-document.getElementById("hors").style.top=`${fyp(tmp,"hors")}%`;
+
 let ytmp=(t.getDate()+tmp)/md;
 document.getElementById("days").style.left=`${fxp(ytmp,"days")}%`;
 document.getElementById("days").style.top=`${fyp(ytmp,"days")}%`;
@@ -56,52 +46,34 @@ setInterval(time,1);
 </script>
 </head>
 <body onload="init()" onresize="resize_obj()">
-<div name="obj" id="rods" style="display:inline;
-            position:absolute;
-            left:5%;top:5%;
-            width:90%;height:90%;
-            border-radius:50%;
-            opacity:0.5;
-            border:medium groove rgb(0,0,0)">
-</div>
-<div name="obj" id="mons" style="display:inline;
+<div name="obj" id="minute" style="display:inline;
             position:absolute;
             left:0%;top:0%;
-            width:10%;height:10%;
-            border-radius:50%;
-            opacity:0.5;
-            background:rgb(255,128,0)">
+            width:20%;height:0%;
+            background:rgb(255,0,0)">
 </div>
-<div name="obj" id="days" style="display:inline;
+<div name="obj" id="hour" style="display:inline;
             position:absolute;
-            left:1%;top:1%;
-            width:8%;height:8%;
-            border-radius:50%;
-            opacity:0.5;
-            background:rgb(255,128,128)">
-</div>
-<div name="obj" id="hors" style="display:inline;
-            position:absolute;
-            left:2%;top:2%;
-            width:6%;height:6%;
-            border-radius:50%;
-            opacity:0.5;
-            background:rgb(255,0,255)">
-</div>
-<div name="obj" id="mins" style="display:inline;
-            position:absolute;
-            left:3%;top:3%;
-            width:4%;height:4%;
-            border-radius:50%;
-            opacity:0.5;
+            left:20%;top:0%;
+            width:20%;height:0%;
             background:rgb(255,255,0)">
 </div>
-<div name="obj" id="secs" style="display:inline;
+<div name="obj" id="day" style="display:inline;
             position:absolute;
-            left:4%;top:4%;
-            width:2%;height:2%;
-            border-radius:50%;
-            opacity:0.5;
-            background:rgb(255,0,0)">
+            left:40%;top:0%;
+            width:20%;height:0%;
+            background:rgb(255,0,255)">
+</div>
+<div name="obj" id="month" style="display:inline;
+            position:absolute;
+            left:60%;top:0%;
+            width:20%;height:0%;
+            background:rgb(255,128,128)">
+</div>
+<div name="obj" id="year" style="display:inline;
+            position:absolute;
+            left:80%;top:0%;
+            width:20%;height:0%;
+            background:rgb(255,128,0)">
 </div>
 </body>
