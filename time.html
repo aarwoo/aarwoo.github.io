@@ -33,6 +33,7 @@ let obj=document.getElementsByName("obj");
 const xyp=document.body.clientWidth/document.body.clientHeight;
 for(let i=0;i<obj.length;i=i+1){
 obj[i].style.height=`${Number.parseFloat(obj[i].style.width)*xyp}%`;
+obj[i].innerHTML=`This ${obj[i].id} is left…`;
 }
 }
 function init(){
@@ -53,24 +54,24 @@ setInterval(time,1);
             position:absolute;
             left:20%;top:0%;
             width:20%;height:0%;
-            background:rgb(255,255,0)">
+            background:rgb(255,127,0)">
 </div>
 <div name="obj" id="day" style="display:inline;
             position:absolute;
             left:40%;top:0%;
             width:20%;height:0%;
-            background:rgb(255,0,255)">
+            background:rgb(255,255,0)">
 </div>
 <div name="obj" id="month" style="display:inline;
             position:absolute;
             left:60%;top:0%;
             width:20%;height:0%;
-            background:rgb(255,128,128)">
+            background:rgb(0,255,255)">
 </div>
 <div name="obj" id="year" style="display:inline;
             position:absolute;
             left:80%;top:0%;
             width:20%;height:0%;
-            background:rgb(255,128,0)">
+            background:rgb(0,255,0)">
 </div>
 </body>
