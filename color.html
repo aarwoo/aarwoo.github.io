@@ -1,0 +1,27 @@
+<head>
+<meta name="viewport" content="width=device-width height=device-height initial-scale=1.0
+                               minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
+<script>
+function f(x){
+return Number.parseFloat(x.value);
+}
+function new_color(){
+const r=document.getElementById("r");
+const g=document.getElementById("g");
+const b=document.getElementById("b");
+const a=document.getElementById("a");
+document.getElementById("res").style.background=rgba(f(r),f(g),f(b),f(a));
+}
+</script>
+</head>
+<body>
+<div id="res" style="position:absolute;
+                     left:0%;top:0%;
+                     width:10%;height:10%;
+                     border:medium double rgb(0,0,0)">
+</div>
+R <input id="r" onchange="new_color()" style="number" value="0" min="0" max="255" step="1"/><br>
+G <input id="g" onchange="new_color()" style="number" value="0" min="0" max="255" step="1"/><br>
+B <input id="b" onchange="new_color()" style="number" value="0" min="0" max="255" step="1"/><br>
+A <input id="a" onchange="new_color()" style="number" value="0" min="0" max="1"/><br>
+@2020 by <a href="https://github.com/aarwoo">master aarwoo</a>
