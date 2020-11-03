@@ -3,12 +3,12 @@
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <script>
 function fxp(thetap,id){
-const ad=0.5-Number.parseFloat(document.getElementById(id).style.width)/2;
+let ad=0.5-Number.parseFloat(document.getElementById(id).style.width)/2;
 const rp=0.45;
 return (rp*Math.cos(thetap*Math.PI*2-Math.PI/2)+ad)*100;
 }
 function fyp(thetap,id){
-const ad=0.5-Number.parseFloat(document.getElementById(id).style.height)/2;
+let ad=0.5-Number.parseFloat(document.getElementById(id).style.height)/2;
 const rp=0.45;
 return (rp*Math.sin(thetap*Math.PI*2-Math.PI/2)+ad)*100;
 }
