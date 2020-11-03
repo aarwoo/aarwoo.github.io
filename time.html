@@ -34,7 +34,6 @@ const xyp=document.body.clientWidth/document.body.clientHeight;
 for(let i=0;i<obj.length;i=i+1){
 obj[i].style.height=`${Number.parseFloat(obj[i].style.width)*xyp}%`;
 }
-document.getElementById("rods").style.top=`${Number.parseFloat(document.getElementById("rods").style.left)*xyp}%`
 }
 function init(){
 resize_obj();
