@@ -8,7 +8,7 @@ return (rp*Math.cos(thetap*Math.PI*2-Math.PI/2)+ad)*100;
 }
 function fyp(thetap,rp){
 const ad=0.5-0.05;
-return (rp*Math.sin(thetap*Math.PI*2-Math.PI/2)+ad)*100;
+return (rp*Math.sin(thetap*Math.PI*2-Math.PI/2)+ad)*100*document.body.clientWidth/document.body.clientHeight;
 }
 function time(){
 const dtm=24*3600*1000;
@@ -42,7 +42,6 @@ obj[i].style.height=`${Number.parseFloat(tags[i].style.width)*document.body.clie
 }
 }
 function init(){
-resize_obj();
 time();
 setInterval(time,1);
 }
