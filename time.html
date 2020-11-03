@@ -33,7 +33,7 @@ let obj=document.getElementsByName("obj");
 const xyp=document.body.clientWidth/document.body.clientHeight;
 for(let i=0;i<obj.length;i=i+1){
 obj[i].style.height=`${Number.parseFloat(obj[i].style.width)*xyp}%`;
-obj[i].innerHTML=`This ${obj[i].id} is left…`;
+obj[i].innerHTML=`The rest of this ${obj[i].id}…`;
 }
 }
 function init(){
