@@ -2,13 +2,14 @@
 <meta name="viewport" content="width=device-width height=device-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <script>
-function fxp(thetap,rp){
+function fxp(thetap){
 const ad=0.5-0.05;
+const rp=0.45;
 return (rp*Math.cos(thetap*Math.PI*2-Math.PI/2)+ad)*100;
 }
-function fyp(thetap,rp){
+function fyp(thetap){
 const ad=0.5-0.05;
-const xyp=document.body.clientWidth/document.body.clientHeight;
+const rp=0.45;
 return (rp*Math.sin(thetap*Math.PI*2-Math.PI/2)+ad)*100;
 }
 function time(){
@@ -21,20 +22,20 @@ let yd=Math.floor((t111.getTime()-t11.getTime())/dtm);
 let Days=Math.floor((t.getTime()-t11.getTime())/dtm);
 let tmp=t.getMilliseconds()/1000;
 tmp=(t.getSeconds()+tmp)/60;
-document.getElementById("secs").style.left=`${fxp(tmp,0.45)}%`;
-document.getElementById("secs").style.top=`${fyp(tmp,0.45)}%`;
+document.getElementById("secs").style.left=`${fxp(tmp)}%`;
+document.getElementById("secs").style.top=`${fyp(tmp)}%`;
 tmp=(t.getMinutes()+tmp)/60;
-document.getElementById("mins").style.left=`${fxp(tmp,0.45)}%`;
-document.getElementById("mins").style.top=`${fyp(tmp,0.45)}%`;
+document.getElementById("mins").style.left=`${fxp(tmp)}%`;
+document.getElementById("mins").style.top=`${fyp(tmp)}%`;
 tmp=(t.getHours()+tmp)/24;
-document.getElementById("hors").style.left=`${fxp(tmp,0.25)}%`;
-document.getElementById("hors").style.top=`${fyp(tmp,0.25)}%`;
+document.getElementById("hors").style.left=`${fxp(tmp)}%`;
+document.getElementById("hors").style.top=`${fyp(tmp)}%`;
 let ytmp=(t.getDate()+tmp)/md;
-document.getElementById("days").style.left=`${fxp(ytmp,0.15)}%`;
-document.getElementById("days").style.top=`${fyp(ytmp,0.15)}%`;
+document.getElementById("days").style.left=`${fxp(ytmp)}%`;
+document.getElementById("days").style.top=`${fyp(ytmp)}%`;
 tmp=(Days+tmp)/yd;
-document.getElementById("mons").style.left=`${fxp(tmp,0.05)}%`;
-document.getElementById("mons").style.top=`${fyp(tmp,0.05)}%`;
+document.getElementById("mons").style.left=`${fxp(tmp)}%`;
+document.getElementById("mons").style.top=`${fyp(tmp)}%`;
 }
 function resize_obj(){
 let obj=document.getElementsByName("obj");
@@ -72,6 +73,7 @@ setInterval(time,1);
             left:0%;top:0%;
             width:10%;height:10%;
             border-radius:50%;
+            opacity:0.5;
             background:rgb(0,255,0)">
 </div>
 <div name="obj" id="days" style="display:inline;
@@ -79,6 +81,7 @@ setInterval(time,1);
             left:0%;top:0%;
             width:10%;height:10%;
             border-radius:50%;
+            opacity:0.5;
             background:blue">
 </div>
 <div name="obj" id="mons" style="display:inline;
@@ -86,6 +89,7 @@ setInterval(time,1);
             left:0%;top:0%;
             width:10%;height:10%;
             border-radius:50%;
+            opacity:0.5;
             background:green">
 </div>
 </body>
