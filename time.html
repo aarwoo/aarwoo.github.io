@@ -18,17 +18,15 @@ let yd=Math.floor((t111.getTime()-t11.getTime())/dtm);
 let Days=Math.floor((t.getTime()-t11.getTime())/dtm);
 let tmp=t.getMilliseconds()/1000;
 tmp=(t.getSeconds()+tmp)/60;
-f(tmp,"")
+f(tmp,"minute");
 tmp=(t.getMinutes()+tmp)/60;
-
+f(tmp,"hour");
 tmp=(t.getHours()+tmp)/24;
-
+f(tmp,"day");
 let ytmp=(t.getDate()+tmp)/md;
-document.getElementById("days").style.left=`${fxp(ytmp,"days")}%`;
-document.getElementById("days").style.top=`${fyp(ytmp,"days")}%`;
+f(tmp,"month");
 tmp=(Days+tmp)/yd;
-document.getElementById("mons").style.left=`${fxp(tmp,"mons")}%`;
-document.getElementById("mons").style.top=`${fyp(tmp,"mons")}%`;
+f(tmp,"year");
 }
 function resize_obj(){
 let obj=document.getElementsByName("obj");
