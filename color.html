@@ -48,7 +48,7 @@ let sel=window.getSelection();
 rng.selectNodeContents(code);
 sel.removeAllRanges();
 sel.addRange(rng);
-document.exeCommand("copy");
+document.execCommand("copy");
 sel.removeAllRanges();
 alert("Copied!");
 }
