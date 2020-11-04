@@ -25,16 +25,16 @@ code.innerHTML=color;
 res.style.background=color;
 }
 function tcolor(it,x){
-let min=f(it.min);
-let max=f(it.max);
-let fix=-Math.log10(f(it.step));
-let val=f(it.value);
+let min=Number.parseFloat(it.min);
+let max=Number.parseFloat(it.max);
+let fix=-Math.log10(Number.parseFloat(it.step));
+let val=Number.parseFloat(it.value);
 if(val<min){
 val=min;
 }else if(val>max){
 val=max;
 }else{
-val=(new Number(val)).toFixed(fix);
+val=val.toFixed(fix);
 }
 alert(val);
 document.getElementById(x).value=`${val}`;
