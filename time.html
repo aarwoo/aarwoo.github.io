@@ -33,7 +33,7 @@ let obj=document.getElementsByName("obj");
 const xyp=document.body.clientWidth/document.body.clientHeight;
 for(let i=0;i<obj.length;i=i+1){
 obj[i].style.height=`${Number.parseFloat(obj[i].style.width)*xyp}%`;
-obj[i].innerHTML=`The rest of this ${obj[i].id}…`;
+obj[i].innerHTML=`${obj[i].id}`;
 }
 }
 function init(){
@@ -77,7 +77,6 @@ setInterval(time,1);
             left:80%;top:0%;
             width:20%;height:0%;
             overflow:hidden;
-            padding-top:-5%;
             background:rgb(0,255,0)">
 </div>
 </body>
