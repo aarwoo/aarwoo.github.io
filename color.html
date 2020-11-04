@@ -33,6 +33,8 @@ if(val<min){
 val=min;
 }else if(val>max){
 val=max;
+}else if(val==Math.NaN){
+val=min;
 }else{
 val=val.toFixed(fix);
 }
@@ -42,7 +44,7 @@ new_color();
 </script>
 </head>
 <body onload="new_color()">
-<h1 id="code"></h1>
+<h3 id="code"></h3>
 <div id="res" style="width:10%;height:10%;
                      border:medium double rgb(0,0,0)">
 </div><br>
