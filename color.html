@@ -41,10 +41,21 @@ val=val.toFixed(fix);
 document.getElementById(x).value=`${val}`;
 new_color();
 }
+function copy_code(){
+const code=document.getElementById("code");
+let rng=document.createRange();
+let sel=window.getSelection();
+rng.selectNodeContents(code);
+sel.removeAllRanges();
+sel.addRange(rng);
+document.exeCommand("copy");
+sel.removeAllRanges();
+alert("Copied!");
+}
 </script>
 </head>
 <body onload="new_color()">
-<h2 id="code"></h2>
+<h2 id="code" onclick="copy_code()"></h2>
 <div id="res" style="width:10%;height:10%;
                      border:medium double rgb(0,0,0)">
 </div><br>
