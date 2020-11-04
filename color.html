@@ -46,11 +46,18 @@ const code=document.getElementById("code");
 let rng=document.createRange();
 let sel=window.getSelection();
 rng.selectNodeContents(code);
+let rngs=[];
+for(let i=0;i<sel.rangeCount;i=i+1){
+rngs=rngs+[sel.getRangeAt(i)];
+}
 sel.removeAllRanges();
 sel.addRange(rng);
 document.execCommand("copy");
 sel.removeAllRanges();
-alert("Copied!");
+for(let i=0;i<rngs.length;i=i+1){
+sel.addRange(rngs[i]);
+}
+alert("Copy successfully!");
 }
 </script>
 </head>
