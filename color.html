@@ -33,7 +33,7 @@ if(val<min){
 val=min;
 }else if(val>max){
 val=max;
-}else if(val==Math.NaN){
+}else if(isNaN(val)==true){
 val=min;
 }else{
 val=val.toFixed(fix);
