@@ -36,7 +36,6 @@ val=max;
 }else{
 val=val.toFixed(fix);
 }
-alert(val);
 document.getElementById(x).value=`${val}`;
 new_color();
 }
@@ -47,13 +46,13 @@ new_color();
 <div id="res" style="width:10%;height:10%;
                      border:medium double rgb(0,0,0)">
 </div><br>
-R:<input id="rt" onchange="tcolor(this,'r')" type="number" value="0" min="0" max="255" step="1"/><br>
+R:<input id="rt" oninput="tcolor(this,'r')" type="number" value="0" min="0" max="255" step="1"/><br>
 <input id="r" oninput="new_color()" type="range" value="0" min="0" max="255" step="1" style="width:100%"/><br>
-G:<input id="gt" onchange="tcolor(this,'g')" type="number" value="0" min="0" max="255" step="1"/><br>
+G:<input id="gt" oninput="tcolor(this,'g')" type="number" value="0" min="0" max="255" step="1"/><br>
 <input id="g" oninput="new_color()" type="range" value="0" min="0" max="255" step="1" style="width:100%"/><br>
-B:<input id="bt" onchange="tcolor(this,'b')" type="number" value="0" min="0" max="255" step="1"/><br>
+B:<input id="bt" oninput="tcolor(this,'b')" type="number" value="0" min="0" max="255" step="1"/><br>
 <input id="b" oninput="new_color()" type="range" value="0" min="0" max="255" step="1" style="width:100%"/><br>
-A:<input id="at" onchange="tcolor(this,'a')" type="number" value="0" min="0" max="1" step="0.0001"/><br>
-<input id="a" oninput="new_color()" type="range" value="0" min="0" max="1" step="0.0001" style="width:100%"/><br>
+A:<input id="at" oninput="tcolor(this,'a')" type="number" value="0" min="0" max="1" step="1e-8"/><br>
+<input id="a" oninput="new_color()" type="range" value="0" min="0" max="1" step="1e-8" style="width:100%"/><br>
 @2020 by <a href="https://github.com/aarwoo">master aarwoo</a>
 </body>
