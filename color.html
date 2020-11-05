@@ -40,7 +40,11 @@ val=min;
 val=val.toFixed(fix);
 }
 alert(it.value);
-document.getElementById(x).value=`${(val==Number.parseFloat(it.value))?(it.value):(val)}`;
+if(val==Number.parseFloat(it.value)){
+document.getElementById(x).value=it.value;
+}else{
+document.getElementById(x).value=`${val}`;
+}
 new_color();
 }
 function copy_code(){
