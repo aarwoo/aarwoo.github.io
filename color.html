@@ -9,10 +9,8 @@ return Number.parseFloat(x.value);
 function get_fix(x){
 let c=x.match(/(?<=\.).*/);
 if(c==null){
-alert(0);
 return 0;
 }else{
-alert(c[0].length);
 return c[0].length;
 }
 }
@@ -30,7 +28,9 @@ const res=document.getElementById("res");
 rt.value=r.value;
 gt.value=g.value;
 bt.value=b.value;
-if(get_fix(at.value)==0){
+let fx=get_fix(at.value);
+let fix=-Math.log10(Number.parseFloat(it.step));
+if(fx==0||fx>fix){
 at.value=a.value;
 }else{
 /*PASS*/
