@@ -6,6 +6,16 @@
 function f(x){
 return Number.parseFloat(x.value);
 }
+function get_fix(x){
+let c=x.match(/(?<=\.).*/);
+if(c==null){
+alert(0);
+return 0;
+}else{
+alert(c[0].length);
+return c[0].length;
+}
+}
 function new_color(){
 const r=document.getElementById("r");
 const g=document.getElementById("g");
@@ -20,7 +30,7 @@ const res=document.getElementById("res");
 rt.value=r.value;
 gt.value=g.value;
 bt.value=b.value;
-if(Number.parseFloat(at.value)!=Number.parseFloat(a.value)){
+if(get_fix(at)==0){
 at.value=a.value;
 }else{
 /*PASS*/
