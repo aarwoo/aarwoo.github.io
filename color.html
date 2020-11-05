@@ -38,7 +38,7 @@ at.value=s(Number.parseFloat(a.value).toFixed(fix));
 }else{
 /*PASS*/
 }
-let color=`rgba(${f(r)},${f(g)},${f(b)},${f(a)})`;
+let color=`rgba(${f(r)},${f(g)},${f(b)},${s(Number.parseFloat(a.value).toFixed(fix))})`;
 code.innerHTML=color;
 res.style.background=color;
 }
