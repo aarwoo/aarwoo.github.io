@@ -20,8 +20,11 @@ const res=document.getElementById("res");
 rt.value=r.value;
 gt.value=g.value;
 bt.value=b.value;
-alert(a.value);
-/*at.value=a.value;*/
+if(at.value!=a.value){
+at.value=a.value;
+}else{
+/*PASS*/
+}
 let color=`rgba(${f(r)},${f(g)},${f(b)},${f(a)})`;
 code.innerHTML=color;
 res.style.background=color;
@@ -40,11 +43,7 @@ val=min;
 }else{
 val=val.toFixed(fix);
 }
-if(val==Number.parseFloat(it.value)){
-document.getElementById(x).value=it.value;
-}else{
 document.getElementById(x).value=`${val}`;
-}
 new_color();
 }
 function copy_code(){
