@@ -30,7 +30,7 @@ gt.value=g.value;
 bt.value=b.value;
 let fx=get_fix(at.value);
 let fix=-Math.log10(Number.parseFloat(at.step));
-if(fx==0||fx>fix){
+if(fx==0||fx>fix||Number.parseFloat(at.value)!=Number.parseFloat(a.value)){
 at.value=a.value;
 }else{
 /*PASS*/
@@ -54,7 +54,6 @@ val=min;
 val=val.toFixed(fix);
 }
 document.getElementById(x).value=`${val}`;
-alert(document.getElementById(x).value);
 new_color();
 }
 function copy_code(){
