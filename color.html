@@ -31,7 +31,7 @@ bt.value=b.value;
 let fx=get_fix(at.value);
 let fix=-Math.log10(Number.parseFloat(at.step));
 if(fx==0||fx>fix||Number.parseFloat(at.value)!=Number.parseFloat(a.value)){
-at.value=a.value;
+at.value=Number.parseFloat(a.value).toFixed(fix);
 }else{
 /*PASS*/
 }
