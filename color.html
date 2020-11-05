@@ -20,7 +20,8 @@ const res=document.getElementById("res");
 rt.value=r.value;
 gt.value=g.value;
 bt.value=b.value;
-at.value=a.value;
+alert(a.value);
+/*at.value=a.value;*/
 let color=`rgba(${f(r)},${f(g)},${f(b)},${f(a)})`;
 code.innerHTML=color;
 res.style.background=color;
@@ -39,7 +40,6 @@ val=min;
 }else{
 val=val.toFixed(fix);
 }
-alert(val==Number.parseFloat(it.value));
 if(val==Number.parseFloat(it.value)){
 document.getElementById(x).value=it.value;
 }else{
