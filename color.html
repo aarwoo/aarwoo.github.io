@@ -14,6 +14,9 @@ return 0;
 return c[0].length;
 }
 }
+function s(x){
+return x.replace(/(?<=\.|[0-9])0*(?![0-9])/,"");
+}
 function new_color(){
 const r=document.getElementById("r");
 const g=document.getElementById("g");
@@ -31,7 +34,7 @@ bt.value=b.value;
 let fx=get_fix(at.value);
 let fix=-Math.log10(Number.parseFloat(at.step));
 if(fx==0||fx>fix||Number.parseFloat(at.value)!=Number.parseFloat(a.value)){
-at.value=Number.parseFloat(a.value).toFixed(fix);
+at.value=s(Number.parseFloat(a.value).toFixed(fix));
 }else{
 /*PASS*/
 }
