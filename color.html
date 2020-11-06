@@ -28,9 +28,9 @@ const bt=document.getElementById("bt");
 const at=document.getElementById("at");
 const code=document.getElementById("code");
 const res=document.getElementById("res");
-rt.value=r.value;
-gt.value=g.value;
-bt.value=b.value;
+rt.value=f(r.value);
+gt.value=f(g.value);
+bt.value=f(b.value);
 let fx=get_fix(at.value);
 let fix=-Math.log10(Number.parseFloat(at.step));
 if(fx==0||fx>fix||Number.parseFloat(at.value)!=Number.parseFloat(a.value)){
