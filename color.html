@@ -15,7 +15,7 @@ return c[0].length;
 }
 }
 function s(x){
-return x.replace(/(?:\.|(?<=[0-9]))0*(?!\.|[0-9])/g,"");
+return x.replace(/(?:\.|(?<=\.[0-9]*[1-9]))0*(?![0-9])/g,"");
 }
 function new_color(){
 const r=document.getElementById("r");
