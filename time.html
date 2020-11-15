@@ -34,11 +34,10 @@ let obj=document.getElementsByName("obj");
 const xyp=document.body.clientWidth/document.body.clientHeight;
 for(let i=0;i<obj.length;i=i+1){
 obj[i].style.height=`${Number.parseFloat(obj[i].style.width)*xyp}%`;
-obj[i].innerHTML=`${obj[i].id}`;
 }
 }
 function click_obj(obj){
-alert(`This is ${obj.id}`);
+alert(`This is the rest of ${obj.id}`);
 }
 function init(){
 resize_obj();
@@ -53,35 +52,34 @@ setInterval(time,1);
             position:absolute;
             left:0%;top:0%;
             width:20%;height:0%;
-            overflow:hidden;
             background:rgb(255,0,0)">
 </div>
-<div name="obj" id="hour" style="display:inline;
+<div name="obj" id="hour" onclick="click_obj(this)"
+     style="display:inline;
             position:absolute;
             left:20%;top:0%;
             width:20%;height:0%;
-            overflow:hidden;
             background:rgb(255,127,0)">
 </div>
-<div name="obj" id="day" style="display:inline;
+<div name="obj" id="day" onclick="click_obj(this)"
+     style="display:inline;
             position:absolute;
             left:40%;top:0%;
             width:20%;height:0%;
-            overflow:hidden;
             background:rgb(255,255,0)">
 </div>
-<div name="obj" id="month" style="display:inline;
+<div name="obj" id="month" onclick="click_obj(this)"
+     style="display:inline;
             position:absolute;
             left:60%;top:0%;
             width:20%;height:0%;
-            overflow:hidden;
             background:rgb(0,255,255)">
 </div>
-<div name="obj" id="year" style="display:inline;
+<div name="obj" id="year" onclick="click_obj(this)"
+     style="display:inline;
             position:absolute;
             left:80%;top:0%;
             width:20%;height:0%;
-            overflow:hidden;
             background:rgb(0,255,0)">
 </div>
 </body>
