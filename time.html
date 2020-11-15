@@ -37,6 +37,9 @@ obj[i].style.height=`${Number.parseFloat(obj[i].style.width)*xyp}%`;
 obj[i].innerHTML=`${obj[i].id}`;
 }
 }
+function click_obj(obj){
+alert(`This is ${obj.id}`);
+}
 function init(){
 resize_obj();
 time();
@@ -45,7 +48,8 @@ setInterval(time,1);
 </script>
 </head>
 <body onload="init()" onresize="resize_obj()">
-<div name="obj" id="minute" style="display:inline;
+<div name="obj" id="minute" onclick="click_obj(this)"
+     style="display:inline;
             position:absolute;
             left:0%;top:0%;
             width:20%;height:0%;
