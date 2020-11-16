@@ -1,7 +1,7 @@
 const no_find=-1;
-​const err_expr=-2;
-​const min_lev=0;
-​const max_lev=Math.pow(2,64);
+const err_expr=-2;
+const min_lev=0;
+const max_lev=Math.pow(2,64);
 const ftable={"":(x)=>(x),
               "sin":Math.sin,
               "cos":Math.cos,
@@ -13,7 +13,7 @@ const ftable={"":(x)=>(x),
               "sqrt":Math.sqrt,
               "ln":Math.log,
               "exp":Math.exp};
-​function find_op(expr,op){
+function find_op(expr,op){
 ​        let lev=min_lev;
         ​for(let i=0;i<expr.length;i=i+1){
 ​               if(expr[i]=="("){
