@@ -4,10 +4,14 @@
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 
 <script type="text/javascript" src="xcalc.js"></script>
-
+<script>
+function f(x){
+     document.getElementbyId("ans").value=x;
+}
+</script>
 </head>
 <body>
 <input type="text"
-oninput="document.getElementbyId('ans').value=this.value"/><br>
+oninput="f(this.value)"/><br>
 =<input id="ans" type="text"/>
 </body>
