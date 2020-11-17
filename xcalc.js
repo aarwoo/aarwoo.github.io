@@ -56,7 +56,7 @@ function find_op(expr,op){
                 ​op:expr[pos],
                 rexpr:expr.substr(pos+1)};
 ​}
-​function xcalc(expr,xval){
+​export function xcalc(expr,xval){
 ​        if(expr!=""){
 ​               let p=select_ret(find_op(expr,"+"),find_op(expr,"-"));
 ​               if(p==err_expr){
