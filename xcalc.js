@@ -56,7 +56,7 @@ function split_expr(expr,pos){
                 op:expr[pos],
                 rexpr:expr.substr(pos+1)};
 }
-export function xcalc(expr,xval){
+function xcalc(expr,xval){
         if(expr!=""){
                let p=select_ret(find_op(expr,"+"),find_op(expr,"-"));
                if(p==err_expr){
