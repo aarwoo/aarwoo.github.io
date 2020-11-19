@@ -120,7 +120,7 @@ function xcalc(expr,xval){
                             allow_dot=false;
                             allow_e=false;
                             allow_sgn=true;
-                        }else if((c=="+"||c=="-")&&allow_sgn=true){
+                        }else if((c=="+"||c=="-")&&allow_sgn==true){
                             allow_sgn=false;
                         }else{
                             val="";
