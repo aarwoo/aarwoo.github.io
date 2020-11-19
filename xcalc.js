@@ -15,7 +15,7 @@ const ftable={"":(x)=>(x),
               "exp":Math.exp};
 function find_op(expr,op){
        let lev=min_lev;
-       ​for(let i=0;i<expr.length;i=i+1){
+       for(let i=0;i<expr.length;i=i+1){
               if(expr[i]=="("){
                       lev=lev+1;
                       if(lev>max_lev){
@@ -56,7 +56,7 @@ function split_expr(expr,pos){
                 ​op:expr[pos],
                 rexpr:expr.substr(pos+1)};
 }
-​export function xcalc(expr,xval){
+export function xcalc(expr,xval){
         if(expr!=""){
                let p=select_ret(find_op(expr,"+"),find_op(expr,"-"));
                if(p==err_expr){
@@ -72,9 +72,9 @@ function split_expr(expr,pos){
                       }else{
                              /*PASS*/
                       }
- ​               }else{
+               }else{
                      /*PASS*/
-​               }
+               }
                p=select_ret(find_op(expr,"*"),find_op(expr,"/"));
                if(p==err_expr){
                      return Number.NaN;
@@ -95,7 +95,7 @@ function split_expr(expr,pos){
                      return Number.NaN;
                }else if(p!=no_find){
                       let a=split_expr(expr,p);
-​                      if(a.op=="^"){
+                      if(a.op=="^"){
                              return Math.pow(xcalc(a.lexpr,xval),xcalc(a.rexpr,xval));
                       }else{
                              /*PASS*/
