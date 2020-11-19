@@ -14,95 +14,95 @@ const ftable={"":(x)=>(x),
               "ln":Math.log,
               "exp":Math.exp};
 function find_op(expr,op){
-​        let lev=min_lev;
-        ​for(let i=0;i<expr.length;i=i+1){
-​               if(expr[i]=="("){
-​                      lev=lev+1;
-​​                      if(lev>max_lev){
-​                           return err_expr;
-​                      }else{
-​                           /*PASS*/
-​                      }
-​               }else if(expr[i]==")"){
-​                      lev=lev-1;
-​                      if(lev<min_lev){
-​                           return err_expr;
-​                      }else{
-​                           /*PASS*/
-​                      }
-​               }else if(expr[i]==op&&lev==0){
+       let lev=min_lev;
+       ​for(let i=0;i<expr.length;i=i+1){
+              if(expr[i]=="("){
+                      lev=lev+1;
+                      if(lev>max_lev){
+                           return err_expr;
+                      }else{
+                           /*PASS*/
+                      }
+               }else if(expr[i]==")"){
+                      lev=lev-1;
+                      if(lev<min_lev){
+                           return err_expr;
+                      }else{
+                           /*PASS*/
+                      }
+               }else if(expr[i]==op&&lev==0){
                       if((op=="+"||op=="-")&&expr[i-1]=="e"&&"0"<=expr[i-2]&&expr[i-2]<="9"){
                           /*PASS*/
-                      }else{​
+                      }else{
                           return i;
                       }
-​               }else{
-​                      /*PASS*/
-​               }
-​        }
-​        return no_find;
-​}
-​function select_ret(x,y){
-​        if(x>=0&&y>=0){
-​              return Math.min(x,y);
-​        }else if(x<0&&y<0){
-​              return Math.min(x,y);
-​        }else{
-​              return Math.max(x,y);
-​        }
-​}
-​function split_expr(expr,pos){
-​        return {lexpr:expr.substr(0,pos),
+               }else{
+                      /*PASS*/
+               }
+        }
+        return no_find;
+}
+function select_ret(x,y){
+        if(x>=0&&y>=0){
+              return Math.min(x,y);
+        }else if(x<0&&y<0){
+              return Math.min(x,y);
+        }else{
+             return Math.max(x,y);
+       }
+}
+function split_expr(expr,pos){
+        return {lexpr:expr.substr(0,pos),
                 ​op:expr[pos],
                 rexpr:expr.substr(pos+1)};
-​}
+}
 ​export function xcalc(expr,xval){
-​        if(expr!=""){
-​               let p=select_ret(find_op(expr,"+"),find_op(expr,"-"));
-​               if(p==err_expr){
-​                     return Number.NaN;
-​               }else if(p!=no_find){
-​                      let a=split_expr(expr,p);
-​                      if(a.op=="+"){
-​​                             a.lexpr=(a.lexpr=="")?("0"):(a.lexpr);
-​                             return xcalc(a.lexpr,xval)+xcalc(a.rexpr,xval);
-​​                      }else if(a.op=="-"){
-​                             a.lexpr=(a.lexpr=="")?("0"):(a.lexpr);
-​                             return xcalc(a.lexpr,xval)-xcalc(a.rexpr,xval);
-​​                      }else{
-​                             /*PASS*/
-​                      }
-​               }else{
-​                     /*PASS*/
-​               }
-​​               p=select_ret(find_op(expr,"*"),find_op(expr,"/"));
-​               if(p==err_expr){
-​                     return Number.NaN;
-​               }else if(p!=no_find){
-​                      let a=split_expr(expr,p);
-​                      if(a.op=="*"){
-​                             return xcalc(a.lexpr,xval)*xcalc(a.rexpr,xval);
-​​                      }else if(a.op=="/"){
-​                             return xcalc(a.lexpr,xval)/xcalc(a.rexpr,xval);
-​​                      }else{
-​                             /*PASS*/
-​                      }
-​               }else{
-​                     /*PASS*/
-​               }
-​​               p=find_op(expr,"^");
-​               if(p==err_expr){
-​                     return Number.NaN;
-​               }else if(p!=no_find){
-​                      let a=split_expr(expr,p);
-​                      if(a.op=="^"){
-​                             return Math.pow(xcalc(a.lexpr,xval),xcalc(a.rexpr,xval));
-​​                      }else{
-​                             /*PASS*/
+        if(expr!=""){
+               let p=select_ret(find_op(expr,"+"),find_op(expr,"-"));
+               if(p==err_expr){
+                     return Number.NaN;
+               }else if(p!=no_find){
+                      let a=split_expr(expr,p);
+                      if(a.op=="+"){
+                             a.lexpr=(a.lexpr=="")?("0"):(a.lexpr);
+                             return xcalc(a.lexpr,xval)+xcalc(a.rexpr,xval);
+                      }else if(a.op=="-"){
+                             a.lexpr=(a.lexpr=="")?("0"):(a.lexpr);
+                             return xcalc(a.lexpr,xval)-xcalc(a.rexpr,xval);
+                      }else{
+                             /*PASS*/
                       }
-​               }else{
-​                     /*PASS*/
+ ​               }else{
+                     /*PASS*/
 ​               }
+               p=select_ret(find_op(expr,"*"),find_op(expr,"/"));
+               if(p==err_expr){
+                     return Number.NaN;
+              }else if(p!=no_find){
+                      let a=split_expr(expr,p);
+                      if(a.op=="*"){
+                             return xcalc(a.lexpr,xval)*xcalc(a.rexpr,xval);
+                      }else if(a.op=="/"){
+                            return xcalc(a.lexpr,xval)/xcalc(a.rexpr,xval);
+                      }else{
+                            /*PASS*/
+                      }
+              }else{
+                     /*PASS*/
+               }
+               p=find_op(expr,"^");
+               if(p==err_expr){
+                     return Number.NaN;
+               }else if(p!=no_find){
+                      let a=split_expr(expr,p);
+​                      if(a.op=="^"){
+                             return Math.pow(xcalc(a.lexpr,xval),xcalc(a.rexpr,xval));
+                      }else{
+                             /*PASS*/
+                      }
+              }else{
+                     /*PASS*/
+               }
                if(expr=="x"){
                      return xval;
                }else if("0"<=expr[0]&&expr[0]<="9"){
