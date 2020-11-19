@@ -53,7 +53,7 @@ function select_ret(x,y){
 }
 function split_expr(expr,pos){
         return {lexpr:expr.substr(0,pos),
-                ​op:expr[pos],
+                op:expr[pos],
                 rexpr:expr.substr(pos+1)};
 }
 export function xcalc(expr,xval){
