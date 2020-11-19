@@ -130,7 +130,7 @@ function xcalc(expr,xval){
                      return Number.parseFloat(val);
                }else{
                      let s=expr.indexOf("(");
-                     let e=expr.lastindexOf(")");
+                     let e=expr.lastIndexOf(")");
                      if(s==no_find||e!=expr.length-1){
                          return Number.NaN;
                      }else{
