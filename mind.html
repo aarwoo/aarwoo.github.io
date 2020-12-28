@@ -14,6 +14,22 @@ for(let i=0;i<l.length;i=i+1){
 }
 return {lv:x,s:l.replace(/ /g,"&nbsp;")};
 }
+
+
+function fx2(l){
+let x=0;
+for(let i=0;i<l.length;i=i+1){
+     if(l[i]==" "){
+        x=x+1;
+     }else{
+        break;
+     }
+}
+return {lv:x,s:l.trim().replace(/ /g,"&nbsp;")};
+}
+
+
+
 function ct(no,title,code){
     if(code==""){
         return `<h3>
@@ -104,6 +120,42 @@ while(stack.length!=0){
 }
 code=code+scode;
 window.open().document.write(code);
+}
+
+
+function fmind2(src,lv,vlv){
+       static code=`<meta name="viewport" 
+                content="width=device-width 
+                         height=device-height
+                         initial-scale=1.0
+                         minimum-scale=1.0
+                         maximum-scale=1.0
+                         user-scalable=no"/>
+                   <script>
+                   function f(it,ct){
+                    if(it.style.color=="green"){
+                        ct.style.display="inline";
+                        it.style.color="red";
+                     }else{
+                        ct.style.display="none";
+                        it.style.color="green";
+                    }
+                   }
+          </scr`+`ipt>`;
+          if(src==""){
+             code=code+scode;
+             window.open().document.write(code);
+          }else{
+             let pos=src.indexOf("\n");
+             let fst=src.substr(0,pos);
+             let rst=src.substr(pos+1);
+             let fxt=fx2(fx);
+             let tvlv=fxt.lv;
+             if(tvlv==vlv){
+                return {code:,rst:rst};
+             }
+             let tdata=fmind2(rst,lv+1,tvlv);
+          }
 }
 </script>
 </head>
