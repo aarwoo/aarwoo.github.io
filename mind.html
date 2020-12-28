@@ -3,15 +3,6 @@
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <title>Mind</title>
 <script>
-function f(it,ct){
-  if(it.innerHTML=="+"){
-    ct.style.display="inline";
-    it.innerHTML="-";
-  }else{
-    ct.style.display="none";
-    it.innerHTML="+";
-  }
-}
 function fx(l){
 let x=0;
 for(let i=0;i<l.length;i=i+1){
@@ -51,7 +42,18 @@ let code=`<meta name="viewport"
                          initial-scale=1.0
                          minimum-scale=1.0
                          maximum-scale=1.0
-                         user-scalable=no"/>`;
+                         user-scalable=no"/>
+          <script>
+          function f(it,ct){
+             if(it.innerHTML=="+"){
+               ct.style.display="inline";
+               it.innerHTML="-";
+             }else{
+               ct.style.display="none";
+               it.innerHTML="+";
+             }
+          }
+          </script>`;
     for(let i=0;i<ls.length;i=i+1){
         l=ls[i];
         let code="";
@@ -87,8 +89,15 @@ let code=`<meta name="viewport"
         /*PASS*/
         }
      }
+let scode="";
 sm=stack.pop();
-code=code+sm.code+ct(no,sm.s,"");
+scode=sm.code+ct(undefined,sm.s,"");
+while(stack.length!=0){
+     sm=stack.pop();
+     scode=sm.code+ct(no,sm.s,scode);
+     no=no+1;
+}
+code=code+scode;
 window.open().document.write(code);
 }
 </script>
