@@ -42,8 +42,8 @@ function fmind(src){
 let ls=src.split("\n");
 let fxt={lv:-1,s:""};
 let no=0;
-let stack=[{lv:0,code:""}];
-let sm={lv:0,code:""};
+let stack=[{lv:0,code:"",s:""}];
+let sm={lv:0,code:"",s:""};
 let code=`<meta name="viewport" 
                 content="width=device-width 
                          height=device-height
@@ -57,22 +57,18 @@ let code=`<meta name="viewport"
         sm=stack.pop();
         if(fxt.lv<sm.lv){
           while(fxt.lv<sm.lv||stack.length>0){
-             code=code+sm.code;
+             code=code+ct(no,sm.s,code);
              sm=stack.pop();
           }
-          
         }else{
              /*PASS*/
         }
-        if(fxt.lv==sm.lv||sm.lv==-1){
-           sm={lv:fxt.lv,
-               code:ct(undefined,sm.code,"")+
-                    ct(undefined,fxt.s,"")};
-           stack.push(sm);
-        }else if(fxt.lv>sm.lv){
-           stack.push(sm);
-           sm={lv:fxt.lv,
-               code:fxt.s};
+        if(sm.lv==-1){
+             
+        }else if(fxt.lv>=sm.lv){
+           sm={lv:sm.lv,
+               code:sm.code+ct(no,sm.s,code),
+               s:fxt.s};
            stack.push(sm);
         }else{
         /*PASS*/
