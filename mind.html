@@ -20,8 +20,9 @@ function ct(no,title,code){
         ${title}
         </h3>`;
     }else{
-        return `<h3><button onclick="f(this,
-        document.getElementById('${no}'))">+</button>
+        return `<h3 style="color:green"
+        onclick="f(this,
+        document.getElementById('${no}'))">
         ${title}
         </h3>
         <div style="display:none" id="${no}">
@@ -45,12 +46,12 @@ let code=`<meta name="viewport"
                          user-scalable=no"/>
           <script>
           function f(it,ct){
-             if(it.innerHTML=="+"){
+             if(it.style.color=="green"){
                ct.style.display="inline";
-               it.innerHTML="-";
+               it.style.color="red";
              }else{
                ct.style.display="none";
-               it.innerHTML="+";
+               it.style.color="green";
              }
           }
           </scr`+`ipt>`;
