@@ -66,23 +66,28 @@ let code=`<meta name="viewport"
              /*PASS*/
         }
         if(sm.lv==-1){
-             
-        }else if(fxt.lv>=sm.lv){
+             sm={lv:fxt.lv,
+                 code:"";
+                 s:fxt.s};
+             stack.pusb(sm);
+        }else if(fxt.lv==sm.lv){
            sm={lv:sm.lv,
-               code:sm.code+ct(no,sm.s,code),
+               code:code,
                s:fxt.s};
            stack.push(sm);
+        }else if(fxt.lv>sm.lv){
+           sm
         }else{
         /*PASS*/
         }
-       no=no+1;
      }
 window.open().document.write(code);
 }
 </script>
 </head>
 <body>
-<h2 style="width:50%;height:10%"><button 
+<h2 >
+<button style="width:50%;height:10%"
 onclick="fmind(document.getElementById('src').value)">
 Mind map…
 </button></h2>
