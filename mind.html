@@ -63,8 +63,12 @@ let code=`<meta name="viewport"
           code=sm.code+ct(undefined,sm.s,"");
           while(fxt.lv<sm.lv&&stack.length>0){
              sm=stack.pop();
-             code=sm.code+ct(no,sm.s,code);
-             no=no+1;
+             if(fxt.lv<=sm.lv){
+                code=sm.code+ct(no,sm.s,code);
+                no=no+1;
+             }else{
+                /*PASS*/
+             }
           }
         }else{
              /*PASS*/
@@ -80,9 +84,6 @@ let code=`<meta name="viewport"
                s:fxt.s};
            stack.push(sm);
         }else if(fxt.lv>sm.lv){
-           sm={lv:sm.lv,
-               code:
-               s:};
            stack.push(sm);
            sm={lv:fxt.lv,
                code:code,
