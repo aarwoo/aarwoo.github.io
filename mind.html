@@ -40,6 +40,7 @@ function ct(no,title,code){
 }
 function fmind(src){
 let ls=src.split("\n");
+let l="";
 let fxt={lv:-1,s:""};
 let no=0;
 let stack=[{lv:0,code:"",s:""}];
@@ -51,7 +52,8 @@ let code=`<meta name="viewport"
                          minimum-scale=1.0
                          maximum-scale=1.0
                          user-scalable=no"/>`;
-    for(let l in ls){
+    for(let i=0;i<ls.length;i=i+1){
+        l=ls[i];
         let code="";
         fxt=fx(l);
         sm=stack.pop();
@@ -86,7 +88,7 @@ let code=`<meta name="viewport"
         }
      }
 sm=stack.pop();
-code=code+sm;
+code=code+sm.code+ct(no,sm.s,"");
 window.open().document.write(code);
 }
 </script>
