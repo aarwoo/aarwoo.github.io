@@ -56,9 +56,11 @@ let code=`<meta name="viewport"
         fxt=fx(l);
         sm=stack.pop();
         if(fxt.lv<sm.lv){
+          code=sm.code+ct(undefined,sm.s,"");
           while(fxt.lv<sm.lv||stack.length>0){
-             code=code+ct(no,sm.s,code);
              sm=stack.pop();
+             code=sm.code+ct(no,sm.s,code);
+             no=no+1;
           }
         }else{
              /*PASS*/
@@ -80,10 +82,11 @@ window.open().document.write(code);
 </script>
 </head>
 <body>
-Mind map…
-<textarea id="src"></textarea>
-<h2><button 
+<h2 style="width:50%;height:10%"><button 
 onclick="fmind(document.getElementById('src').value)">
-fmind
+Mind map…
 </button></h2>
+<textarea id="src" style="width:100%;height:90%;
+                          overflow:auto" 
+          wrap="off" autofocus></textarea>
 </body>
