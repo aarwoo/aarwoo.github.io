@@ -67,7 +67,7 @@ let code=`<meta name="viewport"
         }
         if(sm.lv==-1){
              sm={lv:fxt.lv,
-                 code:"";
+                 code:"",
                  s:fxt.s};
              stack.push(sm);
         }else if(fxt.lv==sm.lv){
@@ -79,7 +79,7 @@ let code=`<meta name="viewport"
            stack.push(sm);
            sm={lv:fxt.lv,
                code:code,
-               s:fxt:s};
+               s:fxt.s};
            stack.push(sm);
         }else{
         /*PASS*/
