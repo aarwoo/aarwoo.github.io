@@ -3,7 +3,16 @@
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <title>Mind</title>
 <script>
-function fl(l){
+function f(it,ct){
+  if(it.innerHTML=="+"){
+    ct.style.display="inline";
+    it.innerHTML="-";
+  }else{
+    ct.style.display="none";
+    it.innerHTML="+";
+  }
+}
+function fx(l){
 let x=0;
 for(let i=0;i<l.length;i=i+1){
      if(l[i]==" "){
@@ -12,19 +21,73 @@ for(let i=0;i<l.length;i=i+1){
         break;
      }
 }
-return {lv:x,s:l.trim()};
+return {lv:x,s:l.replace(/ /g,"&npsp;")};
+}
+function ct(no,title,code){
+    if(code==""){
+        return `<h3>
+        ${title}
+        </h3>`;
+    }else{
+        return `<h3><button onclick="f(this,
+        document.getElementById('${no}'))">+</button>
+        ${title}
+        </h3>
+        <div style="display:none" id="${no}">
+        ${code}
+        </div>`;
+   }
 }
 function fmind(src){
 let ls=src.split("\n");
-let lv=0;
+let fxt={lv:-1,s:""};
 let no=0;
-let code=`<div id="${no}">`;
-for(let l in ls){
-
-}
+let stack=[{lv:0,code:""}];
+let sm={lv:0,code:""};
+let code=`<meta name="viewport" 
+                content="width=device-width 
+                         height=device-height
+                         initial-scale=1.0
+                         minimum-scale=1.0
+                         maximum-scale=1.0
+                         user-scalable=no"/>`;
+    for(let l in ls){
+        let code="";
+        fxt=fx(l);
+        sm=stack.pop();
+        if(fxt.lv<sm.lv){
+          while(fxt.lv<sm.lv||stack.length>0){
+             code=code+sm.code;
+             sm=stack.pop();
+          }
+          
+        }else{
+             /*PASS*/
+        }
+        if(fxt.lv==sm.lv||sm.lv==-1){
+           sm={lv:fxt.lv,
+               code:ct(undefined,sm.code,"")+
+                    ct(undefined,fxt.s,"")};
+           stack.push(sm);
+        }else if(fxt.lv>sm.lv){
+           stack.push(sm);
+           sm={lv:fxt.lv,
+               code:fxt.s};
+           stack.push(sm);
+        }else{
+        /*PASS*/
+        }
+       no=no+1;
+     }
+window.open().document.write(code);
 }
 </script>
 </head>
 <body>
 Mind map…
+<textarea id="src"></textarea>
+<h2><button 
+onclick="fmind(document.getElementById('src').value)">
+fmind
+</button></h2>
 </body>
