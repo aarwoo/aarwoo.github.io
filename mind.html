@@ -122,12 +122,9 @@ code=code+scode;
 window.open().document.write(code);
 }
 
-function nid(times){
-    static nid=0;
-    nid=(nid+1)*times;
-    return nid;
-}
-function fmind2(src,lv,vlv){
+
+
+function fmind2(src,lv,vlv,nid){
              let pos=src.indexOf("\n");
              let fst=src.substr(0,pos);
              let rst=src.substr(pos+1);
@@ -136,16 +133,17 @@ function fmind2(src,lv,vlv){
              if(fxt.vlv==vlv){
                 return {code:scode,
                         fxt:fxt,
-                        rst:rst};
+                        rst:rst,
+                        nid:nid};
              }else if(fxt.vlv>vlv){
-                let ret=fmind2(rst,lv+1,fxt.vlv);
+                let ret=fmind2(rst,lv+1,fxt.vlv,nid+1);
                 if(fxt.vlv==ret.fxt.vlv){
                     while(fxt.vlv==ret.fxt.vlv){
-                        scode=scode+ct(nid(1),
+                        scode=scode+ct(ret.nid,
                              "&nbsp;".repeat(lv)+fxt.str,
                              ret.code);
                         fxt=ret.fxt;
-                        ret=fmind2(ret.rst,lv+1,fxt.vlv);
+                        ret=fmind2(ret.rst,lv+1,fxt.vlv,ret.nid+1);
                     }
                 }else{
                     scode=ct(nid(1),
@@ -154,11 +152,13 @@ function fmind2(src,lv,vlv){
                 }
                 return {code:scode,
                         fst:ret.fst,
-                        rst:ret.rst};
+                        rst:ret.rst
+                        nid:ret.nid};
              }else if(fxt.vlv<vlv){
                return {code:scode,
                        fst:fst,
-                       rst:rst};
+                       rst:rst
+                       nid:nid};
              }else{
                 /*PASS*/
              }
@@ -182,8 +182,7 @@ function pfmind(src){
                     }
                    }
           </scr`+`ipt>`;
-        nid(0);
-        let ret=fmind2(src,0,-1);
+        let ret=fmind2(src,0,-1,0);
         code=code+ret.code;
         window.open().document.write(code);
 }
