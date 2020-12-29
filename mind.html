@@ -138,7 +138,7 @@ function fmind2(src,lv,vlv,nid){
              }else if(fxt.vlv>vlv){
                 let ret=fmind2(rst,lv+1,fxt.vlv,nid+1);
                 if(fxt.vlv==ret.fxt.vlv){
-                    while(fxt.vlv==ret.fxt.vlv){
+                    while(fxt.vlv==ret.fxt.vlv&&ret.rst!=""){
                         scode=scode+ct(ret.nid,
                              "&nbsp;".repeat(lv)+fxt.str,
                              ret.code);
@@ -151,12 +151,12 @@ function fmind2(src,lv,vlv,nid){
                              ret.code);
                 }
                 return {code:scode,
-                        fst:ret.fst,
+                        fxt:ret.fxt,
                         rst:ret.rst,
                         nid:ret.nid};
              }else if(fxt.vlv<vlv){
                return {code:scode,
-                       fst:fst,
+                       fxt:fxt,
                        rst:rst,
                        nid:nid};
              }else{
