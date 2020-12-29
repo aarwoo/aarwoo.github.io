@@ -152,25 +152,25 @@ function fmind2(src,lv,vlv,nid){
                 }
                 return {code:scode,
                         fst:ret.fst,
-                        rst:ret.rst
+                        rst:ret.rst,
                         nid:ret.nid};
              }else if(fxt.vlv<vlv){
                return {code:scode,
                        fst:fst,
-                       rst:rst
+                       rst:rst,
                        nid:nid};
              }else{
                 /*PASS*/
              }
 }
 function pfmind(src){
-       static code=`<meta name="viewport" 
-                content="width=device-width 
-                         height=device-height
-                         initial-scale=1.0
-                         minimum-scale=1.0
-                         maximum-scale=1.0
-                         user-scalable=no"/>
+       let code=`<meta name="viewport" 
+                 content="width=device-width 
+                          height=device-height
+                          initial-scale=1.0
+                          minimum-scale=1.0
+                          maximum-scale=1.0
+                          user-scalable=no"/>
                    <script>
                    function f(it,ct){
                     if(it.style.color=="green"){
