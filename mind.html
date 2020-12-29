@@ -138,13 +138,16 @@ function fmind2(src,lv,vlv,nid){
              }else if(fxt.vlv>vlv){
                 let ret=fmind2(rst,lv+1,fxt.vlv,nid+1);
                 if(fxt.vlv==ret.fxt.vlv){
+                   scode=scode+ct(ret.nid,
+                             "&nbsp;".repeat(lv)+fxt.str,
+                             ret.code); 
                     while(fxt.vlv==ret.fxt.vlv&&ret.rst!=""){
+                        fxt=ret.fxt;
+                        ret=fmind2(ret.rst,lv+1,fxt.vlv,ret.nid+1);
                         scode=scode+ct(ret.nid,
                              "&nbsp;".repeat(lv)+fxt.str,
                              ret.code);
-                        fxt=ret.fxt;
-                        ret=fmind2(ret.rst,lv+1,fxt.vlv,ret.nid+1);
-                    }
+                   }
                 }else{
                     scode=ct(nid,
                              "&nbsp;".repeat(lv)+fxt.str,
