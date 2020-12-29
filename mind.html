@@ -123,7 +123,7 @@ window.open().document.write(code);
 }
 
 function header(lv){
-    return "&nbsp;".repeat(lv*2)+"|&nbsp;";
+    return "&nbsp;".repeat(lv*4);
 }
 
 function fmind2(src,lv,vlv,nid){
@@ -139,7 +139,7 @@ function fmind2(src,lv,vlv,nid){
                         nid:nid};
              }else if(fxt.vlv>vlv){
                 let ret=fmind2(rst,lv+1,fxt.vlv,nid+1);
-                if(fxt.vlv==ret.fxt.vlv){
+                if(fxt.vlv<=ret.fxt.vlv){
                    scode=scode+ct(ret.nid,
                              header(lv)+fxt.str,
                              ret.code); 
