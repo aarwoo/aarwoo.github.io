@@ -128,7 +128,7 @@ function fmind2(src,lv,vlv,nid){
              let pos=src.indexOf("\n");
              let fst=src.substr(0,pos);
              let rst=src.substr(pos+1);
-             let fxt=fx2(fx);
+             let fxt=fx2(fst);
              let scode="";
              if(fxt.vlv==vlv){
                 return {code:scode,
