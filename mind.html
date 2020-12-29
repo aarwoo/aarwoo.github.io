@@ -25,7 +25,7 @@ for(let i=0;i<l.length;i=i+1){
         break;
      }
 }
-return {lv:x,s:l.trim().replace(/ /g,"&nbsp;")};
+return {vlv:x,str:l.trim().replace(/ /g,"&nbsp;")};
 }
 
 
@@ -122,8 +122,50 @@ code=code+scode;
 window.open().document.write(code);
 }
 
-
+function nid(times){
+    static nid=0;
+    nid=(nid+1)*times;
+    return nid;
+}
+function ret(tcode,tstr){
+    static code="";
+    static tstr="";
+    code=tcode;
+    str=tstr;
+    return {code:code,str:str};
+}
 function fmind2(src,lv,vlv){
+             let pos=src.indexOf("\n");
+             let fst=src.substr(0,pos);
+             let rst=src.substr(pos+1);
+             let fxt=fx2(fx);
+             let scode="";
+             if(fxt.vlv==vlv){
+                return {code:scode,
+                        fxt:fxt,
+                        rst:rst};
+             }else if(fxt.vlv>vlv){
+                let ret=fmind2(rst,lv+1,fxt.vlv);
+                scode=scode+ct(nid(1),
+                               " ".repeat(lv)+fxt.str,
+                               ret.code);
+                while(fxt.vlv==ret.fxt.vlv){
+                    fxt=ret.fxt;
+                    ret=fmind2(ret.rst,lv+1,fxt.vlv);
+                    scode=scode+ct(nid(1),
+                                " ".repeat(lv)+fxt.str,
+                                ret.code);
+                }
+                return {code:scode,
+                        fst:ret.fst,
+                        rst:ret.rst};
+             }else if(fxt.vlv<vlv){
+               return {code:scode,
+                       fst:fst,
+                       rst:rst};
+             }
+}
+function pfmind(src){
        static code=`<meta name="viewport" 
                 content="width=device-width 
                          height=device-height
@@ -142,28 +184,23 @@ function fmind2(src,lv,vlv){
                     }
                    }
           </scr`+`ipt>`;
-          if(src==""){
-             code=code+scode;
-             window.open().document.write(code);
-          }else{
-             let pos=src.indexOf("\n");
-             let fst=src.substr(0,pos);
-             let rst=src.substr(pos+1);
-             let fxt=fx2(fx);
-             let tvlv=fxt.lv;
-             if(tvlv==vlv){
-                return {code:,rst:rst};
-             }
-             let tdata=fmind2(rst,lv+1,tvlv);
-          }
+        nid(0);
+        let ret=fmind2(src,0,-1);
+        code=code+ret.code;
+        window.open().document.write(code);
 }
 </script>
 </head>
 <body>
-<h2 >
+<h2>
 <button style="width:50%;height:10%"
 onclick="fmind(document.getElementById('src').value)">
 Mind map…
+</button></h2>
+<h2>
+<button style="left:50%;width:50%;height:10%"
+onclick="pfmind(document.getElementById('src').value)">
+Mind2 map…
 </button></h2>
 <textarea id="src" style="width:100%;height:90%;
                           overflow:auto" 
