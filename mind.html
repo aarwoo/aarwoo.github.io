@@ -127,13 +127,6 @@ function nid(times){
     nid=(nid+1)*times;
     return nid;
 }
-function ret(tcode,tstr){
-    static code="";
-    static tstr="";
-    code=tcode;
-    str=tstr;
-    return {code:code,str:str};
-}
 function fmind2(src,lv,vlv){
              let pos=src.indexOf("\n");
              let fst=src.substr(0,pos);
@@ -146,15 +139,18 @@ function fmind2(src,lv,vlv){
                         rst:rst};
              }else if(fxt.vlv>vlv){
                 let ret=fmind2(rst,lv+1,fxt.vlv);
-                scode=scode+ct(nid(1),
-                               " ".repeat(lv)+fxt.str,
-                               ret.code);
-                while(fxt.vlv==ret.fxt.vlv){
-                    fxt=ret.fxt;
-                    ret=fmind2(ret.rst,lv+1,fxt.vlv);
-                    scode=scode+ct(nid(1),
-                                " ".repeat(lv)+fxt.str,
-                                ret.code);
+                if(fxt.vlv==ret.fxt.vlv){
+                    while(fxt.vlv==ret.fxt.vlv){
+                        scode=scode+ct(nid(1),
+                             "&nbsp;".repeat(lv)+fxt.str,
+                             ret.code);
+                        fxt=ret.fxt;
+                        ret=fmind2(ret.rst,lv+1,fxt.vlv);
+                    }
+                }else{
+                    scode=ct(nid(1),
+                             "&nbsp;".repeat(lv)+fxt.str,
+                             ret.code);
                 }
                 return {code:scode,
                         fst:ret.fst,
@@ -163,6 +159,8 @@ function fmind2(src,lv,vlv){
                return {code:scode,
                        fst:fst,
                        rst:rst};
+             }else{
+                /*PASS*/
              }
 }
 function pfmind(src){
@@ -198,7 +196,7 @@ onclick="fmind(document.getElementById('src').value)">
 Mind map…
 </button></h2>
 <h2>
-<button style="left:50%;width:50%;height:10%"
+<button style="width:50%;height:10%"
 onclick="pfmind(document.getElementById('src').value)">
 Mind2 map…
 </button></h2>
