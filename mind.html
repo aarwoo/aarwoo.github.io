@@ -56,7 +56,7 @@ function _fmind(src,virtual_lv,lv,focus_line){
            let fst=src.substr(0,pos);
            let rst=src.substr(pos+1);
            let als=analysis(fst);
-           let focus=(src.spilt("\n").length==
+           let focus=(src.split("\n").length==
                       focus_line)?
                            ("autofocus"):("");
            if(als.virtual_lv>virtual_lv){
@@ -113,7 +113,7 @@ function fmind(src,focus_line){
 function dfmind(it,mind){
      let focus_line=it.value
                   .substr(it.selectionStart)
-                  .spilt("\n")
+                  .split("\n")
                   .length;
     mind.srcdoc=fmind(it.value,focus_line);
 }
