@@ -62,10 +62,12 @@ function _fmind(src,virtual_lv,lv,focus_line){
            if(als.virtual_lv>virtual_lv){
                let tmp=_fmind(rst,
                               als.virtual_lv,
-                              lv+1);
+                              lv+1,
+                              focus_line);
                let tmp2=_fmind(tmp.rst,
                                virtual_lv,
-                               lv);
+                               lv,
+                               focus_line);
                return {code:coding(src.length,
                                    header(lv)+als.str,
                                    tmp.code,
@@ -77,7 +79,7 @@ function _fmind(src,virtual_lv,lv,focus_line){
            }
         }
 }
-function fmind(src){
+function fmind(src,focus_line){
        let code=`<meta name="viewport" 
                  content="width=device-width 
                           height=device-height
@@ -105,15 +107,15 @@ function fmind(src){
                     }
                    }
           </scr`+`ipt>`;
-        let ret=_fmind(src+"\n",-1,0);
+        let ret=_fmind(src+"\n",-1,0,focus_line+1);
         return code+ret.code;
 }
 function dfmind(it,mind){
-     let number=it.value
+     let focus_line=it.value
                   .substr(it.selectionStart)
                   .spilt("\n")
                   .length;
-    mind.srcdoc=fmind(it.value);
+    mind.srcdoc=fmind(it.value,focus_line);
 }
 </script>
 </head>
