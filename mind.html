@@ -87,7 +87,7 @@ function fmind(src,focus_line){
                           user-scalable=no"/>
                    <script>
                    function f(it){
-                    let ct=document.getElementById(it.data-div_id);
+                    let ct=document.getElementById(it.dataset.div_id);
                     if(it.style.color=="green"){
                         ct.style.display="inline";
                         it.style.color="red";
@@ -117,7 +117,7 @@ function dfmind(it,mind){
     mind.contentWindow
         .document
         .getElementsByName("autofocus")[0]
-        .focus();
+        .focus(false);
     it.focus();
 }
 </script>
