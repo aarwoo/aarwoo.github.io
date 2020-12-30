@@ -109,10 +109,8 @@ function dfmind(it,mind){
                   .split("\n")
                   .length;
     mind.innerHTML=fmind(it.value,focus_line);
-}
-function sys_scroll(src,dst){
- dst.scrollTop=src.scrollTop;
- dst.scrollLeft=src.scrollLeft;
+    mind.scrollTop=it.scrollTop;
+    mind.scrollLeft=it.scrollLeft;
 }
 </script>
 </head>
@@ -123,12 +121,8 @@ function sys_scroll(src,dst){
                           overflow:auto" 
         oninput="dfmind(this,
                   document.getElementById('mind'))"
-       scroll="sys_scroll(this,
-               document.getElementById('mind')"
           wrap="off" autofocus></textarea><br>
 <div id="mind" style="width:100%;height:50%;
                          border:none;
-                         overflow:auto"
-        scroll="sys_scroll(this,
-               document.getElementById('src')"></div>
+                         overflow:auto"></div>
 </body>
