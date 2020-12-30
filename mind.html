@@ -43,10 +43,10 @@ function _fmind(src,virtual_lv,lv){
            let rst=src.substr(pos+1);
            let als=analysis(fst);
            if(als.virtual_lv>virtual_lv){
-               let tmp=fmind2(rst,
+               let tmp=_fmind(rst,
                               als.virtual_lv,
                               lv+1);
-               let tmp2=fmind2(tmp.rst,
+               let tmp2=_fmind(tmp.rst,
                                virtual_lv,
                                lv);
                return {code:coding(src.length,
