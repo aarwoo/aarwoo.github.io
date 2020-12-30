@@ -35,7 +35,7 @@ function coding(id,title,code, focus){
                                font-size:200%;
                                font-weight:bold;
                                color:red;"
-                               onclick="f(this)" div_id="${id}" name="${focus}">
+                               onclick="f(this)" data-div_id="${id}" name="${focus}">
                  ${title}
                 </button><br><br>
         <div style="display:inline" id="${id}">
@@ -87,7 +87,7 @@ function fmind(src,focus_line){
                           user-scalable=no"/>
                    <script>
                    function f(it){
-                    let ct=document.getElementById(it.div_id);
+                    let ct=document.getElementById(it.data-div_id);
                     if(it.style.color=="green"){
                         ct.style.display="inline";
                         it.style.color="red";
@@ -114,7 +114,10 @@ function dfmind(it,mind){
                   .split("\n")
                   .length;
     mind.srcdoc=fmind(it.value,focus_line);
-    mind.focus(mind.getElementsByName("autofocus")[0]);
+    mind.contentWindow
+        .document
+        .getElementsByName("autofocus")[0]
+        .focus();
 }
 </script>
 </head>
