@@ -126,47 +126,14 @@ function header(lv){
     return "&nbsp;".repeat(lv*4);
 }
 
-function fmind2(src,lv,vlv,nid){
-             let pos=src.indexOf("\n");
-             let fst=src.substr(0,pos);
-             let rst=src.substr(pos+1);
-             let fxt=fx2(fst);
-             let scode="";
-             if(fxt.vlv==vlv){
-                return {code:scode,
-                        fxt:fxt,
-                        rst:rst,
-                        nid:nid};
-             }else if(fxt.vlv>vlv){
-                let ret=fmind2(rst,lv+1,fxt.vlv,nid+1);
-                if(fxt.vlv<=ret.fxt.vlv){
-                   scode=scode+ct(ret.nid,
-                             header(lv)+fxt.str,
-                             ret.code); 
-                    while(fxt.vlv<=ret.fxt.vlv&&ret.rst!=""){
-                        fxt=ret.fxt;
-                        ret=fmind2(ret.rst,lv+1,fxt.vlv,ret.nid+1);
-                        scode=scode+ct(ret.nid,
-                             header(lv)+fxt.str,
-                             ret.code);
-                   }
-                }else{
-                    scode=ct(nid,
-                             header(lv)+fxt.str,
-                             ret.code);
-                }
-                return {code:scode,
-                        fxt:ret.fxt,
-                        rst:ret.rst,
-                        nid:ret.nid};
-             }else if(fxt.vlv<vlv){
-               return {code:scode,
-                       fxt:fxt,
-                       rst:rst,
-                       nid:nid};
-             }else{
-                /*PASS*/
-             }
+function fmind2(src,code,fxt,nid){
+        let pos=src.indexOf("\n");
+        let fst=src.substr(0,pos);
+        let rst=src.substr(pos+1);
+        let fxt=fx2(fst);
+        let scode="";
+        if(code==""){
+            fxt
 }
 function pfmind(src){
        let code=`<meta name="viewport" 
