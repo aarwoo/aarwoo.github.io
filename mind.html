@@ -1,7 +1,7 @@
 <head>
 <meta name="viewport" content="width=device-width height=device-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
-<title>Mind</title>
+<title>Mind: Indentation reflects the hierarchy</title>
 <script>
 
 function f(it){
@@ -49,7 +49,7 @@ function coding(id,title,code, focus){
                                font-size:200%;
                                font-weight:bold;" name="${focus}">
                  ${title}
-                </button><br><br>`;
+                </button><br>`;
     }else{
         return `<button style="background-color:Transparent;
                                border:none;
@@ -58,7 +58,7 @@ function coding(id,title,code, focus){
                                color:red;"
                                onclick="f(this)" data-div_id="${id}" name="${focus}">
                  ${title}
-                </button><br><br>
+                </button><br>
         <div style="display:inline" id="${id}">
         ${code}
         </div>`;
@@ -109,9 +109,10 @@ function dfmind(it,mind){
                   .split("\n")
                   .length;
     mind.innerHTML=fmind(it.value,focus_line);
-    document.getElementsByName("autofocus")[0]
-            .focus(false);
-    it.focus();
+}
+function sys_scroll(src,dst){
+ dst.scrollTop=src.scrollTop;
+ dst.scrollLeft=src.scrollLeft;
 }
 </script>
 </head>
@@ -122,10 +123,12 @@ function dfmind(it,mind){
                           overflow:auto" 
         oninput="dfmind(this,
                   document.getElementById('mind'))"
-        ondbclick="alert(
-            'Indentation reflects the hierarchy')"
+       scroll="sys_scroll(this,
+               document.getElementById('mind')"
           wrap="off" autofocus></textarea><br>
 <div id="mind" style="width:100%;height:50%;
                          border:none;
-                         overflow:auto"></div>
+                         overflow:auto"
+        scroll="sys_scroll(this,
+               document.getElementById('src')"></div>
 </body>
