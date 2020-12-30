@@ -126,7 +126,7 @@ function header(lv){
     return "&nbsp;".repeat(lv*4);
 }
 
-function fmind2(src,vlv){
+function fmind2(src,vlv,lv){
         if(src==""){
            return {code:"",rst:""};
         }else{
@@ -135,10 +135,10 @@ function fmind2(src,vlv){
            let rst=src.substr(pos+1);
            let fxt=fx2(fst);
            if(fxt.vlv>vlv){
-               let tmp=fmind2(rst,fxt.vlv);
-               let tmp2=fmind2(tmp.rst,vlv);
+               let tmp=fmind2(rst,fxt.vlv,lv+1);
+               let tmp2=fmind2(tmp.rst,vlv,lv);
                return {code:ct(src.length,
-                               fxt.str,
+                               header(lv)+fxt.str,
                                tmp.code)+tmp2.code,
                        rst:tmp2.rst};
            }else{
@@ -165,7 +165,7 @@ function pfmind(src){
                     }
                    }
           </scr`+`ipt>`;
-        let ret=fmind2(src,-1);
+        let ret=fmind2(src,-1,0);
         code=code+ret.code;
         window.open().document.write(code);
 }
