@@ -3,6 +3,27 @@
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <title>Mind</title>
 <script>
+
+function f(it){
+                    let ct=document.getElementById(it.dataset.div_id);
+                    if(it.style.color=="green"){
+                        ct.style.display="inline";
+                        it.style.color="red";
+                     }else{
+                        ct.style.display="none";
+                        it.style.color="green";
+                        let sub=ct.getElementsByTagName("button");
+                        for(let i=0;i<sub.length;i=i+1){
+                              if(sub[i].style.color=="red"){
+                                  f(sub[i]);
+                              }else{
+                                  /*PASS*/
+                              }
+                        }
+                    }
+                   }
+
+
 function analysis(src){
 let virtual_lv=0;
 for(let i=0;i<src.length;i=i+1){
@@ -78,33 +99,7 @@ function _fmind(src,virtual_lv,lv,focus_line){
         }
 }
 function fmind(src,focus_line){
-       let code=`<meta name="viewport" 
-                 content="width=device-width 
-                          height=device-height
-                          initial-scale=1.0
-                          minimum-scale=1.0
-                          maximum-scale=1.0
-                          user-scalable=no"/>
-                   <script>
-                   function f(it){
-                    let ct=document.getElementById(it.dataset.div_id);
-                    if(it.style.color=="green"){
-                        ct.style.display="inline";
-                        it.style.color="red";
-                     }else{
-                        ct.style.display="none";
-                        it.style.color="green";
-                        let sub=ct.getElementsByTagName("button");
-                        for(let i=0;i<sub.length;i=i+1){
-                              if(sub[i].style.color=="red"){
-                                  f(sub[i]);
-                              }else{
-                                  /*PASS*/
-                              }
-                        }
-                    }
-                   }
-          </scr`+`ipt>`;
+       let code=``;
         let ret=_fmind(src+"\n",-1,0,focus_line+1);
         return code+ret.code;
 }
@@ -132,7 +127,7 @@ function dfmind(it,mind){
         ondbclick="alert(
             'Indentation reflects the hierarchy')"
           wrap="off" autofocus></textarea><br>
-<iframe id="mind" style="width:100%;height:50%;
+<div id="mind" style="width:100%;height:50%;
                          border:none;
-                         overflow:auto"></iframe>
+                         overflow:auto"></div>
 </body>
