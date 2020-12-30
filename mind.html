@@ -21,13 +21,13 @@ return {virtual_lv:virtual_lv,
                .replace(/"/g,"&quot;")
                .replace(/'/g,"&apos;")};
 }
-function coding(id,title,code){
+function coding(id,title,code, focus){
     if(code==""){
         return `<button style="background-color:Transparent;
                                border:none;
                                outline:none;
                                font-size:200%;
-                               font-weight:bold;">
+                               font-weight:bold;" ${focus}>
                  ${title}
                 </button><br><br>`;
     }else{
@@ -37,7 +37,7 @@ function coding(id,title,code){
                                font-size:200%;
                                font-weight:bold;
                                color:red;"
-                               onclick="f(this)" name="${id}">
+                               onclick="f(this)" name="${id}" ${focus}>
                  ${title}
                 </button><br><br>
         <div style="display:inline" id="${id}">
@@ -48,7 +48,7 @@ function coding(id,title,code){
 function header(lv){
     return "&nbsp;".repeat(4*lv);
 }
-function _fmind(src,virtual_lv,lv){
+function _fmind(src,virtual_lv,lv,focus_line){
         if(src==""){
            return {code:"",rst:""};
         }else{
@@ -56,6 +56,9 @@ function _fmind(src,virtual_lv,lv){
            let fst=src.substr(0,pos);
            let rst=src.substr(pos+1);
            let als=analysis(fst);
+           let focus=(src.spilt("\n").length==
+                      focus_line)?
+                           ("autofocus"):("");
            if(als.virtual_lv>virtual_lv){
                let tmp=_fmind(rst,
                               als.virtual_lv,
@@ -65,7 +68,8 @@ function _fmind(src,virtual_lv,lv){
                                lv);
                return {code:coding(src.length,
                                    header(lv)+als.str,
-                                   tmp.code)+
+                                   tmp.code,
+                                   focus)+
                             tmp2.code,
                        rst:tmp2.rst};
            }else{
@@ -105,7 +109,11 @@ function fmind(src){
         return code+ret.code;
 }
 function dfmind(it,mind){
-     mind.srcdoc=fmind(it.value);
+     let number=it.value
+                  .substr(it.selectionStart)
+                  .spilt("\n")
+                  .length;
+    mind.srcdoc=fmind(it.value);
 }
 </script>
 </head>
