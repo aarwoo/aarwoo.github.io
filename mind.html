@@ -36,12 +36,11 @@ function coding(id,title,code){
                                outline:none;
                                font-size:200%;
                                font-weight:bold;
-                               color:green;"
-                               onclick="f(this,
-                  document.getElementById('${id}'))">
+                               color:red;"
+                               onclick="f(this)" name="${id}">
                  ${title}
                 </button><br><br>
-        <div style="display:none" id="${id}">
+        <div style="display:inline" id="${id}">
         ${code}
         </div>`;
    }
@@ -83,13 +82,22 @@ function fmind(src){
                           maximum-scale=1.0
                           user-scalable=no"/>
                    <script>
-                   function f(it,ct){
+                   function f(it){
+                    let ct=document.getElementById(it.name);
                     if(it.style.color=="green"){
                         ct.style.display="inline";
                         it.style.color="red";
                      }else{
                         ct.style.display="none";
                         it.style.color="green";
+                        let sub=ct.getElementsByTagName("button");
+                        for(let i=0;i<sub.length;i=i+1){
+                              if(sub[i].style.color=="red"){
+                                  f(sub[i]);
+                              }else{
+                                  /*PASS*/
+                              }
+                        }
                     }
                    }
           </scr`+`ipt>`;
@@ -103,6 +111,8 @@ function dfmind(it,mind){
 </head>
 <body>
 <textarea id="src" style="width:100%;height:50%;
+                          font-size:200%;
+                          font-weight:bold;
                           overflow:auto" 
         oninput="dfmind(this,
                   document.getElementById('mind'))"
