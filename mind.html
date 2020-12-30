@@ -109,11 +109,9 @@ function dfmind(it,mind){
                   .split("\n")
                   .length;
     mind.innerHTML=fmind(it.value,focus_line);
-    /*mind.contentWindow
-        .document
-        .getElementsByName("autofocus")[0]
-        .focus(false);
-    it.focus();*/
+    document.getElementsByName("autofocus")[0]
+            .focus(false);
+    it.focus();
 }
 </script>
 </head>
