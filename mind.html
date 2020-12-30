@@ -44,14 +44,16 @@ return {virtual_lv:virtual_lv,
 }
 function coding(id,title,code, focus){
     if(code==""){
-        return `<button style="background-color:Transparent;
+        return `<button style="display:inline;
+                               background-color:Transparent;
                                border:none;
                                font-size:200%;
                                font-weight:bold;" name="${focus}">
                  ${title}
                 </button><br>`;
     }else{
-        return `<button style="background-color:Transparent;
+        return `<button style="display:inline;
+                               background-color:Transparent;
                                border:none;
                                font-size:200%;
                                font-weight:bold;
