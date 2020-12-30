@@ -126,14 +126,25 @@ function header(lv){
     return "&nbsp;".repeat(lv*4);
 }
 
-function fmind2(src,code,fxt,nid){
-        let pos=src.indexOf("\n");
-        let fst=src.substr(0,pos);
-        let rst=src.substr(pos+1);
-        let fxt=fx2(fst);
-        let scode="";
-        if(code==""){
-            fxt
+function fmind2(src,vlv){
+        if(src==""){
+           return {code:"",rst:""};
+        }else{
+           let pos=src.indexOf("\n");
+           let fst=src.substr(0,pos);
+           let rst=src.substr(pos+1);
+           let fxt=fx2(fst);
+           if(fxt.vlv>vlv){
+               let tmp=fmind2(rst,fxt.vlv);
+               let tmp2=fmind2(tmp.rst,vlv);
+               return {code:ct(src.length,
+                               fxt.str,
+                               tmp.code)+tmp2.code,
+                       rst:tmp2.rst};
+           }else{
+               return {code:"",rst:src};
+           }
+        }
 }
 function pfmind(src){
        let code=`<meta name="viewport" 
@@ -154,7 +165,7 @@ function pfmind(src){
                     }
                    }
           </scr`+`ipt>`;
-        let ret=fmind2(src+"\n",0,-1,0);
+        let ret=fmind2(src,-1);
         code=code+ret.code;
         window.open().document.write(code);
 }
