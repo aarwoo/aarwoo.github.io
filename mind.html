@@ -94,23 +94,19 @@ function fmind(src){
                    }
           </scr`+`ipt>`;
         let ret=_fmind(src+"\n",-1,0);
-        code=code+ret.code;
-        window.open().document.write(code);
+        return code+ret.code;
+}
+function dfmind(it,mind){
+     mind.srcdoc=fmind(it.value);
 }
 </script>
 </head>
 <body>
-<button style="background-color:Transparent;
-               border:none;
-               outline:none;
-               font-size:200%;
-               font-weight:bold;
-               color:red;
-               height:10%"
-   onclick="fmind(document.getElementById('src').value)">
-Mind map…
-</button><br>
-<textarea id="src" style="width:100%;height:90%;
+<textarea id="src" style="width:100%;height:50%;
                           overflow:auto" 
-          wrap="off" autofocus></textarea>
+        onchange="dfmind(this,
+                  document.getElementById('mind'))"
+          wrap="off" autofocus></textarea><br>
+<iframe id="mind" style="width:100%;height:50%;
+                         overflow:auto"></iframe>
 </body>
