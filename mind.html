@@ -3,34 +3,19 @@
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <title>Mind</title>
 <script>
-function fx(l){
-let x=0;
-for(let i=0;i<l.length;i=i+1){
-     if(l[i]==" "){
-        x=x+1;
+function analysis(src){
+let virtual_lv=0;
+for(let i=0;i<src.length;i=i+1){
+     if(src[i]==" "){
+        virtual_lv=virtual_lv+1;
      }else{
         break;
      }
 }
-return {lv:x,s:l.replace(/ /g,"&nbsp;")};
+return {virtual_lv:virtual_lv,
+        str:src.trim().replace(/ /g,"&nbsp;")};
 }
-
-
-function fx2(l){
-let x=0;
-for(let i=0;i<l.length;i=i+1){
-     if(l[i]==" "){
-        x=x+1;
-     }else{
-        break;
-     }
-}
-return {vlv:x,str:l.trim().replace(/ /g,"&nbsp;")};
-}
-
-
-
-function ct(no,title,code){
+function coding(id,title,code){
     if(code==""){
         return `<h3>
         ${title}
@@ -38,115 +23,43 @@ function ct(no,title,code){
     }else{
         return `<h3 style="color:green"
         onclick="f(this,
-        document.getElementById('${no}'))">
+        document.getElementById('${id}'))">
         ${title}
         </h3>
-        <div style="display:none" id="${no}">
+        <div style="display:none" id="${id}">
         ${code}
         </div>`;
    }
 }
-function fmind(src){
-let ls=src.split("\n");
-let l="";
-let fxt={lv:-1,s:""};
-let no=0;
-let stack=[{lv:0,code:"",s:""}];
-let sm={lv:0,code:"",s:""};
-let code=`<meta name="viewport" 
-                content="width=device-width 
-                         height=device-height
-                         initial-scale=1.0
-                         minimum-scale=1.0
-                         maximum-scale=1.0
-                         user-scalable=no"/>
-          <script>
-          function f(it,ct){
-             if(it.style.color=="green"){
-               ct.style.display="inline";
-               it.style.color="red";
-             }else{
-               ct.style.display="none";
-               it.style.color="green";
-             }
-          }
-          </scr`+`ipt>`;
-    for(let i=0;i<ls.length;i=i+1){
-        l=ls[i];
-        let code="";
-        fxt=fx(l);
-        sm=stack.pop();
-        if(fxt.lv<=sm.lv){
-          code=sm.code+ct(undefined,sm.s,"");
-          while(fxt.lv<sm.lv&&stack.length>0){
-             sm=stack.pop();
-             if(fxt.lv<=sm.lv){
-                code=sm.code+ct(no,sm.s,code);
-                no=no+1;
-             }else{
-                /*PASS*/
-             }
-          }
-        }else{
-             /*PASS*/
-        }
-        if(sm.lv==-1){
-             sm={lv:fxt.lv,
-                 code:"",
-                 s:fxt.s};
-             stack.push(sm);
-        }else if(fxt.lv==sm.lv){
-           sm={lv:fxt.lv,
-               code:code,
-               s:fxt.s};
-           stack.push(sm);
-        }else if(fxt.lv>sm.lv){
-           stack.push(sm);
-           sm={lv:fxt.lv,
-               code:code,
-               s:fxt.s};
-           stack.push(sm);
-        }else{
-        /*PASS*/
-        }
-     }
-let scode="";
-sm=stack.pop();
-scode=sm.code+ct(undefined,sm.s,"");
-while(stack.length!=0){
-     sm=stack.pop();
-     scode=sm.code+ct(no,sm.s,scode);
-     no=no+1;
-}
-code=code+scode;
-window.open().document.write(code);
-}
-
 function header(lv){
-    return "&nbsp;".repeat(lv*4);
+    return "&nbsp;".repeat(lv*4)+"|";
 }
-
-function fmind2(src,vlv,lv){
+function _fmind(src,virtual_lv,lv){
         if(src==""){
            return {code:"",rst:""};
         }else{
            let pos=src.indexOf("\n");
            let fst=src.substr(0,pos);
            let rst=src.substr(pos+1);
-           let fxt=fx2(fst);
-           if(fxt.vlv>vlv){
-               let tmp=fmind2(rst,fxt.vlv,lv+1);
-               let tmp2=fmind2(tmp.rst,vlv,lv);
-               return {code:ct(src.length,
-                               header(lv)+fxt.str,
-                               tmp.code)+tmp2.code,
+           let als=analysis(fst);
+           if(als.virtual_lv>virtual_lv){
+               let tmp=fmind2(rst,
+                              als.virtual_lv,
+                              lv+1);
+               let tmp2=fmind2(tmp.rst,
+                               virtual_lv,
+                               lv);
+               return {code:coding(src.length,
+                                   header(lv)+als.str,
+                                   tmp.code)+
+                            tmp2.code,
                        rst:tmp2.rst};
            }else{
                return {code:"",rst:src};
            }
         }
 }
-function pfmind(src){
+function fmind(src){
        let code=`<meta name="viewport" 
                  content="width=device-width 
                           height=device-height
@@ -165,23 +78,17 @@ function pfmind(src){
                     }
                    }
           </scr`+`ipt>`;
-        let ret=fmind2(src+"\n",-1,0);
+        let ret=_fmind(src+"\n",-1,0);
         code=code+ret.code;
         window.open().document.write(code);
 }
 </script>
 </head>
 <body>
-<h2>
-<button style="width:50%;height:10%"
+<h2 style="color:red;height:10%"
 onclick="fmind(document.getElementById('src').value)">
 Mind map…
-</button></h2>
-<h2>
-<button style="width:50%;height:10%"
-onclick="pfmind(document.getElementById('src').value)">
-Mind2 map…
-</button></h2>
+</h2>
 <textarea id="src" style="width:100%;height:90%;
                           overflow:auto" 
           wrap="off" autofocus></textarea>
