@@ -23,14 +23,19 @@ return {virtual_lv:virtual_lv,
 }
 function coding(id,title,code){
     if(code==""){
-        return `<h3>${title}</h3>`;
+        return `<h3 style="display:inline">
+                ${title}
+                </h3><br>`;
     }else{
         return `<button style="background-color:Transparent;
-                                   border:none;
-                                   outline:none;
-                                   color:green;"
-                                   onclick="f(this,
-      document.getElementById('${id}'))"><h3>${title}</h3></button>
+                               border:none;
+                               outline:none;
+                               color:green;"
+                               onclick="f(this,
+                  document.getElementById('${id}'))">
+                <h3 style="display:inline">
+                 ${title}
+                </h3></button><br>
         <div style="display:none" id="${id}">
         ${code}
         </div>`;
