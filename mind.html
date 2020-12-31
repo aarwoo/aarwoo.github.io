@@ -47,6 +47,7 @@ function coding(id,title,code, focus){
         return `<button style="display:inline;
                                background-color:Transparent;
                                border:none;
+                               outline:none;
                                font-size:200%;
                                font-weight:bold;" name="${focus}">
                  ${title}
@@ -55,6 +56,7 @@ function coding(id,title,code, focus){
         return `<button style="display:inline;
                                background-color:Transparent;
                                border:none;
+                               outline:none;
                                font-size:200%;
                                font-weight:bold;
                                color:red;"
@@ -132,8 +134,8 @@ function resize(it,mind){
        it.style.top="0%";
        it.style.width="100%";
        it.style.height="50%";
-       it.style.left="0%";
-       it.style.top="50%";
+       mind.style.left="0%";
+       mind.style.top="50%";
        mind.style.width="100%";
        mind.style.height="50%";
      }
@@ -154,6 +156,6 @@ function resize(it,mind){
                   document.getElementById('mind'))"
           wrap="off" autofocus></textarea><br>
 <div id="mind" style="position:absolute;
-                         border:none;
-                         overflow:auto"></div>
+                      border:none;
+                      overflow:auto"></div>
 </body>
