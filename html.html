@@ -1,0 +1,49 @@
+<head>
+<meta name="viewport" content="width=device-width height=device-height initial-scale=1.0
+                               minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
+<title>HTML:Try youself</title>
+<script>
+function resize(it,html){
+    if(document.body.clientWidth>=
+       document.body.clientHeight){
+       it.style.left="0%";
+       it.style.top="0%";
+       it.style.width="50%";
+       it.style.height="100%";
+       html.style.left="50%";
+       html.style.top="0%";
+       html.style.width="50%";
+       html.style.height="100%";
+     }else{
+       it.style.left="0%";
+       it.style.top="0%";
+       it.style.width="100%";
+       it.style.height="50%";
+       html.style.left="0%";
+       html.style.top="50%";
+       html.style.width="100%";
+       html.style.height="50%";
+     }
+}
+function build(it,html){
+html.srcdoc=it.value;
+}
+</script>
+</head>
+<body onload="resize(document.getElementById('src'),
+                     document.getElementById('html')
+                    )"
+      onresize="resize(document.getElementById('src'),
+                       document.getElementById('html')
+                      )" >
+<textarea id="src" style="position:absolute;
+                          font-size:200%;
+                          font-weight:bold;
+                          overflow:auto" 
+        oninput="build(this,
+                  document.getElementById('html'))"
+          wrap="off" autofocus></textarea><br>
+<iframe id="html" style="position:absolute;
+                      border:none;
+                      overflow:auto"></iframe>
+</body>
