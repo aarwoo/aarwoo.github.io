@@ -1,0 +1,115 @@
+<meta name="viewport" content="width=device-width height=device-height initial-scale=1.0
+                               minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/
+      charset="utf-8">
+<script>
+    function button_text(){
+        let nodes=document.getElementsByName("button");
+        for(node of nodes){
+            node.innerText="-";
+        }
+        nodes[nodes.length-1].innerText="+";
+    }
+    function feval(expr){
+        let preci=document.getElementById("preci").value;
+        let ans=Number.parseFloat(eval(expr)).toFixed(preci);
+        ans=Number.parseFloat((ans).replace(/0*$/,""));
+        return ans;
+    }
+    function calc_fact(fact,real=false){
+        let new_fact=feval(fact.value);
+        let ans=document.getElementById("ans");
+        if(new_fact==0||isFinite(new_fact)==false){
+            if(real==false){
+                new_fact=1;
+                fact.value="";
+                ans.innerText=feval(`(${ans.innerText})/(${fact.dataset["last"]})*(${new_fact})`);
+                fact.dataset["last"]=new_fact;
+            }else{
+                /*PASS*/
+            }
+        }else{
+            ans.innerText=feval(`(${ans.innerText})/(${fact.dataset["last"]})*(${new_fact})`);
+            fact.dataset["last"]=new_fact;
+        }
+    }
+    function modi_fact(who){
+    if(who.innerText=="+"){
+        let node=document.getElementsByName("fact_block")[0].cloneNode(deep=true);
+        document.body.append(node);
+        let fact=document.getElementsByName("fact");
+        let last=fact[fact.length-1];
+        last.value="1";
+        last.dataset["last"]="1";
+        button_text();
+    }else{
+        let fact=who.previousElementSibling;
+        fact.value="1";
+        calc_fact(fact);
+        document.body.removeChild(who.parentNode);
+    }
+}
+</script>
+<body style="background-color:bisque;">
+<div style="font-size:2em;top:0%;position:sticky;background-color:inherit">
+    <label style="font-size:1em;color:darkcyan;">当前计算精度=</label>
+    <input id="preci" style="font-size:1em;color:darkcyan;
+                             background-color:inherit;border:none;"
+           type="number" value="15" min="0" max="20" step="1" placeholder="计算精度"><br>
+    <label style="font-size:1em;color:forestgreen">下列各因子的乘积=</label>
+<label id="ans" style="font-size:1em;color:forestgreen">1</label>
+</div>
+<br>
+<div name="fact_block" style="font-size:2em">
+    <div style="font-size:1em;display:inline;">
+        <input style="font-size:1em;width:90%;
+                      background-color:inherit;
+                      color:chocolate;border:none;" list="suggest2" placeholder="添加下面这个因子的说明">
+        <label style="font-size:1em;width:10%;float:right;
+                      color:chocolate;text-align:center">:</label>
+    </div>
+    <br><br>
+    <input name="fact" style="font-size:1em;width:90%;background-color:inherit;border:none;"
+                       onchange="calc_fact(this)" oninput="calc_fact(this,true)"
+                       value="1" data-last="1" list="suggest" placeholder="若此因子为 0，或不是有限值时，则该因子视为 1">
+    <button name="button" style="font-size:1em;width:10%;float:right;
+                   text-align:center;background-color:inherit;
+                   color:red;border:none;" onclick="modi_fact(this)">+</button>
+    <br><br>
+</div>
+<datalist id="suggest">
+    <option value="1.466">
+    <option value="1.466+0.15">
+    <option value="1.15">
+    <option value="1.466+0.18">
+    <option value="1.466+0.18+0.18">
+    <option value="1.18+0.18">
+    <option value="1.18">
+    <option value="1.18">
+    <option value="1.466+0.2">
+    <option value="1.2">
+    <option value="1.2*0.25">
+    <option value="(1.2+0.518)*0.25">
+    <option value="1.583">
+    <option value="1.583+0.25">
+    <option value="1.25">
+    <option value="1.622">
+    <option value="0.311">   
+</datalist>
+<datalist id="suggest2">
+    <option value="双暴乘区">
+    <option value="攻击力乘区">
+    <option value="元素反应乘区">
+    <option value="抗性与防御乘区">
+    <option value="伤害转化乘区">
+    <option value="倍率乘区">  
+    <option value="乘区">  
+    <option value="暴击率">
+    <option value="暴击伤害">
+    <option value="元素伤害加成">
+    <option value="攻击力">
+    <option value="元素精通">
+    <option value="系数">  
+    <option value="反应系数">
+    <option value="倍率">
+</datalist>
+</body>
