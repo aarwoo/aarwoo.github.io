@@ -1,0 +1,38 @@
+<head>
+    <script>
+        async function get(code,days){
+            let url=`https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?param=${code},day,,,${Math.max(0,days-1)},qfq`;
+            let dat=await fetch(url).then((r)=>r.json()).then((d)=>{
+                let x=d.data[code];
+                return x.qfqday||x.day;
+            });
+            return dat;
+        }
+        async function func(where,code,days){
+            let show=document.getElementById("show");
+            show.innerHTML="<th>正在获取数据</th>";
+            let head=[["日期","开盘","收盘","最高","最低","总手"]];
+            code={"上海交易所":"sh","深圳交易所":"sz"}[where]+code;
+            let data=await get(code,days);
+            if(data.length==0){
+                show.innerHTML=`<th>获取失败，请检查股票代码与交易所信息是否正确</th>`;
+            }else{
+                head=head.map((z)=>`<tr>${z.map((z)=>"<th>"+z+"</th>").reduce((x,y)=>x+y)}</tr>`).reduce((x,y)=>x+y);
+                data=data.map((z)=>`<tr>${z.map((z)=>"<td>"+z+"</td>").reduce((x,y)=>x+y)}</tr>`).reduce((x,y)=>x+y);
+                let table=head+data;
+                show.innerHTML=table;
+            }
+        }
+    </script>
+</head>
+<body>
+    交易所：<select id="where">
+        <option>上海交易所</option>
+        <option>深圳交易所</option>
+    </select><br>
+    股票代码：<input  id="code" type="number"><br>
+    交易日数：<input id="days" type="number">
+    <button onclick="func(document.getElementById('where').value,document.getElementById('code').value,document.getElementById('days').value)">获取数据</button><br>
+    注：这里指从今天往前算，需要获取多少个交易日的数据。数据默认前复权。（数据来源：腾讯财经;表头的数据说明仅供参考）
+    <table id="show"></table>
+</body>
