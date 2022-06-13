@@ -62,7 +62,7 @@
                 if(eq_result!=""){
                     eq_result=`下列天数，盈亏概率接近,小于${d_eq}：${eq_result}`;
                 }
-                return `<svg height="${height}",width="${data.length-min_sizes}">${result}</svg><br>`+
+                return `<svg height="${height}" width="${data.length-min_sizes}">${result}</svg><br>`+
                        `横坐标为交易间隔的交易日天数，从左到右递增(最小1天,最大${data.length-min_sizes}天);<br>`+
                        `纵坐标表示概率，从下到上递增<br>`+
                        `${tmp}<br>`+
