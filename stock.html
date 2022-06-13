@@ -6,7 +6,11 @@
             let url=`https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?param=${code},day,,,${Math.max(-1,days-1)},qfq`;
             let dat=await fetch(url).then((r)=>r.json()).then((d)=>{
                 let x=d.data[code];
-                return x.qfqday||x.day;
+                if(x==undefined){
+                    return x;
+                }else{
+                    return x.qfqday||x.day;
+                }
             });
             return dat;
         }
@@ -20,7 +24,6 @@
                 show.innerHTML=`<th>获取失败，请检查股票代码与交易所信息是否正确</th>`;
             }else{
                 analys=anal(data);
-                console.log(analys);
                 head=head.map((z)=>`<tr>${z.map((z)=>"<th>"+z+"</th>").reduce((x,y)=>x+y)}</tr>`).reduce((x,y)=>x+y);
                 data=data.map((z)=>`<tr>${z.map((z)=>"<td>"+z+"</td>").reduce((x,y)=>x+y)}</tr>`).reduce((x,y)=>x+y);
                 let table=head+data;
@@ -32,8 +35,7 @@
             let value_note="开盘与收盘的算术均值";
             let result="";
             let eq_result="";
-            let d_eq=0.001;
-            let height=100;
+            let d_eq=0.0001;
             let str="";
             let count={"-1":0,"0":0,"1":0};
             let note={"-1":"亏损概率","0":"持平概率","1":"盈利概率"};
@@ -46,7 +48,9 @@
                     count[str]=count[str]+1;
                 }
                 for(let j of ["-1","0","1"]){
-                   result=result+`<circle r="1" fill="${color[j]}" cx="${i}" cy="${height-height*count[j]/(data.length-i)}"></circle>`
+                   result=result+`<circle id="${i}_${color[j]}" r="1" fill="${color[j]}" cx="${100*i/(data.length-min_sizes)}%" cy="${100*(1-count[j]/(data.length-i))}%"
+                                  onclick="point(this,'${color[j]}',${i},
+                                                 ${count[j]/(data.length-i)},${Math.round(10*i/(data.length-min_sizes))})"></circle>`
                 }
                 if(Math.abs(count["-1"]/(data.length-i)-count["1"]/(data.length-i))<=d_eq){
                     eq_result=eq_result+`${i} `;
@@ -60,9 +64,10 @@
                     tmp=tmp+`${note[i]}: ${note2[color[i]]}<br>`;
                 }
                 if(eq_result!=""){
-                    eq_result=`下列天数，盈亏概率接近,小于${d_eq}：${eq_result}`;
+                    eq_result=`下列天数，盈亏概率接近,小于${d_eq}:${eq_result}`;
                 }
-                return `<svg height="${height}" width="${data.length-min_sizes}">${result}</svg><br>`+
+                return `<svg height="70%" 
+                             width="100%">${result}</svg><br>`+
                        `横坐标为交易间隔的交易日天数，从左到右递增(最小1天,最大${data.length-min_sizes}天);<br>`+
                        `纵坐标表示概率，从下到上递增<br>`+
                        `${tmp}<br>`+
@@ -70,6 +75,31 @@
                        `上述计算用到的每日交易【买卖】的价格：当天${value_note}<br>`+
                        `注意！此分析仅供参考,投资人应自行决断`;
             }
+        }
+        function point(it,color,day,p,nid){
+            let pre=document.getElementById(`${nid}_${color}`);
+            if(pre!=null||pre!=undefined){
+                pre.remove();
+            }
+            if(color!="black"){
+                let fcolor={"green":"亏损概率","red":"盈利概率"};
+                it.parentElement.innerHTML=it.parentElement.innerHTML+
+                `<text id="${nid}_${color}" fill="${color}" 
+                        x="${it.cx.baseVal.value}" y="${it.cy.baseVal.value}"
+                        transform="rotate(${angle(it,color,day)},${it.cx.baseVal.value},${it.cy.baseVal.value})"
+                        onclick="alert('间隔的交易日天数为${day},${fcolor[color]}约为${Math.floor(p*10000)/100}%')">+←(${day},${Math.floor(p*10000)/100}%)</text>`;
+            }
+        }
+        function angle(it,color,day){
+            let fcolor={"green":"red","red":"green"};
+            let sgncolor={"green":-1,"red":1};
+            let cy=it.cy.baseVal.value;
+            let cy2=document.getElementById(`${day}_${fcolor[color]}`).cy.baseVal.value;
+            let sgn=Math.sign(cy-cy2);
+            if(sgn==0){
+                sgn=sgncolor[color];
+            }
+            return sgn*60;
         }
     </script>
 </head>
