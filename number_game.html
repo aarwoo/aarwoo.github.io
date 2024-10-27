@@ -117,7 +117,7 @@
         function me_think(me_init){
             let dmg=max_calc(me_fs,me_init);
             //1:+ 2:- 3:* 4:/
-            if(me_fs.length > 5 || rand() <= 50){
+            if( me_init < 99 || rand() <= 50){
                 return 0;
             }else if(dmg * 99 <= you){
                 return 3;
