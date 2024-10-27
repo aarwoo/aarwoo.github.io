@@ -99,7 +99,8 @@
         }
         function after(){
             info();
-            proc(me_fs,clear_me_fs,dst_you,me_think(), rand() );
+            let me_init=Math.min(you,99);
+            proc(me_fs,clear_me_fs,dst_you,me_think(me_init), me_init);
             if(you > 0 && me == 0){
                 alert("恭喜玩家获得胜利!");
                 load();
@@ -113,8 +114,8 @@
                 //pass
             }
         }
-        function me_think(){
-            let dmg=max_calc(me_fs,99);
+        function me_think(me_init){
+            let dmg=max_calc(me_fs,me_init);
             //1:+ 2:- 3:* 4:/
             if(me_fs.length > 5 || rand() <= 50){
                 return 0;
