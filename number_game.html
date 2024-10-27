@@ -98,9 +98,9 @@
             me_fs=[];
         }
         function after(){
-            info();
             let me_init=Math.min(you,99);
             proc(me_fs,clear_me_fs,dst_you,me_think(me_init), me_init);
+            info();
             if(you > 0 && me == 0){
                 alert("恭喜玩家获得胜利!");
                 load();
@@ -116,17 +116,16 @@
         }
         function me_think(me_init){
             let dmg=max_calc(me_fs,me_init);
-            //1:+ 2:- 3:* 4:/
             if( me_init < 99 || rand() <= 50){
                 return 0;
-            }else if(dmg * 99 <= you){
-                return 3;
-            }else if(dmg + 99 <= you){
-                return 1;
+            }else if(dmg + 99 < you){
+                return 3;// *
+            }else if(dmg + 99 >= you){
+                return 1;// +
             }else if(dmg - 99 <= you){
-                return 2;
-            }else if( dmg / 99 <= you){
-                return 4;
+                return 2;// -
+            }else if( dmg - 99 > you){
+                return 4;// /
             }
         }
     </script>
