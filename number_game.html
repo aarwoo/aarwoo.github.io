@@ -116,12 +116,12 @@
         function me_think(){
             let dmg=max_calc(me_fs,99);
             //1:+ 2:- 3:* 4:/
-            if(dmg * 99 <= you){
+            if(me_fs.length > 5 || rand() <= 50){
+                return 0;
+            }else if(dmg * 99 <= you){
                 return 3;
             }else if(dmg + 99 <= you){
                 return 1;
-            }else if(rand() <= 50){
-                return 0;
             }else if(dmg - 99 <= you){
                 return 2;
             }else if( dmg / 99 <= you){
