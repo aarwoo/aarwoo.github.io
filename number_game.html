@@ -4,6 +4,9 @@
         function $(id){
             return  document.getElementById(id);
         }
+        function $$(class_name){
+            return document.getElementsByClassName(class_name);
+        }
         function calc(fs,init){
             return Math.round(
                    fs.reduce(
@@ -33,31 +36,39 @@
             let f=new Intl.NumberFormat(undefined).format;
             $("status").innerText=`玩家: ${f(you)} 机器: ${f(me)}`;
         }
-        function info(){
+        function info(me_fs,you_fs){
             $("info_you").innerText="玩家拥有如下祝福:\n" + you_fs.map((f)=>f.info).join("\n");
             $("info_me").innerText="机器拥有如下祝福:\n" + me_fs.map((f)=>f.info).join("\n");
         }
+        //--------
         function  load(){
             $("init").onclick=(event)=>{
                 event.stopPropagation();
             };
+            while(base <= 2){
+                base=Math.floor(prompt("请输入基准整数 (基准整数 > 2)\n「注:对于输入的数值会取整」"));
+            }
+            for(let node of $$("base")){
+                node.innerText = base;
+            }
             you_fs = [];
-            you = 1e6; // 玩家
+            you = Math.pow(base,3); // 玩家
             me_fs = [];
-            me = 1e6; // 机器
+            me =  Math.pow(base,3); // 机器
             status(you,me);
-            info();
+            info(me_fs,you_fs);
         }
         function init_check(){
-            let val=Number($("init").value);
-            if(1 <= val && val < 100){
-                $("init").value=val;
+            let val=Math.floor($("init").value);
+            if(1 <= val && val <= base){
+                $("init").value = val;
             }else{
-                $("init").value=rand();
+                $("init").value = rand();
             }
         }
         function rand(){
-            return Math.random() * 100 + 1;
+            return Math.floor(Math.random() * base + 1);
+            // rand() <- Z /\ [1,base]
         }
         function proc(fs,clear_fs,fdst,act,init_val=null){
             switch(act){
@@ -67,19 +78,20 @@
                     clear_fs();
                     return;
                 case 1:
-                    push(fs,(a)=>a + rand(),(a)=> a + 99,"加法的祝福");
+                    push(fs,(a)=>a + rand(),(a)=> a + base,"加法的祝福");
                     return;
                 case 2:
                     push(fs,(a)=>a - rand(),(a)=> a - 1,"减法的祝福");
                     return;
                 case 3:
-                    push(fs,(a)=>a * rand(),(a)=> a * 99,"乘法的祝福");
+                    push(fs,(a)=>a * rand(),(a)=> a * base,"乘法的祝福");
                     return;
                 case 4:
                     push(fs,(a)=>a / rand(),(a)=> a / 1,"除法的祝福");
                     return;
             }
         }
+        let base = 0; // base > 2 基准整数
         let you_fs;
         let you; // 玩家
         let me_fs;
@@ -98,9 +110,9 @@
             me_fs=[];
         }
         function after(){
-            let me_init=Math.min(you,99);
+            let me_init=Math.min(you,base);
             proc(me_fs,clear_me_fs,dst_you,me_think(me_init), me_init);
-            info();
+            info(me_fs,you_fs);
             if(you > 0 && me == 0){
                 alert("恭喜玩家获得胜利!");
                 load();
@@ -116,13 +128,13 @@
         }
         function me_think(me_init){
             let dmg=max_calc(me_fs,me_init);
-            if( me_init < 99 || rand() <= 50){
+            if( me_init < base || rand() <= base / 2 ){
                 return 0;
-            }else if(dmg * 2 <= you && dmg * 99 <= you){
+            }else if(dmg * 2 <= you && dmg * base <= you){
                 return 3;// *
-            }else if(dmg + 1 <= you && dmg + 99 <= you){
+            }else if(dmg + 1 <= you && dmg + base <= you){
                 return 1;// +
-            }else if(dmg - 99 <= you){
+            }else if(dmg - base <= you){
                 return 2;// -
             }else{
                 return 4;// /
@@ -135,24 +147,24 @@
     <br><br>
     <div style="display: inline-block; background-color: red;color: white;user-select: none;"
     onclick="proc(you_fs,clear_you_fs,dst_me,0,$('init').value);after();"
-    >根据初始值 <input type="number" id="init" style="font-size:1.2em;"
-    value="1" onchange="init_check()"/>  (1 <= 初始值 < 100, 否则随机重置) 立即结算,产生舍入取整的伤害,同时移除全部祝福 (多余的伤害,将会为对方回血)</div>
+    >根据初始整数 <input type="number" id="init" style="font-size:1.2em;"
+    value="1" onchange="init_check()"/>  (1 <= 初始整数 <= <span class="base"></span>, 否则随机重置) 立即结算,产生舍入取整的伤害,同时移除全部祝福 (多余的伤害,将会为对方回血)</div>
     <br><br>
     <div style="display: inline-block; background-color: skyblue;color: white;user-select: none;"
     onclick="proc(you_fs,clear_you_fs,dst_me,1);after();"
-    >加法的祝福: 针对现有的伤害结算结果, 加上某个随机数 (1 <= 随机数 < 100)</div>
+    >加法的祝福: 针对现有的伤害结算结果, 加上某个随机整数 (1 <= 随机整数 <= <span class="base"></span>)</div>
     <br><br>
     <div style="display: inline-block; background-color: plum;color: white;user-select: none;"
     onclick="proc(you_fs,clear_you_fs,dst_me,2);after();"
-    >减法的祝福: 针对现有的伤害结算结果, 减去某个随机数 (1 <= 随机数 < 100)</div>
+    >减法的祝福: 针对现有的伤害结算结果, 减去某个随机整数 (1 <= 随机整数 <= <span class="base"></span>)</div>
     <br><br>
     <div style="display: inline-block; background-color: mediumaquamarine;color: white;user-select: none;"
     onclick="proc(you_fs,clear_you_fs,dst_me,3);after();"
-    >乘法的祝福: 针对现有的伤害结算结果, 乘以某个随机数 (1 <= 随机数 < 100)</div>
+    >乘法的祝福: 针对现有的伤害结算结果, 乘以某个随机整数 (1 <= 随机整数 <= <span class="base"></span>)</div>
     <br><br>
     <div style="display: inline-block; background-color: salmon;color: white;user-select: none;"
     onclick="proc(you_fs,clear_you_fs,dst_me,4);after();"
-    >除法的祝福: 针对现有的伤害结算结果, 除以某个随机数 (1 <= 随机数 < 100)</div>
+    >除法的祝福: 针对现有的伤害结算结果, 除以某个随机整数 (1 <= 随机整数 <= <span class="base"></span>)</div>
     <br><br>
     <div id="info_you" style="display: inline-block; background-color: burlywood;color: white;user-select: none;"></div>
     <br><br>
