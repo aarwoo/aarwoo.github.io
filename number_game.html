@@ -131,30 +131,30 @@
     </script>
 </head>
 <body style="font-size: 1.2em;" onload="load()">
-    <div id="status" style="display: inline-block; background-color: green;color: white;"></div>
+    <div id="status" style="display: inline-block; background-color: green;color: white;user-select: none;"></div>
     <br><br>
-    <div style="display: inline-block; background-color: red;color: white;"
+    <div style="display: inline-block; background-color: red;color: white;user-select: none;"
     onclick="proc(you_fs,clear_you_fs,dst_me,0,$('init').value);after();"
     >根据初始值 <input type="number" id="init" style="font-size:1.2em;"
     value="1" onchange="init_check()"/>  (1 <= 初始值 < 100, 否则随机重置) 立即结算,产生舍入取整的伤害,同时移除全部祝福 (多余的伤害,将会为对方回血)</div>
     <br><br>
-    <div style="display: inline-block; background-color: skyblue;color: white;"
+    <div style="display: inline-block; background-color: skyblue;color: white;user-select: none;"
     onclick="proc(you_fs,clear_you_fs,dst_me,1);after();"
     >加法的祝福: 针对现有的伤害结算结果, 加上某个随机数 (1 <= 随机数 < 100)</div>
     <br><br>
-    <div style="display: inline-block; background-color: plum;color: white;"
+    <div style="display: inline-block; background-color: plum;color: white;user-select: none;"
     onclick="proc(you_fs,clear_you_fs,dst_me,2);after();"
     >减法的祝福: 针对现有的伤害结算结果, 减去某个随机数 (1 <= 随机数 < 100)</div>
     <br><br>
-    <div style="display: inline-block; background-color: mediumaquamarine;color: white;"
+    <div style="display: inline-block; background-color: mediumaquamarine;color: white;user-select: none;"
     onclick="proc(you_fs,clear_you_fs,dst_me,3);after();"
     >乘法的祝福: 针对现有的伤害结算结果, 乘以某个随机数 (1 <= 随机数 < 100)</div>
     <br><br>
-    <div style="display: inline-block; background-color: salmon;color: white;"
+    <div style="display: inline-block; background-color: salmon;color: white;user-select: none;"
     onclick="proc(you_fs,clear_you_fs,dst_me,4);after();"
     >除法的祝福: 针对现有的伤害结算结果, 除以某个随机数 (1 <= 随机数 < 100)</div>
     <br><br>
-    <div id="info_you" style="display: inline-block; background-color: burlywood;color: white;"></div>
+    <div id="info_you" style="display: inline-block; background-color: burlywood;color: white;user-select: none;"></div>
     <br><br>
-    <div id="info_me" style="display: inline-block; background-color:cadetblue;color: white;"></div>
+    <div id="info_me" style="display: inline-block; background-color:cadetblue;color: white;user-select: none;"></div>
 </body>
