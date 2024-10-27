@@ -45,6 +45,7 @@
             $("init").onclick=(event)=>{
                 event.stopPropagation();
             };
+            base = 0;
             while(base <= 2){
                 base=Math.floor(prompt("请输入基准整数 (基准整数 > 2)\n「注:对于输入的数值会取整」"));
             }
@@ -91,7 +92,7 @@
                     return;
             }
         }
-        let base = 0; // base > 2 基准整数
+        let base; // base > 2 基准整数
         let you_fs;
         let you; // 玩家
         let me_fs;
