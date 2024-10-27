@@ -1,0 +1,134 @@
+<head>
+    <meta charset="UTF-8">
+    <script>
+        function $(id){
+            return  document.getElementById(id);
+        }
+        function calc(fs,init){
+            return fs.reduce(
+                (v,f)=>f.func(v),
+                Number(init)
+            );
+        }
+        function push(fs,_func,_info){
+            fs.push(
+                {
+                    func:_func,
+                    info:_info
+                }
+            );
+        }
+        function status(you,me){
+            let f=new Intl.NumberFormat(undefined).format;
+            $("status").innerText=`玩家: ${f(you)} 机器: ${f(me)}`;
+        }
+        function info(){
+            $("info_you").innerText="玩家拥有如下祝福:\n" + you_fs.map((f)=>f.info).join("\n");
+            $("info_me").innerText="机器拥有如下祝福:\n" + me_fs.map((f)=>f.info).join("\n");
+        }
+        function  load(){
+            $("init").onclick=(event)=>{
+                event.stopPropagation();
+            };
+            you_fs = [];
+            you = 1e6; // 玩家
+            me_fs = [];
+            me = 1e6; // 机器
+            status(you,me);
+            info();
+        }
+        function init_check(){
+            let val=Number($("init").value);
+            if(1 <= val && val < 100){
+                $("init").value=val;
+            }else{
+                $("init").value=rand();
+            }
+        }
+        function rand(){
+            return Math.random() * 100 + 1;
+        }
+        function proc(fs,clear_fs,fdst,act,init_val=null){
+            switch(act){
+                case 0:
+                    fdst( calc(fs, init_val) );
+                    status(you,me);
+                    clear_fs();
+                    return;
+                case 1:
+                    push(fs,(a)=>a + rand(),"加法的祝福");
+                    return;
+                case 2:
+                    push(fs,(a)=>a - rand(),"减法的祝福");
+                    return;
+                case 3:
+                    push(fs,(a)=>a * rand(),"乘法的祝福");
+                    return;
+                case 4:
+                    push(fs,(a)=>a / rand(),"除法的祝福");
+                    return;
+            }
+        }
+        let you_fs;
+        let you; // 玩家
+        let me_fs;
+        let me; // 机器
+
+        function dst_you(t){
+            you=Math.abs(you-t);
+        }
+        function dst_me(t){
+            me=Math.abs(me-t);
+        }
+        function clear_you_fs(){
+            you_fs=[];
+        }
+        function clear_me_fs(){
+            me_fs=[];
+        }
+        function after(){
+            info();
+            proc(me_fs,clear_me_fs,dst_you, Math.floor(Math.random() * 6), rand() );
+            if(you > 0 && me == 0){
+                alert("恭喜玩家获得胜利!");
+                load();
+            }else if( me > 0 && you == 0){
+                alert("不好意思, 机器更胜一筹!");
+                load();
+            }else if( me == 0 && you == 0){
+                alert("玩家和机器旗鼓相当!");
+                load();
+            }else{
+                //pass
+            }
+        }
+    </script>
+</head>
+<body style="font-size: 1.2em;" onload="load()">
+    <div id="status" style="display: inline-block; background-color: green;color: white;"></div>
+    <br><br>
+    <div style="display: inline-block; background-color: red;color: white;"
+    onclick="proc(you_fs,clear_you_fs,dst_me,0,$('init').value);after();"
+    >根据初始值 <input type="number" id="init" style="font-size:1.2em;"
+    value="1" onchange="init_check()"/>  (1 <= 初始值 < 100, 否则随机重置) 立即结算,产生伤害,同时移除全部祝福 (多余的伤害,将会为对方回血)</div>
+    <br><br>
+    <div style="display: inline-block; background-color: skyblue;color: white;"
+    onclick="proc(you_fs,clear_you_fs,dst_me,1);after();"
+    >加法的祝福: 针对现有的伤害结算结果, 加上某个随机数 (1 <= 随机数 < 100)</div>
+    <br><br>
+    <div style="display: inline-block; background-color: plum;color: white;"
+    onclick="proc(you_fs,clear_you_fs,dst_me,2);after();"
+    >减法的祝福: 针对现有的伤害结算结果, 减去某个随机数 (1 <= 随机数 < 100)</div>
+    <br><br>
+    <div style="display: inline-block; background-color: mediumaquamarine;color: white;"
+    onclick="proc(you_fs,clear_you_fs,dst_me,3);after();"
+    >乘法的祝福: 针对现有的伤害结算结果, 乘以某个随机数 (1 <= 随机数 < 100)</div>
+    <br><br>
+    <div style="display: inline-block; background-color: salmon;color: white;"
+    onclick="proc(you_fs,clear_you_fs,dst_me,4);after();"
+    >除法的祝福: 针对现有的伤害结算结果, 除以某个随机数 (1 <= 随机数 < 100)</div>
+    <br><br>
+    <div id="info_you" style="display: inline-block; background-color: burlywood;color: white;"></div>
+    <br><br>
+    <div id="info_me" style="display: inline-block; background-color:cadetblue;color: white;"></div>
+</body>
