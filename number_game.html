@@ -5,15 +5,26 @@
             return  document.getElementById(id);
         }
         function calc(fs,init){
-            return fs.reduce(
-                (v,f)=>f.func(v),
-                Number(init)
-            );
+            return Math.round(
+                   fs.reduce(
+                     (v,f)=>f.func(v),
+                     Number(init)
+                   )
+                );
         }
-        function push(fs,_func,_info){
+        function max_calc(fs,init){
+            return Math.round(
+                   fs.reduce(
+                     (v,f)=>f.max_func(v),
+                     Number(init)
+                   )
+                );
+        }
+        function push(fs,_func,_max_func,_info){
             fs.push(
                 {
                     func:_func,
+                    max_func:_max_func,
                     info:_info
                 }
             );
@@ -56,16 +67,16 @@
                     clear_fs();
                     return;
                 case 1:
-                    push(fs,(a)=>a + rand(),"加法的祝福");
+                    push(fs,(a)=>a + rand(),(a)=> a + 99,"加法的祝福");
                     return;
                 case 2:
-                    push(fs,(a)=>a - rand(),"减法的祝福");
+                    push(fs,(a)=>a - rand(),(a)=> a - 1,"减法的祝福");
                     return;
                 case 3:
-                    push(fs,(a)=>a * rand(),"乘法的祝福");
+                    push(fs,(a)=>a * rand(),(a)=> a * 99,"乘法的祝福");
                     return;
                 case 4:
-                    push(fs,(a)=>a / rand(),"除法的祝福");
+                    push(fs,(a)=>a / rand(),(a)=> a / 1,"除法的祝福");
                     return;
             }
         }
@@ -88,7 +99,7 @@
         }
         function after(){
             info();
-            proc(me_fs,clear_me_fs,dst_you, Math.floor(Math.random() * 6), rand() );
+            proc(me_fs,clear_me_fs,dst_you,me_think(), rand() );
             if(you > 0 && me == 0){
                 alert("恭喜玩家获得胜利!");
                 load();
@@ -102,6 +113,21 @@
                 //pass
             }
         }
+        function me_think(){
+            let dmg=max_calc(me_fs,99);
+            //1:+ 2:- 3:* 4:/
+            if(dmg * 99 <= you){
+                return 3;
+            }else if(dmg + 99 <= you){
+                return 1;
+            }else if(rand() <= 50){
+                return 0;
+            }else if(dmg - 99 <= you){
+                return 2;
+            }else if( dmg / 99 <= you){
+                return 4;
+            }
+        }
     </script>
 </head>
 <body style="font-size: 1.2em;" onload="load()">
@@ -110,7 +136,7 @@
     <div style="display: inline-block; background-color: red;color: white;"
     onclick="proc(you_fs,clear_you_fs,dst_me,0,$('init').value);after();"
     >根据初始值 <input type="number" id="init" style="font-size:1.2em;"
-    value="1" onchange="init_check()"/>  (1 <= 初始值 < 100, 否则随机重置) 立即结算,产生伤害,同时移除全部祝福 (多余的伤害,将会为对方回血)</div>
+    value="1" onchange="init_check()"/>  (1 <= 初始值 < 100, 否则随机重置) 立即结算,产生舍入取整的伤害,同时移除全部祝福 (多余的伤害,将会为对方回血)</div>
     <br><br>
     <div style="display: inline-block; background-color: skyblue;color: white;"
     onclick="proc(you_fs,clear_you_fs,dst_me,1);after();"
