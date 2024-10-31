@@ -147,7 +147,7 @@ function resize(it,mind){
 
 
 
-function dbclick_src(src){
+function dblclick_src(src){
   fget().then(
     (c)=>{
       src.value=c;
@@ -158,7 +158,7 @@ function dbclick_src(src){
     }
   );
 }
-function dbclick_mind(mind){
+function dblclick_mind(mind){
   alert("Please keep as HTML file");
   fput(mind.innerHTML);
 }
@@ -176,11 +176,11 @@ function dbclick_mind(mind){
                           overflow:auto" 
         oninput="dfmind(this,
                   document.getElementById('mind'))"
-        ondbclick="dbclick_src(this)"
+        ondblclick="dblclick_src(this)"
           wrap="off" autofocus></textarea><br>
 <div id="mind" style="position:absolute;
                       border:none;
                       overflow:auto"
-         ondbclick="dbclick_mind(this)"
+         ondblclick="dblclick_mind(this)"
   ></div>
 </body>
