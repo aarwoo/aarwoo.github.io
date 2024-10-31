@@ -2,7 +2,11 @@
 <meta name="viewport" content="width=device-width height=device-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <title>Mind: Indentation reflects the hierarchy</title>
-<script>
+<script 
+  src="https://alng.org/file.js"
+  crossorigin="anonymous">
+</script>
+  <script>
 
 function f(it){
                     let ct=document.getElementById(it.dataset.div_id);
@@ -140,6 +144,24 @@ function resize(it,mind){
        mind.style.height="50%";
      }
 }
+
+
+
+function dbclick_src(src){
+  fget().then(
+    (c)=>{
+      src.value=c;
+      dfmind(
+        src,
+        document.getElementById('mind')
+      );
+    }
+  );
+}
+function dbclick_mind(mind){
+  alert("Please keep as HTML file");
+  fput(mind.innerHTML);
+}
 </script>
 </head>
 <body onload="resize(document.getElementById('src'),
@@ -154,8 +176,11 @@ function resize(it,mind){
                           overflow:auto" 
         oninput="dfmind(this,
                   document.getElementById('mind'))"
+        ondbclick="dbclick_src(this)"
           wrap="off" autofocus></textarea><br>
 <div id="mind" style="position:absolute;
                       border:none;
-                      overflow:auto"></div>
+                      overflow:auto"
+         ondbclick="dbclick_mind(this)"
+  ></div>
 </body>
