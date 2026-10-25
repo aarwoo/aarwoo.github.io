@@ -1,46 +1,58 @@
+<!--Redesign by me, cowork with Claude-->
 <head>
 <meta name="viewport" content="width=device-width height=device-height initial-scale=1.0
                                minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
 <title>HTML:Try youself</title>
 <script>
-function resize(it,html){
-    if(document.body.clientWidth>=
-       document.body.clientHeight){
-       it.style.left="0%";
-       it.style.top="0%";
-       it.style.width="50%";
-       it.style.height="100%";
-       html.style.left="50%";
-       html.style.top="0%";
-       html.style.width="50%";
-       html.style.height="100%";
-     }else{
-       it.style.left="0%";
-       it.style.top="0%";
-       it.style.width="100%";
-       it.style.height="50%";
-       html.style.left="0%";
-       html.style.top="50%";
-       html.style.width="100%";
-       html.style.height="50%";
-     }
-}
-function build(it,html){
-html.srcdoc=it.value;
+function f(src,html){
+    html.srcdoc=src.value;
+    let V = src.style.visibility;
+    src.style.visibility = html.style.visibility;
+    html.style.visibility = V;
 }
 </script>
+<style>
+  #src,#html{
+    position:fixed;
+    overflow:auto;
+    top:0;
+    left:0;
+    width:100dvw;
+    height:100dvh;
+  }
+  #src{
+    font-size:1.1rem;
+    font-family: monospace;
+  }
+  #src{
+    visibility: visible;
+  }
+  #html{
+    visibility: hidden;
+  }
+  #switch{
+    position:fixed;
+    right:0;
+    bottom:0;
+    font-size:1.2rem;
+    background-color: forestgreen;
+    opacity: 0.666;
+    z-index: 1;
+  }
+  
+</style>
 </head>
-<body onload="resize(document.getElementById('src'),
-                     document.getElementById('html')
-                    )"
-      onresize="resize(document.getElementById('src'),
-                       document.getElementById('html')
-                      )" >
-<textarea id="src" style="position:absolute;
-                          overflow:auto" 
-        oninput="build(this,
-                       document.getElementById('html'))"
-          wrap="off" autofocus></textarea><br>
-<iframe id="html" style="position:absolute;
-                         overflow:auto"></iframe>
+<body>
+<div 
+  id = "switch" 
+  onclick = "f(
+      document.getElementById('src'),
+      document.getElementById('html')
+  )">🔁</div>
+<textarea id="src" 
+          style="visibility:visible"
+          wrap="off" 
+          autofocus></textarea>
+<iframe id="html" 
+        style="visibility:hidden"></iframe>
 </body>
