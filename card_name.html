@@ -7,7 +7,32 @@
 </head>
 <script>
     class game{
+
+        static #player = true;
         
+        static #scope = {
+            true: 50,
+            false: 50
+        };
+
+        static #update_scope(){
+            let scope = document.getElementById("scope");
+            let values = [...game.#scope.values()];
+            if(values.find(e => e < 0 || e > 100) ! === undefined){
+                //....
+            }else if(values.find(e => e === 100) !=== undefined){
+                if(game.#scope[game.#player] === game.#scope[!game.#player]){
+                    //both draw
+                }else if(game.#scope[game.#player] === 100){
+                    //player win
+                }else{
+                    //peer win
+                }
+            }else{
+                let fscope = (t) => String(game.#scope[t]).padStart(2,"0");
+                scope.textContent = `player ${fscope(game.#player)} peer ${fscope(!game.#player)}`;
+            }
+        }
 
 
         static get_random(sup){
@@ -26,17 +51,21 @@
 
             if(isplayer === true){
                 if(self.textContent === ``){
+                    game.#scope[isplayer] = game.#scope[isplayer] - 5;
                     self.textContent = content;
                 }else{
                     //pass
                 }
             }else{
                 if(self.dataset.value === ``){
+                    game.#scope[isplayer] = game.#scope[isplayer] - 5;
                     self.dataset.value = content;
                 }else{
                     //pass
                 }
             }
+
+            game.#update_scope();
 
         }
 
@@ -87,10 +116,7 @@
         font-weight: bolder;
         font-family: monospace;
     }
-
-
-
-
+    
     .cards{
         top: 40dvh;
         left:0;
@@ -153,9 +179,9 @@
 </style>
 <body>
     <div class="screen">
-        <div id="scope">SCOPE</div>
+        <div id="scope"></div>
         <div class="fuck" onclick = "fuck()">FUCK</div>
-        <div id="target">TARGET</div>
+        <div id="target"></div>
         <div class="OK" onclick = "ok()">PLAY</div>
         <div></div>
     </div>
