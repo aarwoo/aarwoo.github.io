@@ -11,6 +11,31 @@
         static #player = true;
         
         static #scope = new Map();
+
+        static #switch(){
+            game.#player = !game.#player;
+            let card = document.getElementsByClassName("card"); 
+            for(let c of card){
+                c.textContent = c.dataset[game.#player];
+            }
+        }
+        
+        static #steal(){
+            let card = document.getElementsByClassName("card");
+            let thf = (c) => (game.get_random(2) === 0)? c : ``;
+            for(let c of card){
+                c.dataset[game.#player] = thf(c.dataset[game.#player]);
+                c.dataset[!game.#player] = thf(c.dataset[!game.#player]);
+                c.textContent = c.dataset[game.#player];
+            }
+        }
+
+        static #next_seed(){
+            let seed = document.getElementsByClassName("seed");
+            for(let s of seed){
+                s.textContent = game.#new_seed_content();
+            }
+        }
         
         static #update_scope(){
             let scope = document.getElementById("scope");
@@ -54,13 +79,10 @@
             game.#scope.set(game.#player, 50);
             game.#scope.set(!game.#player, 50);
             game.#update_scope();
-            let seed = document.getElementsByClassName("seed");
+            
+            game.#next_seed();
+            
             let card = document.getElementsByClassName("card");
-            
-            for(let s of seed){
-                s.textContent = game.#new_seed_content();
-            }
-            
             for(let c of card){
                 c.dataset[game.#player] = game.#new_card_content();
                 c.dataset[!game.#player] = game.#new_card_content();
@@ -86,10 +108,7 @@
             game.#update_scope();
 
         }
-
         
-
-
     }
 
     function select(self, isplayer = true){
