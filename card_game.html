@@ -262,7 +262,7 @@ cause one of following:
                     return n;
                 }
             };
-            let trans = (t){
+            let trans = (t) => {
                 let r = new Map();
                 if( t[0] === "+"){
                     r.set("f",game.#add);
@@ -285,16 +285,16 @@ cause one of following:
             
             player = [...player].map(
                 p => {
-                    let t = p.datset[game.#player];
-                    p.datset[game.#player] = "";
-                    p.textContent = p.datset[game.#player];
+                    let t = p.dataset[game.#player];
+                    p.dataset[game.#player] = "";
+                    p.textContent = p.dataset[game.#player];
                     return trans(t);
                 }
             );
             peer = [...peer].map(
                 p => {
-                    let t = p.datset[!game.#player];
-                    p.datset[!game.#player] = "";
+                    let t = p.dataset[!game.#player];
+                    p.dataset[!game.#player] = "";
                     return trans(t);
                 }
             );
@@ -332,7 +332,7 @@ cause one of following:
                 game.#retarget
             ];
             f[game.get_random(f.length)](
-                game.#id(isplayer);
+                game.#id(isplayer)
             );
         }
         
