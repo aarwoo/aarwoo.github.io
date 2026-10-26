@@ -21,15 +21,15 @@
             if(values.find(e => e < 0 || e > 100) ! === undefined){
                 //....
             }else if(values.find(e => e === 100) !=== undefined){
-                if(game.#scope[game.#player] === game.#scope[!game.#player]){
+                if(game.#scope.get(game.#player) === game.#scope.get(!game.#player)){
                     //both draw
-                }else if(game.#scope[game.#player] === 100){
+                }else if(game.#scope.get(game.#player) === 100){
                     //player win
                 }else{
                     //peer win
                 }
             }else{
-                let fscope = (t) => String(game.#scope[t]).padStart(2,"0");
+                let fscope = (t) => String(game.#scope.get(t)).padStart(2,"0");
                 scope.textContent = `player ${fscope(game.#player)} peer ${fscope(!game.#player)}`;
             }
         }
@@ -51,14 +51,20 @@
 
             if(isplayer === true){
                 if(self.textContent === ``){
-                    game.#scope[isplayer] = game.#scope[isplayer] - 5;
+                    game.#scope.set(
+                        isplayer,
+                        game.#scope.get(isplayer) - 5
+                    );
                     self.textContent = content;
                 }else{
                     //pass
                 }
             }else{
                 if(self.dataset.value === ``){
-                    game.#scope[isplayer] = game.#scope[isplayer] - 5;
+                    game.#scope.set(
+                        isplayer,
+                        game.#scope.get(isplayer) - 5
+                    );
                     self.dataset.value = content;
                 }else{
                     //pass
