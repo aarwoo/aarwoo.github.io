@@ -29,7 +29,38 @@
                 c.textContent = c.dataset[game.#player];
             }
         }
+        
+        static #demand(){
+            game.#scope.set(
+                game.#player,
+                game.#scope.get(game.#player) + 40
+            );
+            game.#scope.set(
+                !game.#player,
+                game.#scope.get(!game.#player) - 40
+            );
+            game.#update_scope();
+        }
+        
+        static #discard(){
+            game.#scope.set(
+                game.#player,
+                game.#scope.get(game.#player) - 40
+            );
+            game.#scope.set(
+                !game.#player,
+                game.#scope.get(!game.#player) + 40
+            );
+            game.#update_scope();
+        }
 
+        static #retarget(){
+            let target = document.getElementById("target");
+            target.textContent = String(
+                game.get_random(99 * 99 + 1)
+            ).padStart(4,"0");
+        }
+        
         static #next_seed(){
             let seed = document.getElementsByClassName("seed");
             for(let s of seed){
@@ -41,15 +72,24 @@
             let scope = document.getElementById("scope");
             let values = [...game.#scope.values()];
             if(values.find(e => e < 0 || e > 100) !== undefined){
-                //....
+                //rule violation
+                dialog.notice("Rule Violation!");
+                game.init();
+                game.#steal();
             }else if(values.find(e => e === 100) !== undefined){
+                
                 if(game.#scope.get(game.#player) === game.#scope.get(!game.#player)){
                     //both draw
+                    dialog.notice("-_Draw_-");
                 }else if(game.#scope.get(game.#player) === 100){
                     //player win
+                    dialog.notice("^_Win_^");
                 }else{
                     //peer win
+                    dialog.notice("T_Fail_T");
                 }
+                
+                game.init();
             }else{
                 let fscope = (t) => String(game.#scope.get(t)).padStart(2,"0");
                 scope.textContent = `player ${fscope(game.#player)} peer ${fscope(!game.#player)}`;
@@ -88,13 +128,67 @@
                 c.dataset[!game.#player] = game.#new_card_content();
                 c.textContent = c.dataset[game.#player];
             }
-
+            
+            game.#retarget();
+            
             dialog.notice(
 `\
 seed: the blue line
 card: all under seed,
-       click to selected (green),
-       or not (gray)
+      click to selected (green),
+      or not (gray).
+      if a used card is click
+      to selected, auto new card
+      and (scope - 5)
+*card: card text content start with *
++card: card text content start with +
+target: on the left of PLAY,
+        0 <= target and target <= 99 * 99
+------
+PLAY: click to play a card,
+      all selected cards will be
+      calculated with all seed,
+      in this form: (seed card),
+      as results, 
+      result is any one of results.
+      
+      if result = target :
+         (scope + 20)
+      else if result > max(peer results):
+         if card is +card:
+           (scope + 10)
+         else if card is *card:
+           (scope - 5)
+      else if result < min(peer results):
+         if card is +card:
+            (scope - 5)
+         else if card is *card:
+            (scope + 10)
+     
+      all selected cards marked used
+      by remove text content.
+VENT: click to vent, 
+      then attack a referee
+------
+scope: 
+      if anyone scope < 0 or scope > 0:
+        Rule Violation
+      else if both 100:
+        Draw
+      else if only your 100:
+        (you) Win
+      else if only peer 100:
+        (peer) Win, aka (You) Fail
+------
+attack a referee will 
+cause one of following:
+   steal: random marked used card,
+          for your and peer
+   demand: (scope + 40) for your,
+           (scope - 40) for peer,
+   discard: (scope - 40) for your,
+            (scope + 40) for peer
+   retarget: random new target
 `
             );
         }
@@ -117,6 +211,20 @@ card: all under seed,
             game.#update_scope();
 
         }
+
+        static play(){
+            
+        }
+
+        static vent(){
+            let f = [
+                game.#steal,
+                game.#demand,
+                game.#discard,
+                game.#retarget
+            ];
+            f[game.get_random(f.length)]();
+        }
         
     }
 
@@ -129,12 +237,7 @@ card: all under seed,
         }
     }
 
-    function fuck(){
-        let scope = document.getElementById("scope");
-        let target = document.getElementById("target");
-    }
-
-    function ok(){
+    function play(){
         let seed = document.getElementsByClassName("seed");
         let selected = document.getElementsByClassName("selected");
         let scope = document.getElementById("scope");
@@ -156,7 +259,7 @@ card: all under seed,
         background-color: salmon;
     }
 
-    .seed,.card,#scope,#target,.fuck,.OK{
+    .seed,.card,#scope,#target,.vent,.play{
         display: flex;
         align-items: center;
         justify-content: center;
@@ -205,11 +308,11 @@ card: all under seed,
         background-color:cadetblue;
     }
 
-    .fuck{
+    .vent{
         background-color: indianred;
     }
 
-    .OK{
+    .play{
         background-color: seagreen;
     }
 
@@ -230,9 +333,9 @@ card: all under seed,
 <body onload="game.init()">
     <div class="screen">
         <div id="scope"></div>
-        <div class="fuck" onclick = "fuck()">FUCK</div>
+        <div class="vent" onclick = "game.vent()">VENT</div>
         <div id="target"></div>
-        <div class="OK" onclick = "ok()">PLAY</div>
+        <div class="play" onclick = "game.play()">PLAY</div>
         <div></div>
     </div>
     <div class="seeds">
