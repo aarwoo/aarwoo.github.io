@@ -31,12 +31,17 @@
             }
         }
 
-        static init(){
-            game.#scope.set(game.#player, 50);
-            game.#scope.set(!game.#player, 50);
-            game.#update_scope();
+        static #new_seed_content(){
+            return String(game.get_random(100)).padStart(2,"0");
         }
-        
+
+        static #new_card_content(){
+            let op = "+*";
+            let random_op = op[game.get_random(op.length)];
+            
+            return `${random_op}${game.#new_seed_content()}`;
+        }
+
         static get_random(sup){
             let next = new Uint32Array(1);
             next[0] = ~0;
@@ -45,37 +50,44 @@
             return next[0] % sup;
         }
 
-        static new_card(self,isplayer){
-            let op = "+*";
-            let random_op = op[game.get_random(op.length)];
-            let random_num = String(game.get_random(100)).padStart(2,"0");
-            let content = `${random_op}${random_num}`
-
-            if(isplayer === true){
-                if(self.textContent === ``){
-                    game.#scope.set(
-                        isplayer,
-                        game.#scope.get(isplayer) - 5
-                    );
-                    self.textContent = content;
-                }else{
-                    //pass
-                }
-            }else{
-                if(self.dataset.value === ``){
-                    game.#scope.set(
-                        isplayer,
-                        game.#scope.get(isplayer) - 5
-                    );
-                    self.dataset.value = content;
-                }else{
-                    //pass
-                }
+        static init(){
+            game.#scope.set(game.#player, 50);
+            game.#scope.set(!game.#player, 50);
+            game.#update_scope();
+            let seed = document.getElementsByClassName("seed");
+            let card = document.getElementsByClassName("card");
+            
+            for(let s of seed){
+                s.textContent = game.#new_seed_content();
             }
+            
+            for(let c of card){
+                c.dataset[game.#player] = game.#new_card_content();
+                c.dataset[!game.#player] = game.#new_card_content();
+                c.textContent = c.dataset[game.#player];
+            }
+        }
+
+        static new_card(self,isplayer){
+            let content = game.#new_card_content();
+            let id = (isplayer === true)? (game.#player) : (!game.#player);
+            
+            if(self.dataset[id] === ``){
+                game.#scope.set(
+                    id,
+                    game.#scope.get(id) - 5
+                );
+                self.dataset[id] = content;
+            }else{
+                //pass
+            }
+            self.textContent = self.dataset[game.#player];
 
             game.#update_scope();
 
         }
+
+        
 
 
     }
@@ -195,29 +207,29 @@
         <div></div>
     </div>
     <div class="seeds">
-        <div class="seed">3</div>
+        <div class="seed"></div>
         <div class="seed"></div>
         <div class="seed"></div>
         <div class="seed"></div>
         <div></div>
     </div>
     <div class="cards">
-        <div class = "card" data-value="" onclick="select(this)">+10</div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
-        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
     </div>
 </body>
 </html>
