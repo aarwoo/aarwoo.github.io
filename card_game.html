@@ -18,9 +18,9 @@
         static #update_scope(){
             let scope = document.getElementById("scope");
             let values = [...game.#scope.values()];
-            if(values.find(e => e < 0 || e > 100) ! === undefined){
+            if(values.find(e => e < 0 || e > 100) !== undefined){
                 //....
-            }else if(values.find(e => e === 100) !=== undefined){
+            }else if(values.find(e => e === 100) !== undefined){
                 if(game.#scope.get(game.#player) === game.#scope.get(!game.#player)){
                     //both draw
                 }else if(game.#scope.get(game.#player) === 100){
