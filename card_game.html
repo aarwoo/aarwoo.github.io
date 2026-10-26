@@ -12,6 +12,14 @@
         
         static #scope = new Map();
 
+        static #id(isplayer){
+            return (
+                (isplayer === true) 
+                ?  (game.#player) 
+                :  (!game.#player)
+            );
+        }
+
         static #switch(){
             game.#player = !game.#player;
             let card = document.getElementsByClassName("card"); 
@@ -20,7 +28,7 @@
             }
         }
         
-        static #steal(){
+        static #steal(_ = null){
             let card = document.getElementsByClassName("card");
             let thf = (c) => (game.get_random(2) === 0)? c : ``;
             for(let c of card){
@@ -30,35 +38,43 @@
             }
         }
         
-        static #demand(){
+        static #demand(id){
             game.#scope.set(
-                game.#player,
-                game.#scope.get(game.#player) + 40
+                id,
+                game.#scope.get(id) + 40
             );
             game.#scope.set(
-                !game.#player,
-                game.#scope.get(!game.#player) - 40
+                !id,
+                game.#scope.get(!id) - 40
             );
             game.#update_scope();
         }
         
-        static #discard(){
+        static #discard(id){
             game.#scope.set(
-                game.#player,
-                game.#scope.get(game.#player) - 40
+                id,
+                game.#scope.get(id) - 40
             );
             game.#scope.set(
-                !game.#player,
-                game.#scope.get(!game.#player) + 40
+                !id,
+                game.#scope.get(!id) + 40
             );
             game.#update_scope();
         }
 
-        static #retarget(){
+        static #retarget(_ = null){
             let target = document.getElementById("target");
             target.textContent = String(
                 game.get_random(99 * 99 + 1)
             ).padStart(4,"0");
+        }
+
+        static #add(seed,card){
+            return seed + card;
+        }
+
+        static #mul(seed,card){
+            return seed * card;
         }
         
         static #next_seed(){
@@ -195,7 +211,7 @@ cause one of following:
 
         static new_card(self,isplayer){
             let content = game.#new_card_content();
-            let id = (isplayer === true)? (game.#player) : (!game.#player);
+            let id = game.#id(isplayer);
             
             if(self.dataset[id] === ``){
                 game.#scope.set(
@@ -211,38 +227,109 @@ cause one of following:
             game.#update_scope();
 
         }
+        
+        static player_select(self){
+            if(self.className === `card`){
+                game.new_card(self,true);
+                self.className = `card selected`;
+            }else{
+                self.className = `card`;
+            }
+        }
 
         static play(){
+            //maybe need 🔒 
+            let seed = document.getElementsByClassName("seed");
+            let target = document.getElementById("target");
+            let player = document.getElementsByClassName("selected");
+            let peer = []; // todo
+
+            let error = () => {
+                dialog.notice("Data Tampering!!!");
+                location.reload();
+            };
+            let int = (s, sup) => {
+                let n = Number.parseInt(s,10);
+                if(Number.isNaN(n) || n < 0 || n >= sup){
+                    error();
+                }else{
+                    return n;
+                }
+            };
+            let trans = (t){
+                let r = new Map();
+                if( t[0] === "+"){
+                    r.set("f",game.#add);
+                else if ( t[0] === "*" ){
+                    r.set("f",game.#mul);
+                else{
+                    error();
+                }
+                r.set(
+                    "card", 
+                    int(t.slice(1),100)
+                );
+                return r;
+            };
+            
+            seed = [...seed].map(
+                s => int(s.textContent,100)
+            );
+            target = int(target.textContent,99 * 99 + 1);
+            
+            player = [...player].map(
+                p => {
+                    let t = p.datset[game.#player];
+                    p.datset[game.#player] = "";
+                    p.textContent = p.datset[game.#player];
+                    return trans(t);
+                }
+            );
+            peer = [...peer].map(
+                p => {
+                    let t = p.datset[!game.#player];
+                    p.datset[!game.#player] = "";
+                    return trans(t);
+                }
+            );
+
+            /*all selected cards will be
+      calculated with all seed,
+      in this form: (seed card),
+      as results, 
+      result is any one of results.
+      
+      if result = target :
+         (scope + 20)
+      else if result > max(peer results):
+         if card is +card:
+           (scope + 10)
+         else if card is *card:
+           (scope - 5)
+      else if result < min(peer results):
+         if card is +card:
+            (scope - 5)
+         else if card is *card:
+            (scope + 10)
+     
+      all selected cards marked used
+      by remove text content.
+            */
             
         }
 
-        static vent(){
+        static vent(isplayer){
             let f = [
                 game.#steal,
                 game.#demand,
                 game.#discard,
                 game.#retarget
             ];
-            f[game.get_random(f.length)]();
+            f[game.get_random(f.length)](
+                game.#id(isplayer);
+            );
         }
         
-    }
-
-    function select(self, isplayer = true){
-        if(self.className === `card`){
-            game.new_card(self,isplayer);
-            self.className = `card selected`;
-        }else{
-            self.className = `card`;
-        }
-    }
-
-    function play(){
-        let seed = document.getElementsByClassName("seed");
-        let selected = document.getElementsByClassName("selected");
-        let scope = document.getElementById("scope");
-        let target = document.getElementById("target");
-
     }
 </script>
 <script src="https://lang-core.org/dialog.js"></script>
@@ -333,7 +420,7 @@ cause one of following:
 <body onload="game.init()">
     <div class="screen">
         <div id="scope"></div>
-        <div class="vent" onclick = "game.vent()">VENT</div>
+        <div class="vent" onclick = "game.vent(true)">VENT</div>
         <div id="target"></div>
         <div class="play" onclick = "game.play()">PLAY</div>
         <div></div>
@@ -346,22 +433,22 @@ cause one of following:
         <div></div>
     </div>
     <div class="cards">
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
-        <div class = "card" data-true="" data-false="" onclick="select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
+        <div class = "card" data-true="" data-false="" onclick="game.player_select(this)"></div>
     </div>
 </body>
 </html>
