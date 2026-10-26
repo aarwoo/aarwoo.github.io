@@ -1,0 +1,188 @@
+<!--design by me, cowork with Gemini-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width height=device-height initial-scale=1.0
+                               minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
+</head>
+<script>
+    class game{
+        
+
+
+        static get_random(sup){
+            let next = new Uint32Array(1);
+            next[0] = ~0;
+            next[0] = Math.floor(next[0] * Math.random());
+            window.crypto?.getRandomValues(next);
+            return next[0] % sup;
+        }
+
+        static new_card(self,isplayer){
+            let op = "+*-";
+            let random_op = op[game.get_random(op.length)];
+            let random_num = String(game.get_random(100)).padStart(2,"0");
+            let content = `${random_op}${random_num}`
+
+            if(isplayer === true){
+                if(self.textContent === ``){
+                    self.textContent = content;
+                }else{
+                    //pass
+                }
+            }else{
+                if(self.dataset.value === ``){
+                    self.dataset.value = content;
+                }else{
+                    //pass
+                }
+            }
+
+        }
+
+
+    }
+
+    function select(self, isplayer = true){
+        if(self.className === `card`){
+            game.new_card(self,isplayer);
+            self.className = `card selected`;
+        }else{
+            self.className = `card`;
+        }
+    }
+
+    function fuck(){
+        let scope = document.getElementById("scope");
+        let target = document.getElementById("target");
+    }
+
+    function ok(){
+        let seed = document.getElementsByClassName("seed");
+        let selected = document.getElementsByClassName("selected");
+        let scope = document.getElementById("scope");
+        let target = document.getElementById("target");
+
+    }
+</script>
+<style>
+    body{
+        margin: 0;
+        padding: 0;
+    }
+
+    .seeds,.cards,.screen{
+        position: fixed;
+        display: grid;
+        gap: 10px;
+        background-color: salmon;
+    }
+
+    .seed,.card,#scope,#target,.fuck,.OK{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: plum;
+        font-size: 3rem;
+        font-weight: bolder;
+        font-family: monospace;
+    }
+
+
+
+
+    .cards{
+        top: 40dvh;
+        left:0;
+        width:100dvw;
+        height:60dvh;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4,1fr);
+        
+    }
+    .card{
+        background-color: lightgray;
+        
+    }
+    .selected{
+        background-color: palegreen;
+    }
+
+    .screen{
+        top: 0;
+        left:0;
+        width:100dvw;
+        height:30dvh;
+        grid-template-columns: repeat(4,1fr);
+        grid-template-rows: repeat(2,1fr);
+    }
+
+    #scope,#target{
+        grid-column: span 3;
+    }
+    
+    #scope{
+        background-color: gold;
+    }
+
+    #target{
+        background-color:cadetblue;
+    }
+
+    .fuck{
+        background-color: indianred;
+    }
+
+    .OK{
+        background-color: seagreen;
+    }
+
+    .seeds{
+        top: 30dvh;
+        left: 0;
+        height: 10dvh;
+        width: 100dvw;
+        grid-template-columns: repeat(4,1fr);
+        grid-template-rows: repeat(1,1fr);
+    }
+
+    .seed{
+        background-color:dodgerblue;
+    }
+
+</style>
+<body>
+    <div class="screen">
+        <div id="scope">SCOPE</div>
+        <div class="fuck" onclick = "fuck()">FUCK</div>
+        <div id="target">TARGET</div>
+        <div class="OK" onclick = "ok()">PLAY</div>
+        <div></div>
+    </div>
+    <div class="seeds">
+        <div class="seed">3</div>
+        <div class="seed"></div>
+        <div class="seed"></div>
+        <div class="seed"></div>
+        <div></div>
+    </div>
+    <div class="cards">
+        <div class = "card" data-value="" onclick="select(this)">+10</div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+        <div class = "card" data-value="" onclick="select(this)"></div>
+    </div>
+</body>
+</html>
