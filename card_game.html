@@ -9,6 +9,7 @@
     class game{
 
         static #player = true;
+        static #vent_queue = [];
         
         static #scope = new Map();
 
@@ -190,6 +191,7 @@ PLAY: click to play a card,
       by remove text content.
 VENT: click to vent, 
       then attack a referee
+      in next PLAY
 ------
 scope: 
       if anyone scope < 0 
@@ -332,8 +334,11 @@ cause one of following:
                 game.#discard,
                 game.#retarget
             ];
-            f[game.get_random(f.length)](
-                game.#id(isplayer)
+            
+            game.#vent_queue.push(
+                () => f[game.get_random(f.length)](
+                    game.#id(isplayer)
+                )
             );
         }
         
