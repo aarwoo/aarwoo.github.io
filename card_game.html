@@ -31,12 +31,12 @@
             }
         }
 
-        static{
+        static init(){
             game.#scope.set(game.#player, 50);
             game.#scope.set(!game.#player, 50);
             game.#update_scope();
         }
-
+        
         static get_random(sup){
             let next = new Uint32Array(1);
             next[0] = ~0;
@@ -186,7 +186,7 @@
     }
 
 </style>
-<body>
+<body onload="game.init()">
     <div class="screen">
         <div id="scope"></div>
         <div class="fuck" onclick = "fuck()">FUCK</div>
