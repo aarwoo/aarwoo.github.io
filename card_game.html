@@ -156,10 +156,13 @@ card: all under seed,
       if a used card is click
       to selected, auto new card
       and (scope - 5)
-*card: card text content start with *
-+card: card text content start with +
+*card: card text content
+       start with *
++card: card text content
+       start with +
 target: on the left of PLAY,
-        0 <= target and target <= 99 * 99
+        0 <= target and
+        target <= 99 * 99
 ------
 PLAY: click to play a card,
       all selected cards will be
@@ -170,12 +173,14 @@ PLAY: click to play a card,
       
       if result = target :
          (scope + 20)
-      else if result > max(peer results):
+      else if result > 
+      max(peer results):
          if card is +card:
            (scope + 10)
          else if card is *card:
            (scope - 5)
-      else if result < min(peer results):
+      else if result < 
+      min(peer results):
          if card is +card:
             (scope - 5)
          else if card is *card:
@@ -187,7 +192,8 @@ VENT: click to vent,
       then attack a referee
 ------
 scope: 
-      if anyone scope < 0 or scope > 0:
+      if anyone scope < 0 
+      or scope > 100:
         Rule Violation
       else if both 100:
         Draw
