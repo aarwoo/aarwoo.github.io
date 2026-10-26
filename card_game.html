@@ -10,11 +10,11 @@
 
         static #player = true;
         
-        static #scope = {
-            true: 50,
-            false: 50
-        };
-
+        static #scope = new Map();
+        static{
+            game.#scope.set(game.#player, 50);
+            game.#scope.set(!game.#player, 50);
+        }
         static #update_scope(){
             let scope = document.getElementById("scope");
             let values = [...game.#scope.values()];
