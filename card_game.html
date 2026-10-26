@@ -88,6 +88,15 @@
                 c.dataset[!game.#player] = game.#new_card_content();
                 c.textContent = c.dataset[game.#player];
             }
+
+            dialog.notice(
+`\
+seed: the blue line
+card: all under seed,
+       click to selected (green),
+       or not (gray)
+`
+            );
         }
 
         static new_card(self,isplayer){
@@ -133,6 +142,7 @@
 
     }
 </script>
+<script src="https://lang-core.org/dialog.js"></script>
 <style>
     body{
         margin: 0;
