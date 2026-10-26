@@ -288,6 +288,7 @@ cause one of following:
                     let t = p.dataset[game.#player];
                     p.dataset[game.#player] = "";
                     p.textContent = p.dataset[game.#player];
+                    game.player_select(p);
                     return trans(t);
                 }
             );
