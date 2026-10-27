@@ -2,8 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width height=device-height initial-scale=1.0
-                               minimum-scale=1.0 maximum-scale=1.0 user-scalable=no"/>
+    <meta name="viewport" content="width=device-width,height=device-height,
+                                   initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,
+                                   user-scalable=no"/>
 </head>
 <script>
     class game{
@@ -82,6 +83,49 @@
                 }
             }
         }
+
+        static #mug(_ = null){
+            let card = document.getElementsByClassName("card");
+            let rdi = () => game.get_random(card.length);
+            let rnd = () => game.get_random(2) === 0;
+            
+            let res = (c) => {
+                if(c.dataset[game.#player] === ``){
+                    c.className = `card`;
+                }else{
+                    //pass
+                }
+                
+                if(c.dataset[!game.#player] === ``){
+                    game.#peer_selected.delete(c);
+                }else{
+                    //pass
+                }
+            };
+            
+            let fmug = (a,b) => {
+                let A = card[rdi()];
+                let B = card[rdi()];
+                A.dataset[a] = B.dataset[b];
+                B.dataset[b] = ``;
+                res(A);
+                res(B);
+            };
+            
+            do {
+                if( rnd() === true ){
+                    fmug(
+                        game.#player,
+                        !game.#player
+                    );
+                }else{
+                    fmug(
+                        !game.#player,
+                        game.#player
+                    );
+                }  
+            } while (rnd() === true);
+        }
         
         static #demand(id){
             game.#scope.set(
@@ -114,6 +158,7 @@
             ).padStart(4,"0");
             peer.notice_retarget(target.textContent);
         }
+        
         static #rescope(_ = null){
             let f = () => (game.#min_scope + 5) + game.get_random(
                 (game.#max_scope - game.#min_scope) / 5 - 1
@@ -338,6 +383,10 @@ scope:
 ------
 attack a referee will 
 cause one of following:
+   mug:  you and peer are muggings each other,
+         at least one times.
+         if you succeed, you discard your card
+         and get peer card, includes used.
    steal: random marked used card,
           for you and peer
    demand: (scope + 40) for you,
@@ -548,6 +597,7 @@ cause one of following:
 
         static vent(isplayer){
             let f = [
+                game.#mug,
                 game.#steal,
                 game.#demand,
                 game.#discard,
