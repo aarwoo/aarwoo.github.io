@@ -14,6 +14,12 @@
 
         static #peer_selected = new Set();
 
+        static #min_scope = 0;
+        static #max_scope = 1000;
+        static #flex_scope = 200;
+        static #init_scope = 500;
+        static #scope_fix = 4;
+
         static #id(isplayer){
             return (
                 (isplayer === true) 
@@ -97,7 +103,9 @@
             peer.notice_retarget(target.textContent);
         }
         static #rescope(_ = null){
-            let f = () => 5 + game.get_random(90/5 + 1) * 5;
+            let f = () => (game.#min_scope + 5) + game.get_random(
+                (game.#max_scope - game.#min_scope) / 5 - 1
+            ) * 5;
             game.#scope.set(game.#player, f());
             game.#scope.set(!game.#player, f());
             game.#update_scope();
@@ -124,17 +132,26 @@
         static #update_scope(){
             let scope = document.getElementById("scope");
             let values = [...game.#scope.values()];
-            if(values.find(e => e < 0 || e > 100) !== undefined){
+            if(values.find(
+                e => 
+                    e < (game.#min_scope - game.#flex_scope) 
+                ||  e > (game.#max_scope + game.#flex_scope)
+            ) !== undefined){
                 //rule violation
                 dialog.notice("Rule Violation!");
                 game.init();
                 game.#steal();
-            }else if(values.find(e => e === 100) !== undefined){
+            }else if(values.find(
+                e => e >= game.#max_scope
+            ) !== undefined){
                 
-                if(game.#scope.get(game.#player) === game.#scope.get(!game.#player)){
+                if(
+                    game.#scope.get(game.#player) >= game.#max_scope
+                 && game.#scope.get(!game.#player) >= game.#max_scope
+                ){
                     //both draw
                     dialog.notice("-_Draw_-");
-                }else if(game.#scope.get(game.#player) === 100){
+                }else if(game.#scope.get(game.#player) >= game.#max_scope){
                     //player win
                     dialog.notice("^_Win_^");
                 }else{
@@ -144,11 +161,13 @@
                 
                 game.init();
             }else{
-                let fscope = (t) => String(game.#scope.get(t)).padStart(2,"0");
+                let fscope = (t) => String(
+                    game.#scope.get(t)
+                ).padStart(game.#scope_fix," ");
                 let player_scope = fscope(game.#player);
                 let peer_scope = fscope(!game.#player);
                 
-                scope.textContent = `player ${player_scope} peer ${peer_scope}`;
+                scope.textContent = `peer: ${peer_scope}\nyou: ${player_scope}`;
                 peer.notice_scope_update(
                     peer_scope,
                     player_scope
@@ -206,8 +225,14 @@
         }
 
         static init(){
-            game.#scope.set(game.#player, 50);
-            game.#scope.set(!game.#player, 50);
+            game.#scope.set(
+                game.#player,
+                game.#init_scope
+            );
+            game.#scope.set(
+                !game.#player,
+                game.#init_scope
+            );
             game.#update_scope();
             
             game.#next_seed();
@@ -223,7 +248,12 @@
             
             game.#retarget();
 
-            peer.notice_init(card.length);
+            peer.notice_init(
+                card.length,
+                game.#min_scope,
+                game.#max_scope,
+                game.#flex_scope
+            );
             
             dialog.notice(
 `\
@@ -279,14 +309,14 @@ VENT: click to vent,
       NOTE: peer also can do.
 ------
 scope: 
-      if anyone scope < 0 
-      or scope > 100:
+      if anyone scope < ${game.#min_scope - game.#flex_scope} 
+      or scope > ${game.#max_scope + game.#flex_scope}:
         Rule Violation
-      else if both 100:
+      else if both >= ${game.#max_scope}
         Draw
-      else if only your 100:
+      else if only your >= ${game.#max_scope}:
         (you) Win
-      else if only peer 100:
+      else if only peer >= ${game.#max_scope}:
         (peer) Win, aka (You) Fail
 ------
 attack a referee will 
@@ -516,10 +546,21 @@ cause one of following:
         static #it_scope;
         static #empty_counts;
         static #card_counts;
+        static #min_scope;
+        static #max_scope;
+        static #flex_scope;
         
-        static notice_init(card_counts){
+        static notice_init(
+            card_counts,
+            min_scope,
+            max_scope,
+            flex_scope
+        ){
             peer.#empty_counts = 0;
             peer.#card_counts = card_counts;
+            peer.#min_scope = min_scope;
+            peer.#max_scope = max_scope;
+            peer.#flex_scope = flex_scope;
         }
         
         static notice_next_seed(seeds){
@@ -550,13 +591,14 @@ cause one of following:
             if(
                 peer.#deside(
                     [peer.#my_scope,peer.#it_scope].every(
-                        s => s >= 40 && s < 60
+                        s => s >= (40 + peer.#min_scope) 
+                          && s < (peer.#max_scope - 200)
                     ),
                     Math.max(
                         0,
                         peer.#it_scope - peer.#my_scope
                     ),
-                    60 - 40
+                    (peer.#max_scope - 200) - (40 + peer.#min_scope)
                 ) === true
             ){
                 game.vent(false);
@@ -572,7 +614,9 @@ cause one of following:
                     if(card.value === ``){
                         select_it = peer.#deside(
                             peer.#empty_counts > 0
-                         && peer.#my_scope >= 5,
+                         && peer.#my_scope >= (
+                             peer.#min_scope - peer.#flex_scope + 5
+                         ),
                             peer.#empty_counts,
                             peer.#card_counts + 1
                         );
