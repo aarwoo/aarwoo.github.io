@@ -222,6 +222,8 @@
             }
             
             game.#retarget();
+
+            peer.#notice_init(card.length);
             
             dialog.notice(
 `\
@@ -321,14 +323,10 @@ cause one of following:
 
             for(let c of card){
                 if((yield c.dataset[!game.#player]) === true){
-                    if(game.#peer_selected.has(c) === false){
-                        game.#new_card(c,false);
-                        game.#peer_selected.add(c);
-                    }else{
-                        game.#peer_selected.delete(c);
-                    }
+                    game.#new_card(c,false);
+                    game.#peer_selected.add(c);
                 }else{
-                    //pass
+                    game.#peer_selected.delete(c);
                 }
             }
         }
@@ -510,6 +508,13 @@ cause one of following:
         static #target;
         static #my_scope;
         static #it_scope;
+        static #empty_counts;
+        static #card_counts;
+        
+        static notice_init(card_counts){
+            peer.#empty_counts = 0;
+            peer.#card_counts = card_counts;
+        }
         
         static notice_next_seed(seeds){
             peer.seeds = seeds.map(
@@ -550,7 +555,43 @@ cause one of following:
             ){
                 game.vent(false);
             }else{
-                //?????
+                let cards = game.peer_select();
+                let select_it = false;
+                let empty_count = 0;
+                for(
+                    let card = cards.next();
+                    card.done === false;
+                    card = cards.next(select_it)
+                ){
+                    if(card.value === ``){
+                        select_it = peer.deside(
+                            peer.#empty_count > 0
+                         && peer.#my_scope >= 5,
+                            peer.#empty_count,
+                            peer.#card_counts + 1
+                        );
+                        empty_count = empty_count + (
+                            (select_it === true)? 0 : 1
+                        );
+                    }else if(card.value[0] === "+"){
+                        select_it = peer.#add_card(
+                            Number.praseInt(
+                                card.value.slice(1),
+                                10
+                            )
+                        );
+                    }else if(card.value[0] === "*"){
+                        select_it = peer.#mul_card(
+                            Number.praseInt(
+                                card.value.slice(1),
+                                10
+                            )
+                        );
+                    }else{
+                        select_it = false;
+                    }
+                }
+                peer.#empty_count = empty_count;
             }
         }
 
@@ -566,6 +607,7 @@ cause one of following:
         static #mul_card(card){
             
         }
+        
     }
 </script>
 <script src="https://lang-core.org/dialog.js"></script>
