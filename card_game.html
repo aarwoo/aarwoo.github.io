@@ -549,7 +549,7 @@ cause one of following:
         static notice_take_action(){
             if(
                 peer.#deside(
-                    [peer.#my_scope,peer.#it_scope].map(
+                    [peer.#my_scope,peer.#it_scope].every(
                         s => s >= 40 && s < 60
                     ),
                     Math.max(
