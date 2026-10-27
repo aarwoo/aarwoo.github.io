@@ -380,11 +380,14 @@ cause one of following:
             let card = document.getElementsByClassName("card");
 
             for(let c of card){
-                if((yield c.dataset[!game.#player]) === true){
+                let is_select = (yield c.dataset[!game.#player]);
+                if( is_select === true){
                     game.#new_card(c,false);
                     game.#peer_selected.add(c);
-                }else{
+                }else if( is_select === false){
                     game.#peer_selected.delete(c);
+                }else{
+                    //pass
                 }
             }
         }
@@ -567,7 +570,6 @@ cause one of following:
         static #target;
         static #my_scope;
         static #it_scope;
-        static #empty_counts;
         static #card_counts;
         static #min_scope;
         static #max_scope;
@@ -579,7 +581,6 @@ cause one of following:
             max_scope,
             flex_scope
         ){
-            peer.#empty_counts = 0;
             peer.#card_counts = card_counts;
             peer.#min_scope = min_scope;
             peer.#max_scope = max_scope;
@@ -628,7 +629,7 @@ cause one of following:
             }else{
                 let cards = game.peer_select();
                 let select_it = false;
-                let empty_counts = 0;
+                let empty_counts = peer.#empty_counts();
                 for(
                     let card = cards.next();
                     card.done === false;
@@ -636,15 +637,14 @@ cause one of following:
                 ){
                     if(card.value === ``){
                         select_it = peer.#deside(
-                            peer.#empty_counts > 0
-                         && peer.#my_scope >= (
-                             peer.#min_scope - peer.#flex_scope + 5
-                         ),
-                            peer.#empty_counts,
+                            peer.#my_scope >= (
+                                peer.#min_scope - peer.#flex_scope + 5
+                            ),
+                            empty_counts,
                             peer.#card_counts + 1
                         );
-                        empty_counts = empty_counts + (
-                            (select_it === true)? 0 : 1
+                        empty_counts = empty_counts - (
+                            (select_it === true)? 1 : 0
                         );
                     }else if(card.value[0] === "+"){
                         select_it = peer.#add_card(
@@ -664,13 +664,22 @@ cause one of following:
                         select_it = false;
                     }
                 }
-                peer.#empty_counts = empty_counts;
             }
         }
 
 
         static #deside(base,p,q){
             return base && game.get_random(q) < p;
+        }
+
+        static #empty_counts(){
+            let counts = 0;
+            for(let c of game.peer_select()){
+                counts = counts + (
+                    c.value === `` ? 1 : 0
+                );
+            }
+            return counts;
         }
 
         static #add_card(card){
