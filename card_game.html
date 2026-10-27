@@ -22,7 +22,7 @@
             );
         }
 
-        static #switch(){
+        static #switch(_ = null){
             game.#player = !game.#player;
             let card = document.getElementsByClassName("card"); 
             for(let c of card){
@@ -95,6 +95,12 @@
                 game.get_random(99 * 99 + 1)
             ).padStart(4,"0");
             peer.notice_retarget(target.textContent);
+        }
+        static #rescope(_ = null){
+            let f = () => 5 + game.get_random(90/5 + 1) * 5;
+            game.#scope.set(game.#player, f());
+            game.#scope.set(!game.#player, f());
+            game.#update_scope();
         }
 
         static #add(seed,card){
@@ -180,6 +186,17 @@
 
         }
 
+        static #referee_vent(){
+            let f = [
+                game.#steal,
+                game.#rescope,
+                game.#retarget,
+                game.#switch
+            ];
+            
+            f[game.get_random(f.length)]();
+        }
+
         static get_random(sup){
             let next = new Uint32Array(1);
             next[0] = ~0;
@@ -247,6 +264,9 @@ PLAY: click to play a card,
      
       all selected cards marked used
       by remove text content.
+      NOTE: if player or peer no selected
+      card, referee will be vent,
+      and attack player and peer
 VENT: click to vent, 
       then attack a referee.
       NOTE: peer also can do.
@@ -265,11 +285,20 @@ scope:
 attack a referee will 
 cause one of following:
    steal: random marked used card,
-          for your and peer
-   demand: (scope + 40) for your,
+          for you and peer
+   demand: (scope + 40) for you,
            (scope - 40) for peer,
-   discard: (scope - 40) for your,
+   discard: (scope - 40) for you,
             (scope + 40) for peer
+   retarget: random new target
+   switch: swap player and peer
+attack player and peer will
+cause one of following:
+   steal: random marked used card,
+          for player and peer
+   rescope: random scope,
+            5 <= scope && scope <= 95,
+            for played and peef
    retarget: random new target
    switch: swap player and peer
 `
@@ -309,6 +338,13 @@ cause one of following:
             let target = document.getElementById("target");
             let player = document.getElementsByClassName("selected");
             let peer = game.#peer_selected;
+
+            if(player.length === 0 || peer.size() === 0){
+                game.#referee_vent();
+                return;
+            }else{
+                //pass
+            }
 
             let error = () => {
                 dialog.notice("Data Tampering!!!");
