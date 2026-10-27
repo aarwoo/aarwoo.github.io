@@ -90,6 +90,8 @@
             let rnd = () => game.get_random(2) === 0;
             
             let res = (c) => {
+                c.textContent = c.dataset[game.#player];
+                
                 if(c.dataset[game.#player] === ``){
                     c.className = `card`;
                 }else{
