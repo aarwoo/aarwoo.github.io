@@ -138,28 +138,30 @@
                 ||  e > (game.#max_scope + game.#flex_scope)
             ) !== undefined){
                 //rule violation
-                dialog.notice("Rule Violation!");
-                game.init();
-                game.#steal();
-            }else if(values.find(
-                e => e >= game.#max_scope
-            ) !== undefined){
-                
-                if(
-                    game.#scope.get(game.#player) >= game.#max_scope
-                 && game.#scope.get(!game.#player) >= game.#max_scope
-                ){
-                    //both draw
-                    dialog.notice("-_Draw_-");
-                }else if(game.#scope.get(game.#player) >= game.#max_scope){
-                    //player win
-                    dialog.notice("^_Win_^");
-                }else{
-                    //peer win
-                    dialog.notice("T_Fail_T");
-                }
-                
-                game.init();
+                dialog.notice("Rule Violation!").then(
+                    () => {
+                        game.init(false);
+                        game.#steal();
+                    }
+                );
+            }else if(
+                game.#scope.get(game.#player) >= game.#max_scope
+             && game.#scope.get(!game.#player) >= game.#max_scope
+            ){
+                //both draw
+                dialog.notice("-_Draw_-").then(
+                    () => game.init(false)
+                );
+            }else if(game.#scope.get(game.#player) >= game.#max_scope){
+                //player win
+                dialog.notice("^_Win_^").then(
+                    () => game.init(false)
+                );
+            }else if(game.#scope.get(!game.#player) >= game.#max_scope){
+                //peer win
+                dialog.notice("T_Fail_T").then(
+                    () => game.init(false)
+                );
             }else{
                 let fscope = (t) => String(
                     game.#scope.get(t)
@@ -224,7 +226,7 @@
             return next[0] % sup;
         }
 
-        static init(){
+        static init(is_load = true){
             game.#scope.set(
                 game.#player,
                 game.#init_scope
@@ -254,8 +256,11 @@
                 game.#max_scope,
                 game.#flex_scope
             );
-            
-            dialog.notice(
+
+            if(is_load === false){
+                return;
+            }else{
+                dialog.notice(
 `\
 seed: the blue line,
       0 <= seed and
@@ -339,7 +344,8 @@ cause one of following:
    retarget: random new target
    switch: swap player and peer
 `
-            );
+                );
+            }
         }
         
         static player_select(self){
