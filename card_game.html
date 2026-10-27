@@ -54,19 +54,29 @@
             );
         }
 
-        static #event(content,display = true){
+        static #event(content,peer_watch = true,player_watch = true){
             let e = document.getElementById("#event");
 
             event_promise = event.promise.then(
                 () => {
-                    e.textContent = content;
-                    e.style.visibility = "visible";
-                    return new Promise(
-                        (resolve,reject) => setTimeout(
-                            resolve,
-                            game.#each_event_display
-                        )
-                    );
+                    if(peer_watch === true){
+                        peer.watch_event(content);
+                    }else{
+                        //pass
+                    }
+                    
+                    if(player_watch === true){
+                        e.textContent = content;
+                        e.style.visibility = "visible";
+                        return new Promise(
+                            (resolve,reject) => setTimeout(
+                                resolve,
+                                game.#each_event_display
+                            )
+                        );
+                    }else{
+                        return;
+                    }
                 }
             ).then(
                 () => {
@@ -650,9 +660,9 @@ cause one of following:
 
         static vent(isplayer){
             if(isplayer === false){
-                game.#event("peer deside to attack referee");
+                game.#event("peer deside to attack referee",false,true);
             }else{
-                game.#event("you deside to attack referee",false);
+                game.#event("you deside to attack referee",true,false);
             }
 
             let f = [
@@ -718,6 +728,14 @@ cause one of following:
                 player_scope,
                 10
             );
+        }
+
+        static watch_event(content){
+            //this method is empty
+            //maybe for moods of peer
+            //influence desition
+
+            
         }
 
         static notice_take_action(){
