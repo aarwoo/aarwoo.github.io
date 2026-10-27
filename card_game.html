@@ -86,7 +86,7 @@
         }
 
         static #switch(_ = null){
-            game.#event("switch you and peer");
+            game.#event("uno reverse!");
             
             game.#player = !game.#player;
             let card = document.getElementsByClassName("card"); 
@@ -109,7 +109,7 @@
         }
         
         static #steal(_ = null){
-            game.#event("a thief is stealing");
+            game.#event("a master thief strikes");
             
             let card = document.getElementsByClassName("card");
             let thf = (c) => (game.get_random(2) === 0)? c : ``;
@@ -133,7 +133,7 @@
         }
 
         static #mug(_ = null){
-            game.#event("you and peer are mugging each other");
+            game.#event("black-market turf war");
             
             let card = document.getElementsByClassName("card");
             let rdi = () => game.get_random(card.length);
@@ -180,7 +180,7 @@
         }
         
         static #demand(id){
-            game.#event(`${game.#name(id)} is getting scope from other`);
+            game.#event(`${game.#name(id)}: nice scope you got there...`);
             
             game.#scope.set(
                 id,
@@ -194,7 +194,7 @@
         }
         
         static #discard(id){
-            game.#event(`${game.#name(id)} is giving scope to other`);
+            game.#event(`${game.#name(id)}: generous donation`);
             
             game.#scope.set(
                 id,
@@ -209,7 +209,7 @@
 
         static #retarget(notice = true){
             if(notice === true){
-                game.#event("target is changing");
+                game.#event("moving the goalposts");
             }else{
                 //pass
             }
@@ -222,7 +222,7 @@
         }
         
         static #rescope(_ = null){
-            game.#event("scopes of you and peer are changing");
+            game.#event("inflation strikes");
 
             let f = () => (game.#min_scope + 5) + game.get_random(
                 (game.#max_scope - game.#min_scope) / 5 - 1
@@ -329,7 +329,7 @@
         }
 
         static #referee_vent(){
-            game.#event("referee deside to attack you and peer");
+            game.#event("the referee chose violence");
             
             let f = [
                 game.#steal,
@@ -664,9 +664,9 @@ cause one of following:
 
         static vent(isplayer){
             if(isplayer === false){
-                game.#event("peer deside to attack referee",false,true);
+                game.#event("peer says 'screw the rules'",false,true);
             }else{
-                game.#event("you deside to attack referee",true,false);
+                game.#event("player screaming at the umpire",true,false);
             }
 
             let f = [
