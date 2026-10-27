@@ -342,7 +342,7 @@ cause one of following:
             let player = document.getElementsByClassName("selected");
             let peer = game.#peer_selected;
 
-            if(player.length === 0 || peer.size() === 0){
+            if(player.length === 0 || peer.size === 0){
                 game.#referee_vent();
                 return;
             }else{
