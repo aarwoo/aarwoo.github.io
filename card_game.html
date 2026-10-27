@@ -506,20 +506,64 @@ cause one of following:
     }
     
     class peer{
+        static #seeds;
+        static #target;
+        static #my_scope;
+        static #it_scope;
         
         static notice_next_seed(seeds){
-            
+            peer.seeds = seeds.map(
+                s => Number.parseInt(s,10)
+            );
         }
         
         static notice_retarget(target){
-            
+            peer.#target = Number.parseInt(
+                target,
+                10
+            );
         }
 
         static notice_scope_update(peer_scope,player_scope){
-            
+            peer.#my_scope = Number.parseInt(
+                peer_scope,
+                10
+            );
+            peer.#it_scope = Number.parseInt(
+                player_scope,
+                10
+            );
         }
 
         static notice_take_action(){
+            if(
+                peer.deside(
+                    [peer.#my_scope,peer.#it_scope].map(
+                        s => s >= 40 && s < 60
+                    ),
+                    Math.max(
+                        0,
+                        peer.#it_scope - peer.#my_scope
+                    ),
+                    60 - 40
+                )
+            ){
+                game.vent(false);
+            }else{
+                //?????
+            }
+        }
+
+
+        static #deside(base,p,q){
+            return base && game.get_random(q) < p;
+        }
+
+        static #add_card(card){
+            
+        }
+
+        static #mul_card(card){
             
         }
     }
