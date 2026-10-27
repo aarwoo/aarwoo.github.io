@@ -1,4 +1,4 @@
-<!--design by me, cowork with Gemini-->
+<!--design by me, cowork with Gemini,DeepSeek-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,10 +14,22 @@
 
         static #peer_selected = new Set();
 
+        /*NOTE: those requires unchecked*/
+        
+        // min_scope % 5 === 0
         static #min_scope = 0;
+        // max_scope % 5 === 0
+        // && max_scope >= min_scope + 10
         static #max_scope = 1000;
+        // flex_scope >= 0 && flex_scope % 5 === 0
         static #flex_scope = 200;
+        //    min_scope <= init_scope
+        // && init_scope <= max_scope
+        // && init_scope % 5 === 0
         static #init_scope = 500;
+        // max chars of N, where
+        //    (min_scope - flex_scope) <= N
+        // && N <= (max_scope + flex_scope)
         static #scope_fix = 4;
 
         static #id(isplayer){
@@ -287,7 +299,7 @@ PLAY: click to play a card,
       calculated with all seed,
       in this form: (seed card),
       as results, 
-      result is any one of results.
+      forall result belongs to  results,
       
       if result = target :
          (scope + 20)
@@ -339,7 +351,12 @@ cause one of following:
    steal: random marked used card,
           for player and peer
    rescope: random scope,
-            5 <= scope && scope <= 95,
+            ${(game.#min_scope + 5) + (0) * 5} <= scope and 
+            scope <= ${
+                (game.#min_scope + 5) + (
+                    (game.#max_scope - game.#min_scope) / 5 - 2
+                ) * 5
+            },
             for played and peef
    retarget: random new target
    switch: swap player and peer
