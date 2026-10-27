@@ -33,6 +33,11 @@
         // && N <= (max_scope + flex_scope)
         static #scope_fix = 4;
 
+        //display duration, in ms
+        static #each_event_display = 3000;
+        
+        static #event_promise = Promise.resolve();
+
         static #id(isplayer){
             return (
                 (isplayer === true) 
@@ -41,7 +46,30 @@
             );
         }
 
+        static #event(content,display = true){
+            let e = document.getElementById("#event");
+
+            event_promise = event.promise.then(
+                () => {
+                    e.textContent = content;
+                    e.style.visibility = "visible";
+                    return new Promise(
+                        (resolve,reject) => setTimeout(
+                            resolve,
+                            game.#each_event_display
+                        )
+                    );
+                }
+            ).then(
+                () => {
+                    e.style.visibility = "hidden";
+                }
+            );       
+        }
+
         static #switch(_ = null){
+            game.#event("switch you and peer");
+            
             game.#player = !game.#player;
             let card = document.getElementsByClassName("card"); 
             for(let c of card){
@@ -63,6 +91,8 @@
         }
         
         static #steal(_ = null){
+            game.#event("a thief is stealing");
+            
             let card = document.getElementsByClassName("card");
             let thf = (c) => (game.get_random(2) === 0)? c : ``;
             for(let c of card){
@@ -85,6 +115,8 @@
         }
 
         static #mug(_ = null){
+            game.#event("you and peer are mugging each other");
+            
             let card = document.getElementsByClassName("card");
             let rdi = () => game.get_random(card.length);
             let rnd = () => game.get_random(2) === 0;
@@ -130,6 +162,8 @@
         }
         
         static #demand(id){
+            game.#event("someone is getting scope from other");
+            
             game.#scope.set(
                 id,
                 game.#scope.get(id) + 40
@@ -142,6 +176,8 @@
         }
         
         static #discard(id){
+            game.#event("someone is giving scope to other");
+            
             game.#scope.set(
                 id,
                 game.#scope.get(id) - 40
@@ -154,6 +190,8 @@
         }
 
         static #retarget(_ = null){
+            game.#event("target is changing");
+            
             let target = document.getElementById("target");
             target.textContent = String(
                 game.get_random(99 * 99 + 1)
@@ -162,6 +200,8 @@
         }
         
         static #rescope(_ = null){
+            game.#event("scopes of you and peer are changing");
+
             let f = () => (game.#min_scope + 5) + game.get_random(
                 (game.#max_scope - game.#min_scope) / 5 - 1
             ) * 5;
@@ -228,7 +268,7 @@
                 let player_scope = fscope(game.#player);
                 let peer_scope = fscope(!game.#player);
                 
-                scope.textContent = `peer: ${peer_scope}\nyou: ${player_scope}`;
+                scope.textContent = `P ${peer_scope}\nY ${player_scope}`;
                 peer.notice_scope_update(
                     peer_scope,
                     player_scope
@@ -267,6 +307,8 @@
         }
 
         static #referee_vent(){
+            game.#event("referee deside to attack you and peer");
+            
             let f = [
                 game.#steal,
                 game.#rescope,
@@ -382,6 +424,7 @@ scope:
         (you) Win
       else if only peer >= ${game.#max_scope}:
         (peer) Win, aka (You) Fail
+      NOTE： Y = you, P = peer
 ------
 attack a referee will 
 cause one of following:
@@ -598,6 +641,12 @@ cause one of following:
         }
 
         static vent(isplayer){
+            if(isplayer === false){
+                game.#event("peer deside to attack referee");
+            }else{
+                game.#event("you deside to attack referee",false);
+            }
+
             let f = [
                 game.#mug,
                 game.#steal,
@@ -818,7 +867,7 @@ cause one of following:
         background-color: salmon;
     }
 
-    .seed,.card,#scope,#target,.vent,.play{
+    .seed,.card,#scope,#target,.vent,.play,#event{
         display: flex;
         align-items: center;
         justify-content: center;
@@ -888,8 +937,20 @@ cause one of following:
         background-color:dodgerblue;
     }
 
+    #event{
+        position: fixed;
+        background-color: peru;
+        left: 0;
+        top:0;
+        width:100dvw;
+        height:30dvh;
+        visibility: hidden;
+        z-index: 1;
+    }
+
 </style>
 <body onload="game.init()">
+    <div id="event"></div>
     <div class="screen">
         <div id="scope"></div>
         <div class="vent" onclick = "game.vent(true)">VENT</div>
