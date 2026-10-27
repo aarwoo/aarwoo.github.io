@@ -355,7 +355,7 @@ cause one of following:
             };
             let int = (s, sup) => {
                 let n = Number.parseInt(s,10);
-                if(Number.isNaN(n) || n < 0 || n >= sup){
+                if(Number.isNaN(n) === true || n < 0 || n >= sup){
                     error();
                 }else{
                     return n;
