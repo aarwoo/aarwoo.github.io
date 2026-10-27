@@ -139,7 +139,14 @@
                 game.init();
             }else{
                 let fscope = (t) => String(game.#scope.get(t)).padStart(2,"0");
-                scope.textContent = `player ${fscope(game.#player)} peer ${fscope(!game.#player)}`;
+                let player_scope = fscope(game.#player);
+                let peer_scope = fscope(!game.#player);
+                
+                scope.textContent = `player ${player_scope} peer ${peer_scope}`;
+                peer.notice_scope_update(
+                    peer_scope,
+                    player_scope
+                );
             }
         }
 
@@ -469,6 +476,10 @@ cause one of following:
         }
         
         static notice_retarget(target){
+            
+        }
+
+        static notice_scope_update(peer_scope,player_scope){
             
         }
 
