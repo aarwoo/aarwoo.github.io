@@ -9,9 +9,10 @@
     class game{
 
         static #player = true;
-        static #vent_queue = [];
         
         static #scope = new Map();
+
+        static #peer_selected = new Set();
 
         static #id(isplayer){
             return (
@@ -26,7 +27,20 @@
             let card = document.getElementsByClassName("card"); 
             for(let c of card){
                 c.textContent = c.dataset[game.#player];
+                
+                if(c.dataset[game.#player] === ``){
+                    c.className = `card`;
+                }else{
+                   //pass 
+                }
+                
+                if(c.dataset[!game.#player] === ``){
+                    game.#peer_selected.delete(c);
+                }else{
+                    //pass
+                }
             }
+            game.#update_scope();
         }
         
         static #steal(_ = null){
@@ -36,8 +50,15 @@
                 c.dataset[game.#player] = thf(c.dataset[game.#player]);
                 c.dataset[!game.#player] = thf(c.dataset[!game.#player]);
                 c.textContent = c.dataset[game.#player];
+                
                 if(c.dataset[game.#player] === ``){
                     c.className = `card`;
+                }else{
+                   //pass 
+                }
+                
+                if(c.dataset[!game.#player] === ``){
+                    game.#peer_selected.delete(c);
                 }else{
                     //pass
                 }
@@ -73,6 +94,7 @@
             target.textContent = String(
                 game.get_random(99 * 99 + 1)
             ).padStart(4,"0");
+            peer.notice_retarget(target.texContent);
         }
 
         static #add(seed,card){
@@ -88,6 +110,9 @@
             for(let s of seed){
                 s.textContent = game.#new_seed_content();
             }
+            peer.notice_next_seed(
+                [...seed].map(s => s.textContent)
+            );
         }
         
         static #update_scope(){
@@ -150,6 +175,7 @@
                 c.dataset[!game.#player] = game.#new_card_content();
                 c.textContent = c.dataset[game.#player];
                 c.className = `card`;
+                game.#peer_selected.delete(c);
             }
             
             game.#retarget();
@@ -196,8 +222,8 @@ PLAY: click to play a card,
       all selected cards marked used
       by remove text content.
 VENT: click to vent, 
-      then attack a referee
-      in next PLAY
+      then attack a referee.
+      NOTE: peer also can do.
 ------
 scope: 
       if anyone scope < 0 
@@ -219,6 +245,7 @@ cause one of following:
    discard: (scope - 40) for your,
             (scope + 40) for peer
    retarget: random new target
+   switch: swap player and peer
 `
             );
         }
@@ -251,12 +278,28 @@ cause one of following:
             }
         }
 
+        static *peer_select(){
+            let card = document.getElementsByClassName("card");
+
+            for(let c of card){
+                if((yield c.dataset[!game.#player]) === true){
+                    if(game.#peer_selected.has(self) === false){
+                        game.new_card(self,false);
+                        game.#peer_selected.add(self);
+                    }else{
+                        game.#peer_selected.delete(self);
+                    }
+                }else{
+                    //pass
+                }
+            }
+        }
+
         static play(){
-            //maybe need 🔒 
             let seed = document.getElementsByClassName("seed");
             let target = document.getElementById("target");
             let player = document.getElementsByClassName("selected");
-            let peer = []; // todo
+            let peer = game.#peer_selected;
 
             let error = () => {
                 dialog.notice("Data Tampering!!!");
@@ -304,33 +347,99 @@ cause one of following:
                 p => {
                     let t = p.dataset[!game.#player];
                     p.dataset[!game.#player] = "";
+                    game.#peer_selected.delete(c);
                     return trans(t);
                 }
             );
-
-            /*all selected cards will be
-      calculated with all seed,
-      in this form: (seed card),
-      as results, 
-      result is any one of results.
-      
-      if result = target :
-         (scope + 20)
-      else if result > max(peer results):
-         if card is +card:
-           (scope + 10)
-         else if card is *card:
-           (scope - 5)
-      else if result < min(peer results):
-         if card is +card:
-            (scope - 5)
-         else if card is *card:
-            (scope + 10)
-     
-      all selected cards marked used
-      by remove text content.
-            */
             
+            let calculate = (cards) => cards.flatMap(
+                c => seed.map(
+                    s => {
+                        let r = new Map();
+                        
+                        r.set(
+                            "f",
+                            c.get("f")
+                        );
+                        
+                        r.set(
+                            "val",
+                            c.get("f")(
+                                s,
+                                c.get("card")
+                            )
+                        );
+                        
+                        return r;
+                    }
+                )
+            );
+            let result = (calculated) => calculated.map(
+                c => c.get("val")
+            );
+
+            player = calculate(player);
+            let player_min = Math.min(...result(player));
+            let player_max = Math.max(...result(player));
+            
+            peer = calculate(peer);
+            let peer_min = Math.min(...result(peer));
+            let peer_max = Math.max(...result(peer));
+
+            let fscope = (calculated,id,min,max) => {
+                for(let c of calculated){
+                    let val = c.get("val");
+                    let f = c.get("f");
+                    if( val === target ){
+                        game.#scope.set(
+                            id,
+                            game.#scope.get(id) + 20
+                        );
+                    }else if( val > max ){
+                        if(f === game.#add){
+                            game.#scope.set(
+                                id,
+                                game.#scope.get(id) + 10
+                            );
+                        }else{
+                            game.#scope.set(
+                                id,
+                                game.#scope.get(id) - 5
+                            );
+                        }
+                    }else if ( val < min ){
+                        if(f === game.#mul){
+                            game.#scope.set(
+                                id,
+                                game.#scope.get(id) + 10
+                            );
+                        }else{
+                            game.#scope.set(
+                                id,
+                                game.#scope.get(id) - 5
+                            );
+                        }
+                    }else{
+                        //pass
+                    }
+                }
+            };
+
+            fscope(
+                player,
+                game.#player,
+                peer_min,
+                peer_max
+            );
+
+            fscope(
+                peer,
+                !game.#player,
+                player_min,
+                player_max
+            );
+
+            game.#update_scope();
         }
 
         static vent(isplayer){
@@ -338,16 +447,26 @@ cause one of following:
                 game.#steal,
                 game.#demand,
                 game.#discard,
-                game.#retarget
+                game.#retarget,
+                game.#switch
             ];
             
-            game.#vent_queue.push(
-                () => f[game.get_random(f.length)](
-                    game.#id(isplayer)
-                )
+            f[game.get_random(f.length)](
+                game.#id(isplayer)
             );
         }
         
+    }
+    
+    class peer{
+        
+        static notice_next_seed(seeds){
+            
+        }
+        
+        static notice_retarget(target){
+            
+        }
     }
 </script>
 <script src="https://lang-core.org/dialog.js"></script>
