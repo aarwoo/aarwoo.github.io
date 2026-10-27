@@ -276,6 +276,8 @@ cause one of following:
             }else{
                 self.className = `card`;
             }
+
+            peer.notice_take_action();
         }
 
         static *peer_select(){
@@ -454,6 +456,8 @@ cause one of following:
             f[game.get_random(f.length)](
                 game.#id(isplayer)
             );
+            
+            peer.notice_take_action();
         }
         
     }
@@ -465,6 +469,10 @@ cause one of following:
         }
         
         static notice_retarget(target){
+            
+        }
+
+        static notice_take_action(){
             
         }
     }
