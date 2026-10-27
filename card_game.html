@@ -154,6 +154,25 @@
             return `${random_op}${game.#new_seed_content()}`;
         }
 
+        static #new_card(self,isplayer){
+            let content = game.#new_card_content();
+            let id = game.#id(isplayer);
+            
+            if(self.dataset[id] === ``){
+                game.#scope.set(
+                    id,
+                    game.#scope.get(id) - 5
+                );
+                self.dataset[id] = content;
+            }else{
+                //pass
+            }
+            self.textContent = self.dataset[game.#player];
+
+            game.#update_scope();
+
+        }
+
         static get_random(sup){
             let next = new Uint32Array(1);
             next[0] = ~0;
@@ -249,29 +268,10 @@ cause one of following:
 `
             );
         }
-
-        static new_card(self,isplayer){
-            let content = game.#new_card_content();
-            let id = game.#id(isplayer);
-            
-            if(self.dataset[id] === ``){
-                game.#scope.set(
-                    id,
-                    game.#scope.get(id) - 5
-                );
-                self.dataset[id] = content;
-            }else{
-                //pass
-            }
-            self.textContent = self.dataset[game.#player];
-
-            game.#update_scope();
-
-        }
         
         static player_select(self){
             if(self.className === `card`){
-                game.new_card(self,true);
+                game.#new_card(self,true);
                 self.className = `card selected`;
             }else{
                 self.className = `card`;
@@ -285,11 +285,11 @@ cause one of following:
 
             for(let c of card){
                 if((yield c.dataset[!game.#player]) === true){
-                    if(game.#peer_selected.has(self) === false){
-                        game.new_card(self,false);
-                        game.#peer_selected.add(self);
+                    if(game.#peer_selected.has(c) === false){
+                        game.#new_card(c,false);
+                        game.#peer_selected.add(c);
                     }else{
-                        game.#peer_selected.delete(self);
+                        game.#peer_selected.delete(c);
                     }
                 }else{
                     //pass
