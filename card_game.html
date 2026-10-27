@@ -36,6 +36,11 @@
                 c.dataset[game.#player] = thf(c.dataset[game.#player]);
                 c.dataset[!game.#player] = thf(c.dataset[!game.#player]);
                 c.textContent = c.dataset[game.#player];
+                if(c.dataset[game.#player] === ``){
+                    c.className = `card`;
+                }else{
+                    //pass
+                }
             }
         }
         
@@ -144,6 +149,7 @@
                 c.dataset[game.#player] = game.#new_card_content();
                 c.dataset[!game.#player] = game.#new_card_content();
                 c.textContent = c.dataset[game.#player];
+                c.className = `card`;
             }
             
             game.#retarget();
@@ -290,7 +296,7 @@ cause one of following:
                     let t = p.dataset[game.#player];
                     p.dataset[game.#player] = "";
                     p.textContent = p.dataset[game.#player];
-                    game.player_select(p);
+                    p.className = `card`;
                     return trans(t);
                 }
             );
