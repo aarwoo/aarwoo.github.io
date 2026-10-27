@@ -46,6 +46,14 @@
             );
         }
 
+        static #name(id){
+            return (
+                (id === game.#player)
+                ? "you"
+                : "peer"
+            );
+        }
+
         static #event(content,display = true){
             let e = document.getElementById("#event");
 
@@ -162,7 +170,7 @@
         }
         
         static #demand(id){
-            game.#event("someone is getting scope from other");
+            game.#event(`${game.#name(id)} is getting scope from other`);
             
             game.#scope.set(
                 id,
@@ -176,7 +184,7 @@
         }
         
         static #discard(id){
-            game.#event("someone is giving scope to other");
+            game.#event(`${game.#name(id)} is giving scope to other`);
             
             game.#scope.set(
                 id,
