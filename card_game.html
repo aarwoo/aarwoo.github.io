@@ -548,7 +548,7 @@ cause one of following:
 
         static notice_take_action(){
             if(
-                peer.deside(
+                peer.#deside(
                     [peer.#my_scope,peer.#it_scope].map(
                         s => s >= 40 && s < 60
                     ),
@@ -557,26 +557,26 @@ cause one of following:
                         peer.#it_scope - peer.#my_scope
                     ),
                     60 - 40
-                )
+                ) === true
             ){
                 game.vent(false);
             }else{
                 let cards = game.peer_select();
                 let select_it = false;
-                let empty_count = 0;
+                let empty_counts = 0;
                 for(
                     let card = cards.next();
                     card.done === false;
                     card = cards.next(select_it)
                 ){
                     if(card.value === ``){
-                        select_it = peer.deside(
-                            peer.#empty_count > 0
+                        select_it = peer.#deside(
+                            peer.#empty_counts > 0
                          && peer.#my_scope >= 5,
-                            peer.#empty_count,
+                            peer.#empty_counts,
                             peer.#card_counts + 1
                         );
-                        empty_count = empty_count + (
+                        empty_counts = empty_counts + (
                             (select_it === true)? 0 : 1
                         );
                     }else if(card.value[0] === "+"){
@@ -597,7 +597,7 @@ cause one of following:
                         select_it = false;
                     }
                 }
-                peer.#empty_count = empty_count;
+                peer.#empty_counts = empty_counts;
             }
         }
 
