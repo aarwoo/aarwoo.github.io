@@ -728,7 +728,7 @@ cause one of following:
             let counts = 0;
             for(let c of game.peer_select()){
                 counts = counts + (
-                    c.value === `` ? 1 : 0
+                    c === `` ? 1 : 0
                 );
             }
             return counts;
