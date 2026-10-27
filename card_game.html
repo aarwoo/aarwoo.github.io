@@ -581,14 +581,14 @@ cause one of following:
                         );
                     }else if(card.value[0] === "+"){
                         select_it = peer.#add_card(
-                            Number.praseInt(
+                            Number.parseInt(
                                 card.value.slice(1),
                                 10
                             )
                         );
                     }else if(card.value[0] === "*"){
                         select_it = peer.#mul_card(
-                            Number.praseInt(
+                            Number.parseInt(
                                 card.value.slice(1),
                                 10
                             )
