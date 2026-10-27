@@ -94,7 +94,7 @@
             target.textContent = String(
                 game.get_random(99 * 99 + 1)
             ).padStart(4,"0");
-            peer.notice_retarget(target.texContent);
+            peer.notice_retarget(target.textContent);
         }
 
         static #add(seed,card){
@@ -349,7 +349,7 @@ cause one of following:
                 p => {
                     let t = p.dataset[!game.#player];
                     p.dataset[!game.#player] = "";
-                    game.#peer_selected.delete(c);
+                    game.#peer_selected.delete(p);
                     return trans(t);
                 }
             );
