@@ -216,8 +216,8 @@
             
             let target = document.getElementById("target");
             target.textContent = String(
-                game.get_random(99 * 99 + 1)
-            ).padStart(4,"0");
+                game.get_random(99)
+            ).padStart(2,"0");
             peer.notice_retarget(target.textContent);
         }
         
@@ -403,7 +403,7 @@ card: all under seed,
        start with +
 target: on the left of PLAY,
         0 <= target and
-        target <= 99 * 99
+        target < 99
 ------
 PLAY: click to play a card,
       all selected cards will be
@@ -412,7 +412,7 @@ PLAY: click to play a card,
       as results, 
       forall result belongs to  results,
       
-      if result = target :
+      if (result mod 99) = target :
          (scope + 20)
       else if result > 
       max(peer results):
@@ -611,7 +611,8 @@ cause one of following:
                 for(let c of calculated){
                     let val = c.get("val");
                     let f = c.get("f");
-                    if( val === target ){
+                    
+                    if( (val % 99) === target ){
                         game.#scope.set(
                             id,
                             game.#scope.get(id) + 20
@@ -828,7 +829,8 @@ cause one of following:
             );
             
             for(let r of result){
-                if(r === peer.#target){
+                
+                if((r % 99) === peer.#target){
                     return true;
                 }else{
                     fvote(
@@ -862,7 +864,7 @@ cause one of following:
             );
             
             for(let r of result){
-                if(r === peer.#target){
+                if((r % 99) === peer.#target){
                     return true;
                 }else{
                     fvote(
