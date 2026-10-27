@@ -223,7 +223,7 @@
             
             game.#retarget();
 
-            peer.#notice_init(card.length);
+            peer.notice_init(card.length);
             
             dialog.notice(
 `\
@@ -523,7 +523,7 @@ cause one of following:
         }
         
         static notice_next_seed(seeds){
-            peer.seeds = seeds.map(
+            peer.#seeds = seeds.map(
                 s => Number.parseInt(s,10)
             );
         }
@@ -607,7 +607,7 @@ cause one of following:
         }
 
         static #add_card(card){
-            let result = seed.map( s => s + card);
+            let result = peer.#seeds.map( s => s + card);
             let T = 99 + 99;
             let vote = new Map();
             vote.set(true,0);
@@ -641,7 +641,7 @@ cause one of following:
         }
 
         static #mul_card(card){
-            let result = seed.map( s => s * card );
+            let result = peer.#seeds.map( s => s * card );
             let T = 99 * 99;
             let vote = new Map();
             vote.set(true,0);
