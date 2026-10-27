@@ -55,9 +55,9 @@
         }
 
         static #event(content,peer_watch = true,player_watch = true){
-            let e = document.getElementById("#event");
+            let e = document.getElementById("event");
 
-            event_promise = event.promise.then(
+            game.#event_promise = game.#event_promise.then(
                 () => {
                     if(peer_watch === true){
                         peer.watch_event(content);
