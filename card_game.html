@@ -207,8 +207,12 @@
             game.#update_scope();
         }
 
-        static #retarget(_ = null){
-            game.#event("target is changing");
+        static #retarget(notice = true){
+            if(notice === true){
+                game.#event("target is changing");
+            }else{
+                //pass
+            }
             
             let target = document.getElementById("target");
             target.textContent = String(
@@ -367,7 +371,7 @@
                 game.#peer_selected.delete(c);
             }
             
-            game.#retarget();
+            game.#retarget(false);
 
             peer.notice_init(
                 card.length,
@@ -965,7 +969,7 @@ cause one of following:
 
     #event{
         position: fixed;
-        background-color: peru;
+        background-color: wheat;
         left: 0;
         top:0;
         width:100dvw;
