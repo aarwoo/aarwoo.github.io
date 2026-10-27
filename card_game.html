@@ -1,4 +1,4 @@
-<!--design by me, cowork with Gemini,DeepSeek-->
+<!--design by me, cowork with Gemini,DeepSeek,Claude-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -522,8 +522,9 @@ cause one of following:
             }
 
             let error = () => {
-                dialog.notice("Data Tampering!!!");
-                location.reload();
+                dialog.notice("Data Tampering!!!").then(
+                    () => location.reload()
+                );
             };
             let int = (s, sup) => {
                 let n = Number.parseInt(s,10);
