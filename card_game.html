@@ -232,6 +232,23 @@
             game.#update_scope();
         }
 
+        static #deal(notice = true){
+            if(notice === true){
+                game.#event("dealing from the bottom");
+            }else{
+                //pass
+            }
+            
+            let card = document.getElementsByClassName("card");
+            for(let c of card){
+                c.dataset[game.#player] = game.#new_card_content();
+                c.dataset[!game.#player] = game.#new_card_content();
+                c.textContent = c.dataset[game.#player];
+                c.className = `card`;
+                game.#peer_selected.delete(c);
+            }
+        }
+
         static #add(seed,card){
             return seed + card;
         }
@@ -324,10 +341,18 @@
             }
             
             if(self.dataset[id] === ``){
+                
+                let P = (
+                    game.get_random(3) < 2
+                  ? 1
+                  : 0
+                );
                 game.#scope.set(
                     id,
-                    game.#scope.get(id) - 10 * empty
+                    game.#scope.get(id) 
+                  - 10 * empty * P
                 );
+                
                 self.dataset[id] = content;
             }else{
                 //pass
@@ -372,14 +397,7 @@
             
             game.#next_seed();
             
-            let card = document.getElementsByClassName("card");
-            for(let c of card){
-                c.dataset[game.#player] = game.#new_card_content();
-                c.dataset[!game.#player] = game.#new_card_content();
-                c.textContent = c.dataset[game.#player];
-                c.className = `card`;
-                game.#peer_selected.delete(c);
-            }
+            game.#deal(false);
             
             game.#retarget(false);
 
@@ -403,9 +421,10 @@ card: all under seed,
       or not (gray).
       if a used card is click
       to selected, auto new card
-      and (scope - 10 * U),
+      and 2/3 probability will
+      (scope - 10 * U),
       where U is count of used card,
-      before buying this new card.
+      before get this new card.
       number on card text is:
       0 <= number and
       number <= 99
@@ -482,7 +501,9 @@ cause one of following:
    discard: (scope - 200) for you,
             (scope + 200) for peer
    retarget: random new target
-   switch: swap player and peer
+   switch: swap you and peer
+   deal: you and peer will get 
+         whole new cards
 attack player and peer will
 cause one of following:
    steal: random marked used card,
@@ -706,7 +727,8 @@ cause one of following:
                 game.#demand,
                 game.#discard,
                 game.#retarget,
-                game.#switch
+                game.#switch,
+                game.#deal
             ];
             
             f[game.get_random(f.length)](
