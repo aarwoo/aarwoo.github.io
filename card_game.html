@@ -207,7 +207,7 @@
             game.#update_scope();
         }
 
-        static #retarget(notice = true){
+        static #retarget(_ = null, notice = true){
             if(notice === true){
                 game.#event("moving the goalposts");
             }else{
@@ -232,7 +232,7 @@
             game.#update_scope();
         }
 
-        static #deal(notice = true){
+        static #deal(_ = null, notice = true){
             if(notice === true){
                 game.#event("dealing from the bottom");
             }else{
@@ -397,10 +397,11 @@
             
             game.#next_seed();
             
-            game.#deal(false);
+            game.#deal(null,false);
             
-            game.#retarget(false);
+            game.#retarget(null,false);
 
+            let card = document.getElementsByClassName("card");
             peer.notice_init(
                 card.length,
                 game.#min_scope,
