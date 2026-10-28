@@ -462,7 +462,14 @@ PLAY: click to play a card,
        else if card is *card:
           let M = max(peer results)
           let m = min(peer results)
-          if results > M + m:
+
+          let s = sum(
+             sgn(result - (peer results))
+          )
+
+
+          
+          if result > M + m:
              (scope - 30)
           else if result >= M:
              (scope + 60)
