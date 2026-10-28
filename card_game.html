@@ -797,24 +797,31 @@ cause one of following:
         }
 
         static notice_take_action(){
+            let empty_counts = peer.#empty_counts();
+            let min = (200 + peer.#min_scope);
+            let sup = (peer.#max_scope - 800);
             if(
                 peer.#deside(
                     [peer.#my_scope,peer.#it_scope].every(
-                        s => s >= (200 + peer.#min_scope) 
-                          && s < (peer.#max_scope - 800)
+                        s => s >= min 
+                          && s < sup
                     ),
                     Math.max(
                         0,
                         peer.#it_scope - peer.#my_scope
                     ),
-                    (peer.#max_scope - 800) - (200 + peer.#min_scope)
+                    sup - min
+                ) === true ||
+                peer.#deside(
+                    2 * empty_counts > peer.#card_counts,
+                    empty_counts,
+                    peer.#card_counts
                 ) === true
             ){
                 game.vent(false);
             }else{
                 let cards = game.peer_select();
                 let select_it = false;
-                let empty_counts = peer.#empty_counts();
                 for(
                     let card = cards.next();
                     card.done === false;
