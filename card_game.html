@@ -215,9 +215,7 @@
             }
             
             let target = document.getElementById("target");
-            target.textContent = String(
-                game.get_random(9)
-            ).padStart(1,"0");
+            target.textContent = game.#random_num_content(9,1);
             peer.notice_retarget(target.textContent);
         }
         
@@ -260,7 +258,7 @@
         static #next_seed(){
             let seed = document.getElementsByClassName("seed");
             for(let s of seed){
-                s.textContent = game.#new_seed_content(10,1);
+                s.textContent = game.#random_num_content(10,1);
             }
             peer.notice_next_seed(
                 [...seed].map(s => s.textContent)
@@ -315,7 +313,7 @@
             }
         }
 
-        static #new_seed_content(sup, max_digits){
+        static #random_num_content(sup, max_digits){
             return String(
                 game.get_random(sup)
             ).padStart(max_digits,"0");
@@ -325,7 +323,7 @@
             let op = "+*";
             let random_op = op[game.get_random(op.length)];
             
-            return `${random_op}${game.#new_seed_content(100,2)}`;
+            return `${random_op}${game.#random_num_content(100,2)}`;
         }
 
         static #new_card(self,isplayer){
