@@ -216,8 +216,8 @@
             
             let target = document.getElementById("target");
             target.textContent = String(
-                game.get_random(99)
-            ).padStart(2,"0");
+                game.get_random(9)
+            ).padStart(1,"0");
             peer.notice_retarget(target.textContent);
         }
         
@@ -260,7 +260,7 @@
         static #next_seed(){
             let seed = document.getElementsByClassName("seed");
             for(let s of seed){
-                s.textContent = game.#new_seed_content();
+                s.textContent = game.#new_seed_content(10,1);
             }
             peer.notice_next_seed(
                 [...seed].map(s => s.textContent)
@@ -315,15 +315,17 @@
             }
         }
 
-        static #new_seed_content(){
-            return String(game.get_random(100)).padStart(2,"0");
+        static #new_seed_content(sup, max_digits){
+            return String(
+                game.get_random(sup)
+            ).padStart(max_digits,"0");
         }
 
         static #new_card_content(){
             let op = "+*";
             let random_op = op[game.get_random(op.length)];
             
-            return `${random_op}${game.#new_seed_content()}`;
+            return `${random_op}${game.#new_seed_content(100,2)}`;
         }
 
         static #new_card(self,isplayer){
@@ -416,7 +418,7 @@
 `\
 seed: the blue line,
       0 <= seed and
-      seed <= 99
+      seed <= 9
 card: all under seed,
       click to selected (green),
       or not (gray).
@@ -435,7 +437,7 @@ card: all under seed,
        start with +
 target: on the left of PLAY,
         0 <= target and
-        target < 99
+        target < 9
 ------
 PLAY: click to play a card,
       all selected cards will be
@@ -444,7 +446,7 @@ PLAY: click to play a card,
       as results, 
       forall result belongs to  results,
       
-      if (result mod 99) = target :
+      if (result mod 9) = target :
          (scope + 100)
       else if card is +card:
          let S = sum(
@@ -594,9 +596,9 @@ cause one of following:
             };
             
             seed = [...seed].map(
-                s => int(s.textContent,100)
+                s => int(s.textContent,10)
             );
-            target = int(target.textContent,99);
+            target = int(target.textContent,9);
             
             player = [...player].map(
                 p => {
@@ -656,7 +658,7 @@ cause one of following:
                     let f = c.get("f");
                     let ds = 0;
                     
-                    if( (val % 99) === target ){
+                    if( (val % 9) === target ){
                         ds = 100;
                     }else if(f === game.#add){
                         let S = Math.sumPrecise(
@@ -879,7 +881,7 @@ cause one of following:
             let S = peer.#seeds.length;
             let s = 0;
             for(let r of result){ 
-                if((r % 99) === peer.#target){
+                if((r % 9) === peer.#target){
                     return true;
                 }else if(r <= 20){
                     s = s + 1;
@@ -905,9 +907,9 @@ cause one of following:
                : 0
             );
             for(let r of result){
-                if((r % 99) === peer.#target){
+                if((r % 9) === peer.#target){
                     return true;
-                }else if(r >= 50 * 99){
+                }else if(r >= 50 * 9){
                     s = s + vote(2,3);
                 }else{
                     s = s + vote(1,2);
