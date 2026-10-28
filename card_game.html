@@ -839,7 +839,7 @@ cause one of following:
                 if((r % 99) === peer.#target){
                     return true;
                 }else if(r <= 20){
-                    return true;
+                    s = s + 1;
                 }else{
                     s = s + (r % 2);
                 }
@@ -854,24 +854,27 @@ cause one of following:
 
         static #mul_card(card){
             let result = peer.#seeds.map( s => s * card );
+            let S = peer.#seeds.length;
+            let s = 0;
+            let vote = (p,q) => (
+                 peer.#deside(true,p,q)
+               ? 1
+               : 0
+            );
             for(let r of result){
                 if((r % 99) === peer.#target){
                     return true;
                 }else if(r >= 50 * 99){
-                    return peer.#deside(
-                        true,
-                        2,
-                        3
-                    );
+                    s = s + vote(2,3);
                 }else{
-                    //pass
+                    s = s + vote(1,2);
                 }
             }
             
             return peer.#deside(
                 true,
-                1,
-                2
+                s,
+                S
             );
         }
         
