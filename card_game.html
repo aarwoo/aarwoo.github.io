@@ -800,7 +800,7 @@ cause one of following:
                     if(card.value === ``){
                         select_it = peer.#deside(
                             peer.#my_scope >= (
-                                peer.#min_scope - peer.#flex_scope + 5
+                                peer.#min_scope - peer.#flex_scope + (10 * empty_counts)
                             ),
                             empty_counts,
                             peer.#card_counts + 1
