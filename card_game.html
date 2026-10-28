@@ -17,21 +17,21 @@
 
         /*NOTE: those requires unchecked*/
         
-        // min_scope % 5 === 0
+        // min_scope % 10 === 0
         static #min_scope = 0;
-        // max_scope % 5 === 0
-        // && max_scope >= min_scope + 10
-        static #max_scope = 1000;
-        // flex_scope >= 0 && flex_scope % 5 === 0
-        static #flex_scope = 200;
+        // max_scope % 10 === 0
+        // && max_scope >= min_scope + 200
+        static #max_scope = 32000;
+        // flex_scope >= 0 && flex_scope % 10 === 0
+        static #flex_scope = 1000;
         //    min_scope <= init_scope
         // && init_scope <= max_scope
-        // && init_scope % 5 === 0
-        static #init_scope = 500;
+        // && init_scope % 10 === 0
+        static #init_scope = 2000;
         // max chars of N, where
         //    (min_scope - flex_scope) <= N
         // && N <= (max_scope + flex_scope)
-        static #scope_fix = 4;
+        static #scope_fix = 5;
 
         //display duration, in ms
         static #each_event_display = 3000;
@@ -181,14 +181,14 @@
         
         static #demand(id){
             game.#event(`${game.#name(id)}: nice scope you got there...`);
-            
+                
             game.#scope.set(
                 id,
-                game.#scope.get(id) + 40
+                game.#scope.get(id) + 200
             );
             game.#scope.set(
                 !id,
-                game.#scope.get(!id) - 40
+                game.#scope.get(!id) - 200
             );
             game.#update_scope();
         }
@@ -198,11 +198,11 @@
             
             game.#scope.set(
                 id,
-                game.#scope.get(id) - 40
+                game.#scope.get(id) - 200
             );
             game.#scope.set(
                 !id,
-                game.#scope.get(!id) + 40
+                game.#scope.get(!id) + 200
             );
             game.#update_scope();
         }
@@ -224,9 +224,9 @@
         static #rescope(_ = null){
             game.#event("inflation strikes");
 
-            let f = () => (game.#min_scope + 5) + game.get_random(
-                (game.#max_scope - game.#min_scope) / 5 - 1
-            ) * 5;
+            let f = () => (game.#min_scope + 100) + game.get_random(
+                (game.#max_scope - game.#min_scope) / 10 - 19
+            ) * 10;
             game.#scope.set(game.#player, f());
             game.#scope.set(!game.#player, f());
             game.#update_scope();
@@ -477,10 +477,10 @@ cause one of following:
          and get peer card, includes used.
    steal: random marked used card,
           for you and peer
-   demand: (scope + 40) for you,
-           (scope - 40) for peer,
-   discard: (scope - 40) for you,
-            (scope + 40) for peer
+   demand: (scope + 200) for you,
+           (scope - 200) for peer,
+   discard: (scope - 200) for you,
+            (scope + 200) for peer
    retarget: random new target
    switch: swap player and peer
 attack player and peer will
@@ -488,11 +488,11 @@ cause one of following:
    steal: random marked used card,
           for player and peer
    rescope: random scope,
-            ${(game.#min_scope + 5) + (0) * 5} <= scope and 
+            ${(game.#min_scope + 100) + (0) * 10} <= scope and 
             scope <= ${
-                (game.#min_scope + 5) + (
-                    (game.#max_scope - game.#min_scope) / 5 - 2
-                ) * 5
+                (game.#min_scope + 100) + (
+                    (game.#max_scope - game.#min_scope) / 10 - 20
+                ) * 10
             },
             for played and peef
    retarget: random new target
@@ -777,14 +777,14 @@ cause one of following:
             if(
                 peer.#deside(
                     [peer.#my_scope,peer.#it_scope].every(
-                        s => s >= (40 + peer.#min_scope) 
-                          && s < (peer.#max_scope - 200)
+                        s => s >= (200 + peer.#min_scope) 
+                          && s < (peer.#max_scope - 800)
                     ),
                     Math.max(
                         0,
                         peer.#it_scope - peer.#my_scope
                     ),
-                    (peer.#max_scope - 200) - (40 + peer.#min_scope)
+                    (peer.#max_scope - 800) - (200 + peer.#min_scope)
                 ) === true
             ){
                 game.vent(false);
