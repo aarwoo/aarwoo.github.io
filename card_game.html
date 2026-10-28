@@ -854,36 +854,25 @@ cause one of following:
 
         static #mul_card(card){
             let result = peer.#seeds.map( s => s * card );
-            let T = 99 * 99;
-            let vote = new Map();
-            vote.set(true,0);
-            vote.set(false,0);
-            let fvote = (v) => vote.set(
-                v,
-                vote.get(v) + 1
-            );
-            
             for(let r of result){
                 if((r % 99) === peer.#target){
                     return true;
-                }else{
-                    fvote(
-                        peer.#deside(
-                            true,
-                            T - r,
-                            T + 1
-                        )
+                }else if(r >= 50 * 99){
+                    return peer.#deside(
+                        true,
+                        2,
+                        3
                     );
+                }else{
+                    //pass
                 }
             }
-
-            let d = vote.get(true) - vote.get(false);
-
-            if(d === 0){
-                return peer.#deside(true,0,2);
-            }else{
-                return d > 0;
-            }
+            
+            return peer.#deside(
+                true,
+                1,
+                2
+            );
         }
         
     }
