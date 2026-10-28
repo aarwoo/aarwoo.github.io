@@ -1,4 +1,4 @@
-<!--design by me, cowork with Gemini,DeepSeek,Claude-->
+<!--design by me, cowork with Gemini,DeepSeek,Claude,KIMI-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -472,7 +472,7 @@ PLAY: click to play a card,
       by remove text content.
       NOTE: if player or peer no selected
       card, referee will be vent,
-      and attack player and peer
+      and attack you and peer
 VENT: click to vent, 
       then attack a referee.
       NOTE: peer also can do.
@@ -505,10 +505,10 @@ cause one of following:
    switch: swap you and peer
    deal: you and peer will get 
          whole new cards
-attack player and peer will
+attack you and peer will
 cause one of following:
    steal: random marked used card,
-          for player and peer
+          for you and peer
    rescope: random scope,
             ${(game.#min_scope + 100) + (0) * 10} <= scope and 
             scope <= ${
@@ -516,9 +516,9 @@ cause one of following:
                     (game.#max_scope - game.#min_scope) / 10 - 20
                 ) * 10
             },
-            for played and peef
+            for you and peer
    retarget: random new target
-   switch: swap player and peer
+   switch: swap you and peer
 `
                 );
             }
