@@ -460,22 +460,15 @@ PLAY: click to play a card,
          else:
             (scope - 30 * (4 - F))
        else if card is *card:
-          let M = max(peer results)
-          let m = min(peer results)
-
           let s = sum(
              sgn(result - (peer results))
           )
-
-
-          
-          if result > M + m:
-             (scope - 30)
-          else if result >= M:
-             (scope + 60)
-          else:
+          if s > 0:
              (scope + 30)
-     
+          else if s = 0:
+             (scope + 120)
+          else:
+             (scope - 30)
       all selected cards marked used
       by remove text content.
       NOTE: if player or peer no selected
@@ -663,20 +656,6 @@ cause one of following:
                     let val = c.get("val");
                     let f = c.get("f");
                     let ds = 0;
-
-                    /*
-                    let S = sum(
-            peer results mod 2
-         ) + result
-         let C = count(peer results)
-         let F = result % 5
-         
-         if  S > C + F:
-            (scope - 30 * (4 - F))
-         else if S >= C - F:
-            (scope + 30 * (4 - F))
-         else:
-            (scope - 30 * (4 - F))*/
                     
                     if( (val % 9) === target ){
                         ds = 80;
@@ -696,12 +675,19 @@ cause one of following:
                             ds = -(30 * (4 - F));
                         }
                     }else if(f === game.#mul){
-                        if(val >= max + min){
-                            ds = -30;
-                        }else if(val >= max){
-                            ds = 60;
-                        }else{
+                        
+                        let s = Math.sumPrecise(
+                            result(other).map(
+                                p => Math.sign(val - p)
+                            )
+                        );
+                        
+                        if(s > 0){
                             ds = 30;
+                        }else if(s === 0){
+                            ds = 120;
+                        }else{
+                            ds = -30;
                         }
                     }else{
                         //pass
