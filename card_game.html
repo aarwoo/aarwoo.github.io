@@ -247,6 +247,111 @@
             }
         }
 
+        static #cat(){
+            game.#event("cat rush on table");
+            
+            let card = document.getElementsByClassName("card");
+            let rdi = () => game.get_random(card.length);
+            let rnd = () => game.get_random(2) === 0;
+            do{
+                let L = card[rdi()];
+                let R = card[rdi()];
+
+                let cat = L.dataset[game.#player];
+                L.dataset[game.#player] = R.dataset[!game.#player];
+                R.dataset[!game.#player] = cat;
+                
+                L.textContent = L.dataset[game.#player];
+                
+                if(L.dataset[game.#player] === ``){
+                    L.className = `card`;
+                }else{
+                    //pass
+                }
+                
+                if(R.dataset[!game.#player] === ``){
+                    game.#peer_selected.delete(R);
+                }else{
+                    //pass
+                }
+            }while(rnd() === true);
+        }
+
+        static #seagull(){
+            game.#event("seagull eats fries");
+            
+            game.#scope.set(
+                game.#player,
+                Math.abs(
+                    game.#scope.get(
+                        game.#player
+                    )
+                )
+            );
+
+            game.#scope.set(
+                !game.#player,
+                Math.abs(
+                    game.#scope.get(
+                        !game.#player
+                    )
+                )
+            );
+
+            game.#update_scope();
+        }
+        
+        static #squirrel(){
+            game.#event("squirrel treat seeds as nuts");
+            game.#next_seed();
+            
+        }
+
+        static #monkey(){
+            game.#event("monkey imitate referee");
+
+            switch(game.#get_random(5)){
+                case 0:
+                    dialog.notice("Rule Violation!").then(
+                        () => {
+                            game.init(false);
+                            game.#steal();
+                        }
+                    );
+                    return;
+                case 1:
+                    dialog.notice("-_Draw_-").then(
+                        () => game.init(false)
+                    );
+                    return;
+                case 2:
+                    dialog.notice("^_Win_^").then(
+                        () => game.init(false)
+                    );
+                    return;
+                case 3:
+                    dialog.notice("T_Fail_T").then(
+                        () => game.init(false)
+                    );
+                    return;
+                default:
+                    game.#referee_vent("'referee'");
+                    return;
+            }
+            
+        }
+
+        static #animal_breaking_in(){
+            let f = [
+                game.#cat,
+                game.#seagull,
+                game.#squirrel,
+                game.#monkey
+            ];
+            
+            f[game.get_random(f.length)]();
+        }
+
         static #add(seed,card){
             return seed + card;
         }
@@ -363,8 +468,8 @@
 
         }
 
-        static #referee_vent(){
-            game.#event("the referee chose violence");
+        static #referee_vent(referee = "referee"){
+            game.#event(`the ${referee} chose violence`);
             
             let f = [
                 game.#steal,
@@ -471,9 +576,13 @@ PLAY: click to play a card,
              (scope - 30)
       all selected cards marked used
       by remove text content.
-      NOTE: if player or peer no selected
-      card, referee will be vent,
-      and attack you and peer
+      NOTE
+      1. if player or peer no selected
+         card, referee will be vent,
+         and attack you and peer
+      2. before really play a card,
+         there is 5/1000 probability 
+         will see animal breaking in
 VENT: click to vent, 
       then attack a referee.
       NOTE: peer also can do.
@@ -490,7 +599,7 @@ scope:
         (peer) Win, aka (You) Fail
       NOTE： Y = you, P = peer
 ------
-attack a referee will 
+[attack a referee] will 
 cause one of following:
    mug:  you and peer are muggings each other,
          at least one times.
@@ -506,7 +615,7 @@ cause one of following:
    switch: swap you and peer
    deal: you and peer will get 
          whole new cards
-attack you and peer will
+[attack you and peer] will
 cause one of following:
    steal: random marked used card,
           for you and peer
@@ -520,6 +629,20 @@ cause one of following:
             for you and peer
    retarget: random new target
    switch: swap you and peer
+[animal breaking in] will
+cause one of following:
+   cat: cat rush on table,
+        swap card across
+        you and peer
+   seagull: seagull eats fries,
+            aka minus
+   squirrel: squirrel treats seeds
+             as nuts, so we need
+             new seeds
+   monkey: monkey imitate referee,
+           maybe it end the game,
+           maybe it desides to
+           attack you and peer
 `
                 );
             }
@@ -553,6 +676,12 @@ cause one of following:
         }
 
         static play(){
+            if(game.get_random(1000) < 5){
+                game.#animal_breaking_in();
+            }else{
+                //pass
+            }
+
             let seed = document.getElementsByClassName("seed");
             let target = document.getElementById("target");
             let player = document.getElementsByClassName("selected");
