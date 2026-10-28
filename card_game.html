@@ -413,19 +413,28 @@ PLAY: click to play a card,
       forall result belongs to  results,
       
       if (result mod 99) = target :
-         (scope + 20)
-      else if result > 
-      max(peer results):
-         if card is +card:
-           (scope + 10)
-         else if card is *card:
-           (scope - 5)
-      else if result < 
-      min(peer results):
-         if card is +card:
-            (scope - 5)
-         else if card is *card:
-            (scope + 10)
+         (scope + 100)
+      else if card is +card:
+         let S = sum(
+            ((peer results) mod result)
+            mod 2
+         )
+         let C = count(peer results)
+         if  S > C:
+            (scope + 30)
+         else if S = C:
+            (scope + 80)
+         else if S < C:
+            (scope - 30)
+       else if card is *card:
+          let M = max(peer results)
+          let m = min(peer results)
+          if results >= M + m:
+             (scope - 30)
+          else if result >= M:
+             (scope + 60)
+          else:
+             (scope + 30)
      
       all selected cards marked used
       by remove text content.
@@ -607,49 +616,53 @@ cause one of following:
             let peer_min = Math.min(...result(peer));
             let peer_max = Math.max(...result(peer));
 
-            let fscope = (calculated,id,min,max) => {
+            let fscope = (calculated,id,other,min,max) => {
                 for(let c of calculated){
                     let val = c.get("val");
                     let f = c.get("f");
+                    let ds = 0;
                     
                     if( (val % 99) === target ){
-                        game.#scope.set(
-                            id,
-                            game.#scope.get(id) + 20
+                        ds = 100;
+                    }else if(f === game.#add){
+                        let S = Math.sumPrecise(
+                            result(other).map(
+                                p => (p % val) % 2
+                            )
                         );
-                    }else if( val > max ){
-                        if(f === game.#add){
-                            game.#scope.set(
-                                id,
-                                game.#scope.get(id) + 10
-                            );
+                        let C = result(other).length;
+                        if( S > C){
+                            ds = 30;
+                        else if ( S === C){
+                            ds = 80;
+                        }else if( S < C){
+                            ds = - 30;
                         }else{
-                            game.#scope.set(
-                                id,
-                                game.#scope.get(id) - 5
-                            );
+                            //pass
                         }
-                    }else if ( val < min ){
-                        if(f === game.#mul){
-                            game.#scope.set(
-                                id,
-                                game.#scope.get(id) + 10
-                            );
+                    }else if(f === game.#mul){
+                        if(val >= max + min){
+                            ds = -30;
+                        }else if(val >= max){
+                            ds = 60;
                         }else{
-                            game.#scope.set(
-                                id,
-                                game.#scope.get(id) - 5
-                            );
+                            ds = 30;
                         }
                     }else{
                         //pass
                     }
+                    
+                    game.#scope.set(
+                        id,
+                        game.#scope.get(id) + ds
+                    );
                 }
             };
 
             fscope(
                 player,
                 game.#player,
+                peer,
                 peer_min,
                 peer_max
             );
@@ -657,6 +670,7 @@ cause one of following:
             fscope(
                 peer,
                 !game.#player,
+                player,
                 player_min,
                 player_max
             );
