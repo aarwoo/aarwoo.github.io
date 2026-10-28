@@ -275,6 +275,8 @@
                     //pass
                 }
             }while(rnd() === true);
+
+            return true;
         }
 
         static #seagull(){
@@ -299,18 +301,21 @@
             );
 
             game.#update_scope();
+
+            return true;
         }
         
         static #squirrel(){
             game.#event("squirrel hoarded the seeds");
             game.#next_seed();
-            
+
+            return true;
         }
 
         static #monkey(){
             game.#event("monkey stole the referee's whistle");
 
-            switch(game.#get_random(5)){
+            switch(game.get_random(5)){
                 case 0:
                     dialog.notice("Rule Violation!").then(
                         () => {
@@ -318,25 +323,25 @@
                             game.#steal();
                         }
                     );
-                    return;
+                    return false;
                 case 1:
                     dialog.notice("-_Draw_-").then(
                         () => game.init(false)
                     );
-                    return;
+                    return false;
                 case 2:
                     dialog.notice("^_Win_^").then(
                         () => game.init(false)
                     );
-                    return;
+                    return false;
                 case 3:
                     dialog.notice("T_Fail_T").then(
                         () => game.init(false)
                     );
-                    return;
+                    return false;
                 default:
                     game.#referee_vent("'referee'");
-                    return;
+                    return true;
             }
             
         }
@@ -349,7 +354,7 @@
                 game.#monkey
             ];
             
-            f[game.get_random(f.length)]();
+            return f[game.get_random(f.length)]();
         }
 
         static #add(seed,card){
@@ -676,8 +681,11 @@ cause one of following:
         }
 
         static play(){
-            if(game.get_random(1000) < 5){
-                game.#animal_breaking_in();
+            if(
+                game.get_random(1000) < 5
+            &&  game.#animal_breaking_in() === false
+            ){
+                return;
             }else{
                 //pass
             }
