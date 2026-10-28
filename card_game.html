@@ -313,10 +313,20 @@
             let content = game.#new_card_content();
             let id = game.#id(isplayer);
             
+            let card = document.getElementsByClassName("card");
+            let empty = 0;
+            for(let c of card){
+                empty = empty + (
+                    c.dataset[id] === ``
+                  ? 1
+                  : 0
+                );
+            }
+            
             if(self.dataset[id] === ``){
                 game.#scope.set(
                     id,
-                    game.#scope.get(id) - 5
+                    game.#scope.get(id) - 10 * empty
                 );
                 self.dataset[id] = content;
             }else{
@@ -393,7 +403,9 @@ card: all under seed,
       or not (gray).
       if a used card is click
       to selected, auto new card
-      and (scope - 5).
+      and (scope - 10 * U),
+      where U is count of used card,
+      before buying this new card.
       number on card text is:
       0 <= number and
       number <= 99
