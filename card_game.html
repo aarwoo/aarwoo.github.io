@@ -445,23 +445,24 @@ PLAY: click to play a card,
       forall result belongs to  results,
       
       if (result mod 9) = target :
-         (scope + 100)
+         (scope + 80)
       else if card is +card:
          let S = sum(
             peer results mod 2
          ) + result
-        
          let C = count(peer results)
-         if  S > C:
-            (scope + 30)
-         else if S = C:
-            (scope + 80)
-         else if S < C:
-            (scope - 30)
+         let F = result % 5
+         
+         if  S > C + F:
+            (scope - 30 * (4 - F))
+         else if S >= C - F:
+            (scope + 30 * (4 - F))
+         else:
+            (scope - 30 * (4 - F))
        else if card is *card:
           let M = max(peer results)
           let m = min(peer results)
-          if results >= M + m:
+          if results > M + m:
              (scope - 30)
           else if result >= M:
              (scope + 60)
@@ -655,23 +656,37 @@ cause one of following:
                     let val = c.get("val");
                     let f = c.get("f");
                     let ds = 0;
+
+                    /*
+                    let S = sum(
+            peer results mod 2
+         ) + result
+         let C = count(peer results)
+         let F = result % 5
+         
+         if  S > C + F:
+            (scope - 30 * (4 - F))
+         else if S >= C - F:
+            (scope + 30 * (4 - F))
+         else:
+            (scope - 30 * (4 - F))*/
                     
                     if( (val % 9) === target ){
-                        ds = 100;
+                        ds = 80;
                     }else if(f === game.#add){
                         let S = Math.sumPrecise(
                             result(other).map( p => p % 2 )
                         ) + val;
-                        let C = result(other).length;
                         
-                        if( S > C){
-                            ds = 30;
-                        }else if ( S === C){
-                            ds = 80;
-                        }else if( S < C){
-                            ds = - 30;
+                        let C = result(other).length;
+                        let F = val % 5;
+                        
+                        if( S > C + F){
+                            ds = -(30 * (4 - F));
+                        }else if ( S >= C - F){
+                            ds = 30 * (4 - F);
                         }else{
-                            //pass
+                            ds = -(30 * (4 - F));
                         }
                     }else if(f === game.#mul){
                         if(val >= max + min){
@@ -879,7 +894,7 @@ cause one of following:
             for(let r of result){ 
                 if((r % 9) === peer.#target){
                     return true;
-                }else if(r <= 20 || r >= 48){
+                }else if(r <= 10 || (14 <= r && r <= 34 && (r % 5) >= 3)){
                     s = s + 1;
                 }else{
                     s = s + (r % 2);
