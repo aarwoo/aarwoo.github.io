@@ -419,7 +419,7 @@ PLAY: click to play a card,
             ((peer results) mod result)
             mod 2
          )
-         let C = count(peer results)
+         let C = round(count(peer results)/2)
          if  S > C:
             (scope + 30)
          else if S = C:
@@ -630,10 +630,11 @@ cause one of following:
                                 p => (p % val) % 2
                             )
                         );
-                        let C = result(other).length;
+                        let C = Math.round(result(other).length / 2);
+                        
                         if( S > C){
                             ds = 30;
-                        else if ( S === C){
+                        }else if ( S === C){
                             ds = 80;
                         }else if( S < C){
                             ds = - 30;
