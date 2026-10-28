@@ -833,36 +833,23 @@ cause one of following:
 
         static #add_card(card){
             let result = peer.#seeds.map( s => s + card);
-            let T = 99 + 99;
-            let vote = new Map();
-            vote.set(true,0);
-            vote.set(false,0);
-            let fvote = (v) => vote.set(
-                v,
-                vote.get(v) + 1
-            );
-            
+            let S = peer.#seeds.length;
+            let s = 0;
             for(let r of result){ 
                 if((r % 99) === peer.#target){
                     return true;
+                }else if(r <= 20){
+                    return true;
                 }else{
-                    fvote(
-                        peer.#deside(
-                            true,
-                            r,
-                            T + 1
-                        )
-                    );
+                    s = s + (r % 2);
                 }
             }
 
-            let d = vote.get(true) - vote.get(false);
-
-            if(d === 0){
-                return peer.#deside(true,0,2);
-            }else{
-                return d > 0;
-            }
+            return peer.#deside(
+                true,
+                s,
+                S
+            );
         }
 
         static #mul_card(card){
