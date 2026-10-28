@@ -450,10 +450,10 @@ PLAY: click to play a card,
          (scope + 100)
       else if card is +card:
          let S = sum(
-            ((peer results) mod result)
-            mod 2
-         )
-         let C = round(count(peer results)/2)
+            peer results mod 2
+         ) + result
+        
+         let C = count(peer results)
          if  S > C:
             (scope + 30)
          else if S = C:
@@ -662,11 +662,9 @@ cause one of following:
                         ds = 100;
                     }else if(f === game.#add){
                         let S = Math.sumPrecise(
-                            result(other).map(
-                                p => (p % val) % 2
-                            )
-                        );
-                        let C = Math.round(result(other).length / 2);
+                            result(other).map( p => p % 2 )
+                        ) + val;
+                        let C = result(other).length;
                         
                         if( S > C){
                             ds = 30;
@@ -883,7 +881,7 @@ cause one of following:
             for(let r of result){ 
                 if((r % 9) === peer.#target){
                     return true;
-                }else if(r <= 20){
+                }else if(r <= 20 || r >= 48){
                     s = s + 1;
                 }else{
                     s = s + (r % 2);
