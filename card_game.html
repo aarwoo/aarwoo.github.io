@@ -248,7 +248,7 @@
         }
 
         static #cat(){
-            game.#event("cat rush on table");
+            game.#event("cat walking on keyboard");
             
             let card = document.getElementsByClassName("card");
             let rdi = () => game.get_random(card.length);
@@ -278,7 +278,7 @@
         }
 
         static #seagull(){
-            game.#event("seagull eats fries");
+            game.#event("seagull stole my fries");
             
             game.#scope.set(
                 game.#player,
@@ -302,13 +302,13 @@
         }
         
         static #squirrel(){
-            game.#event("squirrel treat seeds as nuts");
+            game.#event("squirrel hoarded the seeds");
             game.#next_seed();
             
         }
 
         static #monkey(){
-            game.#event("monkey imitate referee");
+            game.#event("monkey stole the referee's whistle");
 
             switch(game.#get_random(5)){
                 case 0:
