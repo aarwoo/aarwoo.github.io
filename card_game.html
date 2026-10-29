@@ -1139,7 +1139,9 @@ cause one of following:
                 is_player
             );
             let max = Math.max(...T);
-            let P = T.filter(t => t === max);
+            let P = T.flatMap(
+                (fre,n) => fre === max ? [n] : []
+            );
             return P.join(" ");
         }
 
