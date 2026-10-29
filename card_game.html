@@ -1055,7 +1055,7 @@ cause one of following:
             let s = 0;
 
             let K = Math.min(100 - E, E);
-            let f = (r) => Math.min(result - E, K);
+            let f = (R) => Math.min(R - E, K);
             
             for(let r of result){ 
                 if((r % 10) === peer.#target){
