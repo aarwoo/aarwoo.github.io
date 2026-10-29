@@ -230,6 +230,19 @@
             game.#update_scope();
         }
 
+
+
+
+
+        
+        static #leak(_ = null){
+            let player = `you cards dosage: ${referee.publish(true)}`;
+            let peer = `while peer : ${referee.publish(false)}`;
+            game.#event(
+                `the referee leaking dirt in your face -> ${peer} | ${player}`
+            );
+        }
+
         static #deal(_ = null, notice = true){
             if(notice === true){
                 game.#event("dealing from the bottom");
@@ -1106,11 +1119,11 @@ cause one of following:
         static{
             referee.#history.set(
                 true,
-                new Array(17).map(t => 0)
+                new Array(17).fill(0)
             );
             referee.#history.set(
                 false,
-                new Array(17).map(t => 0)
+                new Array(17).fill(0)
             );
         }
 
