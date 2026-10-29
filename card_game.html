@@ -215,7 +215,7 @@
             }
             
             let target = document.getElementById("target");
-            target.textContent = game.#random_num_content(9,1);
+            target.textContent = game.#random_num_content(10,1);
             peer.notice_retarget(target.textContent);
         }
         
@@ -545,7 +545,7 @@ card: all under seed,
        start with +
 target: on the left of PLAY,
         0 <= target and
-        target < 9
+        target < 10
 ------
 PLAY: click to play a card,
       all selected cards will be
@@ -554,7 +554,7 @@ PLAY: click to play a card,
       as results, 
       forall result belongs to  results,
       
-      if (result mod 9) = target :
+      if (result mod 10) = target :
          (scope + 80)
       else if card is +card:
          let S = sum(
@@ -734,7 +734,7 @@ cause one of following:
             seed = [...seed].map(
                 s => int(s.textContent,10)
             );
-            target = int(target.textContent,9);
+            target = int(target.textContent,10);
             
             player = [...player].map(
                 p => {
@@ -790,7 +790,7 @@ cause one of following:
                     let f = c.get("f");
                     let ds = 0;
                     
-                    if( (val % 9) === target ){
+                    if( (val % 10) === target ){
                         ds = 80;
                     }else if(f === game.#add){
                         let S = Math.sumPrecise(
