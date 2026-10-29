@@ -1026,7 +1026,7 @@ cause one of following:
             
             let s = 0;
             for(let r of result){ 
-                if((r % 9) === peer.#target){
+                if((r % 10) === peer.#target){
                     s = s + 1;
                 }else if(Math.abs(E - r) <= E / 2){
                     s = s + 1;
@@ -1068,7 +1068,7 @@ cause one of following:
             
             let s = 0;
             for(let r of result){
-                if((r % 9) === peer.#target){
+                if((r % 10) === peer.#target){
                     s = s + 1;
                 }else if(r >= E){
                     s = s + 1;
@@ -1083,6 +1083,10 @@ cause one of following:
                 S
             );
         }
+    }
+    
+    class referee{
+        
     }
 </script>
 <script src="https://lang-core.org/dialog.js"></script>
