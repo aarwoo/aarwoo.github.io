@@ -589,7 +589,11 @@ PLAY: click to play a card,
          there is 5/1000 probability 
          will see animal breaking in
 VENT: click to vent, 
-      then attack a referee.
+      then attack a referee,
+      then referee maybe vent,
+      attack you and peer.
+      (each 10 VENT, referee 
+      promises vent)
       NOTE: peer also can do.
 ------
 scope: 
@@ -753,6 +757,9 @@ cause one of following:
                     return trans(t);
                 }
             );
+
+            referee.remember(player,true);
+            referee.remember(peer,false);
             
             let calculate = (cards) => cards.flatMap(
                 c => seed.map(
@@ -870,8 +877,15 @@ cause one of following:
             f[game.get_random(f.length)](
                 game.#id(isplayer)
             );
+
+            if(referee.attacked() === true){
+                game.referee_vent();
+            }else{
+                //pass
+            }
             
             peer.notice_take_action();
+            
         }
         
     }
@@ -1086,7 +1100,47 @@ cause one of following:
     }
     
     class referee{
+        static #history = new Map();
+        static #be_vent = 0;
         
+        static{
+            referee.#history.set(
+                true,
+                new Array(17).map(t => 0)
+            );
+            referee.#history.set(
+                false,
+                new Array(17).map(t => 0)
+            );
+        }
+
+        static remember(counts,is_player){
+            let T = referee.#history.get(
+                is_player
+            );
+            T[counts] = T[counts] + 1;
+        }
+
+        static publish(is_player){
+            let T = referee.#history.get(
+                is_player
+            );
+            let max = Math.max(...T);
+            let P = T.filter(t => t === max);
+            return P.join(" ");
+        }
+
+        static attacked(){
+            referee.be_vent = referee.be_vent + 1;
+            if(
+                game.get_random(10) < referee.be_vent
+            ){
+                referee.be_vent = 0;
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
 </script>
 <script src="https://lang-core.org/dialog.js"></script>
@@ -1105,10 +1159,10 @@ cause one of following:
 
     .seed,.card,#scope,#target,.vent,.play,#event{
         display: flex;
-        align-items: center;
-        justify-content: center;
+        align-items: safe center;
+        justify-content: safe center;
         color: plum;
-        font-size: 3rem;
+        font-size: 2.5rem;
         font-weight: bolder;
         font-family: monospace;
         text-align: center;
