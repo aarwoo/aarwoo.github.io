@@ -771,8 +771,8 @@ cause one of following:
                 }
             );
 
-            referee.remember(player,true);
-            referee.remember(peer,false);
+            referee.remember(player.length,true);
+            referee.remember(peer.length,false);
             
             let calculate = (cards) => cards.flatMap(
                 c => seed.map(
