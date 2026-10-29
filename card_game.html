@@ -578,6 +578,7 @@ PLAY: click to play a card,
          )
 
          let K = min(100 - S, S)
+         let T = min(result - S, K)
          
 
          if result > 100:
@@ -585,7 +586,7 @@ PLAY: click to play a card,
          else:
             (
                scope 
-             + (K - min(result - S, K))
+             + (K - 2 * abs(T))
              * 10
             )
        else if card is *card:
@@ -828,11 +829,12 @@ cause one of following:
                             ) / C * 100
                         );
                         let K = Math.min(100 - S, S);
+                        let T = Math.min(val - S, K);
 
                         if(val > 100){
                             ds = 60;
                         }else{
-                            ds = (K - Math.min(val - S,K)) * 10;
+                            ds = (K - 2 * Math.abs(T)) * 10;
                         }
                         
                     }else if(f === game.#mul){
@@ -1051,15 +1053,21 @@ cause one of following:
             let E = 63;
             
             let s = 0;
+
+            let K = Math.min(100 - E, E);
+            let f = (r) => Math.min(result - E, K);
+            
             for(let r of result){ 
                 if((r % 10) === peer.#target){
                     s = s + 1;
-                }else if (r > 100){
+                }else if(r > 100){
                     s = s + 1;
-                }else if(r >= E){
+                }else if(
+                    K - 2 * Math.abs(f(r)) >= 0
+                ){
                     s = s + 1;
                 }else{
-                    //pass
+                    s = Math.max(0,s-1);
                 }
             }
 
