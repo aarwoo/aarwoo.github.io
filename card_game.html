@@ -23,11 +23,11 @@
         // && max_scope >= min_scope + 200
         static #max_scope = 32000;
         // flex_scope >= 0 && flex_scope % 10 === 0
-        static #flex_scope = 1000;
+        static #flex_scope = 8000;
         //    min_scope <= init_scope
         // && init_scope <= max_scope
         // && init_scope % 10 === 0
-        static #init_scope = 2000;
+        static #init_scope = 16000;
         // max chars of N, where
         //    (min_scope - flex_scope) <= N
         // && N <= (max_scope + flex_scope)
@@ -570,18 +570,24 @@ PLAY: click to play a card,
       if (result mod 10) = target :
          (scope + 80)
       else if card is +card:
-         let S = (
-              count(peer results)
-            - sum(peer results mod 2)
+         let C = count(peer results)
+         let S = round(
+            (
+              C - sum(peer results mod 2)
+            ) / C * 100
          )
-         let C = abs(result - (99 + 9) / 2)
+
+         let K = min(100 - S, S)
          
-         if  S > C + (target + 1):
-            (scope - 30 * (10 - target))
-         else if S >= C - (target + 1):
-            (scope + 30 * (10 - target))
+
+         if result > 100:
+            (scope + 60)
          else:
-            (scope - 30 * (10 - target))
+            (
+               scope 
+             + (K - min(result - S, K))
+             * 10
+            )
        else if card is *card:
           let s = sum(
              sgn(result - (peer results))
@@ -813,22 +819,22 @@ cause one of following:
                     if( (val % 10) === target ){
                         ds = 80;
                     }else if(f === game.#add){
-                        
-                        let S = (
-                            other_results.length
-                          - Math.sumPrecise(
-                              other_results.map( p => p % 2 )
-                          )
+                        let C = other_results.length;
+                        let S = Math.round(
+                            (
+                                C - Math.sumPrecise(
+                                    other_results.map( p => p % 2 )
+                                )
+                            ) / C * 100
                         );
-                        let C = Math.abs(val - (99+9)/2);
-                        
-                        if( S > C + (target + 1)){
-                            ds = -(30 * (10 - target));
-                        }else if ( S >= C - (target + 1)){
-                            ds = 30 * (10 - target);
+                        let K = Math.min(100 - S, S);
+
+                        if(val > 100){
+                            ds = 60;
                         }else{
-                            ds = -(30 * (10 - target));
+                            ds = (K - Math.min(val - S,K)) * 10;
                         }
+                        
                     }else if(f === game.#mul){
                         
                         let s = Math.sumPrecise(
@@ -1042,29 +1048,16 @@ cause one of following:
             let result = peer.#seeds.map( s => s + card);
             let S = peer.#seeds.length;
             
-            let odds = Math.sumPrecise(
-                peer.#seeds.map( s => s % 2)
-            );
-            let evens = S - odds;
-            let E = (
-                (2 * odds)
-              + (2 * evens)
-              + (2 * odds)
-              + (4 * evens)
-            );
-
-            let fe = (r) => Math.abs(r - (99+9)/2);
+            let E = 63;
             
             let s = 0;
             for(let r of result){ 
                 if((r % 10) === peer.#target){
                     s = s + 1;
-                }else if(Math.abs(E - fe(r)) <= E / 2){
+                }else if (r > 100){
                     s = s + 1;
-                }else if(peer.#target === 9){
+                }else if(r >= E){
                     s = s + 1;
-                }else if(Math.abs(E - fe(r)) > 3 * (E / 2)){
-                    s = Math.max(0,s - 1);
                 }else{
                     //pass
                 }
