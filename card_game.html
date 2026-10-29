@@ -1131,11 +1131,11 @@ cause one of following:
         }
 
         static attacked(){
-            referee.be_vent = referee.be_vent + 1;
+            referee.#be_vent = referee.#be_vent + 1;
             if(
-                game.get_random(10) < referee.be_vent
+                game.get_random(10) < referee.#be_vent
             ){
-                referee.be_vent = 0;
+                referee.#be_vent = 0;
                 return true;
             }else{
                 return false;
