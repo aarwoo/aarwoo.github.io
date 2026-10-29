@@ -570,18 +570,18 @@ PLAY: click to play a card,
       if (result mod 10) = target :
          (scope + 80)
       else if card is +card:
-         let S = sum(
-            peer results mod 2
-         ) + result
-         let C = count(peer results)
-         let F = result % 5
+         let S = (
+              count(peer results)
+            - sum(peer results mod 2)
+         )
+         let C = abs(result - (99 + 9) / 2)
          
-         if  S > C + F:
-            (scope - 30 * (4 - F))
-         else if S >= C - F:
-            (scope + 30 * (4 - F))
+         if  S > C + (target + 1):
+            (scope - 30 * (10 - target))
+         else if S >= C - (target + 1):
+            (scope + 30 * (10 - target))
          else:
-            (scope - 30 * (4 - F))
+            (scope - 30 * (10 - target))
        else if card is *card:
           let s = sum(
              sgn(result - (peer results))
@@ -813,19 +813,21 @@ cause one of following:
                     if( (val % 10) === target ){
                         ds = 80;
                     }else if(f === game.#add){
-                        let S = Math.sumPrecise(
-                            other_results.map( p => p % 2 )
-                        ) + val;
                         
-                        let C = other_results.length;
-                        let F = val % 5;
+                        let S = (
+                            other_results.length
+                          - Math.sumPrecise(
+                              other_results.map( p => p % 2 )
+                          )
+                        );
+                        let C = Math.abs(val - (99+9)/2);
                         
-                        if( S > C + F){
-                            ds = -(30 * (4 - F));
-                        }else if ( S >= C - F){
-                            ds = 30 * (4 - F);
+                        if( S > C + (target + 1)){
+                            ds = -(30 * (10 - target));
+                        }else if ( S >= C - (target + 1)){
+                            ds = 30 * (10 - target);
                         }else{
-                            ds = -(30 * (4 - F));
+                            ds = -(30 * (10 - target));
                         }
                     }else if(f === game.#mul){
                         
@@ -1050,16 +1052,18 @@ cause one of following:
               + (2 * odds)
               + (4 * evens)
             );
+
+            let fe = (r) => Math.abs(r - (99+9)/2);
             
             let s = 0;
             for(let r of result){ 
                 if((r % 10) === peer.#target){
                     s = s + 1;
-                }else if(Math.abs(E - r) <= E / 2){
+                }else if(Math.abs(E - fe(r)) <= E / 2){
                     s = s + 1;
-                }else if((r % 5) <= 2){
+                }else if(peer.#target === 9){
                     s = s + 1;
-                }else if(Math.abs(E - r) > 3 * (E / 2)){
+                }else if(Math.abs(E - fe(r)) > 3 * (E / 2)){
                     s = Math.max(0,s - 1);
                 }else{
                     //pass
