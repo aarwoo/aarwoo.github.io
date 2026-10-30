@@ -579,11 +579,14 @@ PLAY: click to play a card,
          
          let H = 20
          let R = result - H
-         let K = min(abs(R - S), H)
+         let K = abs(R - S)
          
 
-         if result > 100:
-            (scope + 60)
+         if K > H:
+            if target mod 2 === 0:
+               (scope + 10)
+            else:
+               (scope - 10)
          else:
             (
                scope 
@@ -832,10 +835,14 @@ cause one of following:
                         );
                         let H = 20;
                         let R = val - H;
-                        let K = Math.min(Math.abs(R - S), H);
+                        let K = Math.abs(R - S);
 
-                        if(val > 100){
-                            ds = 60;
+                        if(K > H){
+                            if(target % 2 === 0){
+                                ds = 10;
+                            }else{
+                                ds = -10;
+                            }
                         }else{
                             ds = (H - 2 * K) * 20;
                         }
@@ -1050,7 +1057,6 @@ cause one of following:
         }
 
         static #add_card(card){
-            
             let result = peer.#seeds.map( s => s + card);
             let S = peer.#seeds.length;
             
@@ -1058,15 +1064,17 @@ cause one of following:
             
             let s = 0;
             let H = 20;
-            let f = (R) => Math.min(
-                Math.abs((R - H) - E), H
-            );
+            let f = (R) => Math.abs((R - H) - E);
             
             for(let r of result){ 
                 if((r % 10) === peer.#target){
                     s = s + 1;
-                }else if(r > 100){
-                    s = s + 1;
+                }else if(f(r) > H){
+                    if(peer.#target % 2 === 0){
+                        s = s + 1;
+                    }else{
+                        s = s - 1;
+                    }
                 }else if(
                     H - 2 * f(r) >= 0
                 ){
