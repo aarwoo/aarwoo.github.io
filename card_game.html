@@ -235,12 +235,56 @@
 
 
         
-        static #leak(_ = null){
-            let player = `you cards dosage: ${referee.publish(true)}`;
-            let peer = `while peer : ${referee.publish(false)}`;
+        static #leak(count){
+            let player = referee.publish(true);
+            let peer = referee.publish(false);
+            //AI泄露，区分you 和 peer
+            //泄露内容： N +card, M *card
             game.#event(
-                `the referee leaking dirt in your face -> ${peer} | ${player}`
+                `[peer] ${peer}\n[you] ${player}`
             );
+            
+            return count;
+        }
+
+        static #disorder(count){
+            let player = referee.publish(true);
+            let peer = referee.publish(false);
+            //AI错乱泄露，区分you 和 peer
+            //泄露内容： N +card, M *card
+            game.#event(
+                `[peer] ${player}\n[you] ${peer}`
+            );
+            
+            return count;
+        }
+
+        static #crazy(count){
+            let T = [
+                //AI发疯的话
+            ];
+            do{
+                game.#event(
+                    T[game.get_random(T.length)]
+                );
+            }while(game.get_random(3) < 2);
+            
+            return count;
+        }
+
+
+        static #fix(count){
+            if(game.get_random(2) < 1){
+                //裁判和AI打架，最终让AI乖乖听话
+                game.#event("the referee fight with AI");
+                
+                return 0;
+            }else{
+                //AI嘲讽裁判想修理我？没门！
+                game.#event("can referee fix me? No way!");
+                
+                return count;
+            }
         }
 
         static #deal(_ = null, notice = true){
@@ -485,7 +529,7 @@
             game.#update_scope();
 
         }
-
+        
         static #referee_vent(referee = "referee"){
             game.#event(`the ${referee} chose violence`);
             
@@ -497,6 +541,20 @@
             ];
             
             f[game.get_random(f.length)]();
+        }
+
+        static AI_hallucination(count){
+            //AI 开始幻觉了
+            game.#event(``);
+            
+            let f = [
+                game.#leak,
+                game.#disorder,
+                game.#crazy,
+                game.#fix
+            ];
+            
+            return f[game.get_random(f.length)](count);
         }
 
         static get_random(sup){
@@ -612,6 +670,9 @@ PLAY: click to play a card,
       2. before really play a card,
          there is 5/1000 probability 
          will see animal breaking in
+      3. in the end of each play, there
+         is 95% probability at most AI 
+         will be hallucination.
 VENT: click to vent, 
       then attack a referee,
       then referee maybe vent,
@@ -676,6 +737,16 @@ cause one of following:
            maybe it end the game,
            maybe it desides to
            attack you and peer
+[hallucination] will
+cause one of following:
+    leak: AI leat you and peer
+          count of +card 
+          and *card in past
+    disorder: same as leak,
+              but disorder
+    crazy: nonsense of AI
+    fix: referee try to fix AI,
+         maybe failed
 `
                 );
             }
@@ -891,6 +962,8 @@ cause one of following:
             game.#next_seed();
 
             game.#update_scope();
+
+            referee.count();
         }
 
         static vent(isplayer){
@@ -1158,6 +1231,21 @@ cause one of following:
                 )
             );
         }
+
+        static count(){
+            referee.#mem_count = referee.#mem_count + 1;
+            let P = (x) => Math.floor(300 / (Math.PI * (1 + Math.exp(10 - x/2)))); 
+            // max(P(x)) = 95
+            if(
+                game.get_random(100) < P(referee.#mem_count)
+            ){
+                referee.#mem_count = game.AI_hallucination(
+                    referee.#mem_count
+                );
+            }else{
+                //pass
+            }
+        }
         
         static remember(tp,is_player){
             let T = referee.#history.get(
@@ -1168,19 +1256,6 @@ cause one of following:
                 tp,
                 T.get(tp) + 1
             );
-
-            referee.#mem_count = referee.#mem_count + 1;
-            if(
-                game.get_random(
-                    referee.#mem_count + Math.exp(
-                        (-referer.#mem_count) * (1/Math.exp(1))
-                    )
-                ) < referee.#mem_count
-            ){
-                
-            }else{
-                //pass
-            }
         }
 
         static publish(is_player){
