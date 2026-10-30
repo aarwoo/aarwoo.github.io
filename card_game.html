@@ -1136,6 +1136,7 @@ cause one of following:
     class referee{
         static #history = new Map();
         static #be_vent = 0;
+        static #mem_count = 0;
         
         static{
             referee.#history.set(
@@ -1167,6 +1168,19 @@ cause one of following:
                 tp,
                 T.get(tp) + 1
             );
+
+            referee.#mem_count = referee.#mem_count + 1;
+            if(
+                game.get_random(
+                    referee.#mem_count + Math.exp(
+                        (-referer.#mem_count) * (1/Math.exp(1))
+                    )
+                ) < referee.#mem_count
+            ){
+                
+            }else{
+                //pass
+            }
         }
 
         static publish(is_player){
