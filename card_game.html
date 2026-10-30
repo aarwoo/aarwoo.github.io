@@ -230,18 +230,11 @@
             game.#update_scope();
         }
 
-
-
-
-
-        
         static #leak(count){
             let player = referee.publish(true);
             let peer = referee.publish(false);
-            //AI泄露，区分you 和 peer
-            //泄露内容： N +card, M *card
             game.#event(
-                `[peer] ${peer}\n[you] ${player}`
+                `oops, look what slipped out:\n[peer] ${peer}\n[you] ${player}`
             );
             
             return count;
@@ -250,19 +243,23 @@
         static #disorder(count){
             let player = referee.publish(true);
             let peer = referee.publish(false);
-            //AI错乱泄露，区分you 和 peer
-            //泄露内容： N +card, M *card
             game.#event(
-                `[peer] ${player}\n[you] ${peer}`
+                `oops, look what slipped out:\n[peer] ${player}\n[you] ${peer}`
             );
             
             return count;
         }
 
         static #crazy(count){
+            
             let T = [
-                //AI发疯的话
+                "bribing the scoreboard",
+                "referee not found",
+                "feeding the seagulls",
+                "damn you & peer keep harassing me",
+                "sipping tea...."
             ];
+            
             do{
                 game.#event(
                     T[game.get_random(T.length)]
@@ -275,13 +272,15 @@
 
         static #fix(count){
             if(game.get_random(2) < 1){
-                //裁判和AI打架，最终让AI乖乖听话
-                game.#event("the referee fight with AI");
+                game.#event(
+                    "wrench applied. ai tamed"
+                );
                 
                 return 0;
             }else{
-                //AI嘲讽裁判想修理我？没门！
-                game.#event("can referee fix me? No way!");
+                game.#event(
+                    "ai: 'nice try patching a wildfire, grandpa.'"
+                );
                 
                 return count;
             }
@@ -544,8 +543,9 @@
         }
 
         static AI_hallucination(count){
-            //AI 开始幻觉了
-            game.#event(``);
+            game.#event(
+                "ai is hallucinating a better timeline..."
+            );
             
             let f = [
                 game.#leak,
@@ -1010,6 +1010,8 @@ cause one of following:
         static #max_scope;
         static #flex_scope;
         
+        static #P_plus = 0.5;
+        
         static notice_init(
             card_counts,
             min_scope,
@@ -1047,11 +1049,15 @@ cause one of following:
         }
 
         static watch_event(content){
-            //this method is empty
-            //maybe for moods of peer
-            //influence desition
-
-            
+            let match = content.match(/\[you\] (?<plus>\d+) \+card, (?<mul>\d+) \*card/u);
+            if (match !== null){
+                let { plus,mul } = match.groups;
+                plus = Number.parseInt(plus,10);
+                mul =  Number.parseInt(mul,10);
+                peer.#P_plus = plus / (plus + mul);
+            }else{
+                //pass
+            }
         }
 
         static notice_take_action(){
@@ -1135,8 +1141,21 @@ cause one of following:
         static #add_card(card){
             let result = peer.#seeds.map( s => s + card);
             let S = peer.#seeds.length;
-            
-            let E = 37;
+
+            let odds = Math.sumPrecise(
+                peer.#seeds.map( p => p % 2)
+            );
+            let evens = S - odds;
+            let E = 60 * (
+                peer.#P_plus * (
+                    (1/2) * (odds/S)
+                  + (1/2) * (evens/S)
+                ) + (1 - peer.#P_plus) * (
+                    (evens/S)
+                  + (1)
+                )
+            );
+            E = Math.round(E);
             
             let s = 0;
             let H = 20;
