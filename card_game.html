@@ -743,15 +743,20 @@ cause one of following:
                     return n;
                 }
             };
-            let trans = (t) => {
+            let trans = (t,isplayer) => {
                 let r = new Map();
                 if( t[0] === "+"){
+                    referee.remember(t[0],isplayer);
+                    
                     r.set("f",game.#add);
                 } else if ( t[0] === "*" ){
+                    referee.remember(t[0],isplayer);
+                    
                     r.set("f",game.#mul);
                 } else{
                     error();
                 }
+                
                 r.set(
                     "card", 
                     int(t.slice(1),100)
@@ -770,7 +775,7 @@ cause one of following:
                     p.dataset[game.#player] = "";
                     p.textContent = p.dataset[game.#player];
                     p.className = `card`;
-                    return trans(t);
+                    return trans(t,true);
                 }
             );
             peer = [...peer].map(
@@ -778,12 +783,10 @@ cause one of following:
                     let t = p.dataset[!game.#player];
                     p.dataset[!game.#player] = "";
                     game.#peer_selected.delete(p);
-                    return trans(t);
+                    return trans(t,false);
                 }
             );
 
-            referee.remember(player.length,true);
-            referee.remember(peer.length,false);
             
             let calculate = (cards) => cards.flatMap(
                 c => seed.map(
@@ -1137,30 +1140,41 @@ cause one of following:
         static{
             referee.#history.set(
                 true,
-                new Array(17).fill(0)
+                new Map(
+                    [
+                        ["+",0],
+                        ["*",0]
+                    ]
+                )
             );
             referee.#history.set(
                 false,
-                new Array(17).fill(0)
+                new Map(
+                    [
+                        ["+",0],
+                        ["*",0]
+                    ]
+                )
             );
         }
-
-        static remember(counts,is_player){
+        
+        static remember(tp,is_player){
             let T = referee.#history.get(
                 is_player
             );
-            T[counts] = T[counts] + 1;
+            
+            T.set(
+                tp,
+                T.get(tp) + 1
+            );
         }
 
         static publish(is_player){
             let T = referee.#history.get(
                 is_player
             );
-            let max = Math.max(...T);
-            let P = T.flatMap(
-                (fre,n) => fre === max ? [n] : []
-            );
-            return P.join(" ");
+            
+            return `${T.get("+")} +card, ${T.get("*")} *card`;
         }
 
         static attacked(){
@@ -1175,6 +1189,7 @@ cause one of following:
             }
         }
     }
+    
 </script>
 <script src="https://lang-core.org/dialog.js"></script>
 <style>
