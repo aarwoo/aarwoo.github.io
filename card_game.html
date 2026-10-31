@@ -868,7 +868,6 @@ cause one of following:
                 for(let c of calculated){
                     let val = c.get("val");
                     let f = c.get("f");
-                    let ds = 0;
                     
                     if( (val % 10) === target ){
                         other_sgn = other_sgn * (-1);
@@ -900,6 +899,7 @@ cause one of following:
                         //pass
                     }
                 }
+                
                 return [other_sgn,ds];
             };
 
