@@ -630,7 +630,8 @@ PLAY:
                     E($) = round(P(@)* 60)
                     (hint:  E = 37, in classic)
                     K = abs((r-20) - E($))
-                    d($) = d($) + round(
+                    
+                    d($) = d($) + 10 * round(
                        50 * (
                           e^(-K/Math.PI) - e^(-Math.PI)
                        )
