@@ -595,30 +595,63 @@
             }else{
                 dialog.notice(
 `\
-seed: the blue line,
-      0 <= seed and
-      seed <= 9
-card: all under seed,
-      click to selected (green),
-      or not (gray).
-      if a used card is click
-      to selected, auto new card
-      and 2/3 probability will
-      (scope - 10 * U),
-      where U is count of used card,
-      before get this new card.
-      number on card text is:
-      0 <= number and
-      number <= 99
-*card: card text content
-       start with *
-+card: card text content
-       start with +
-target: on the left of PLAY,
-        0 <= target and
-        target < 10
+$: you or peer
+@: other of $, 
+     e.g. $ is you, then @ is peer
+-------
+S:  blue, 0~9, shared
+C($):  cards for $, tap to select(green),
+    #N:  N is 0~99, # is + or *
+    <empty slot>: tap to buy,
+    2/3 probability cost 10* empty,
+    otherwise free
+T: seagreen, 0~9, shared
 ------
-....
+PLAY: 
+      1. 5 ‰, animal break in
+      2. anyone play 0 cards
+         referee attack boths
+      3.  R($) = (S C($)),
+          for each S and selected C($)
+          e.g. S = [1,2] and C($) = [+3,*4],
+               R($) = [(1 +3),(2 +3),(1 *4),(2 *4)]
+                    = [4,5,4,8]
+      4. C($) turn into <empty slot>
+      5. k(@)  factor for @,
+         init k(@) = 1
+      6. d($) diff scope of $,
+         init d($) = 0
+      7. how to prepare modify:
+            for each r of R:
+                r mod 10 = T: 
+                    k(@) = k(@) * (-1)
+                r results from +N:
+                    P(@) evens probilitiy of @
+                    E($) = round(P(@)* 60)
+                    (hint:  E = 37, in classic)
+                    K = abs((r-20) - E($))
+                    d($) = d($) + round(
+                       50 * (
+                          e^(-K/Math.PI) - e^(-Math.PI)
+                       )
+                    )
+                  (
+                     hint: where K < 10, d($) is plus positive;
+                     max plus  480 at K = 0;
+                     min -20
+                  )
+                 r results from *N:
+                     s = sum(sgn(r - R(@)))
+                     d($) = d($) + 10 * s
+      8. The real modify of $, is k($) * d($)
+      9.  95% probability at most,
+          AI hallucination 
+VENT:  when you need or just
+            want to attack referee.
+           so does other.
+          referee promise attack boths 
+          in each 10 VENT(includes others).
+<following is not updated>
 ------
 scope: 
       if anyone scope < ${game.#min_scope - game.#flex_scope} 
