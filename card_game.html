@@ -630,20 +630,29 @@ PLAY:
                     E($) = round(P(@)* 60)
                     (hint:  E = 37, in classic)
                     K = abs((r-20) - E($))
-                    
+
                     d($) = d($) + 10 * round(
-                       50 * (
-                          e^(-K/Math.PI) - e^(-Math.PI)
-                       )
+                        200 * (
+                           e^(-K/(2*π)) - e^(-π)
+                        )
                     )
-                  (
-                     hint: where K < 10, d($) is plus positive;
-                     max plus  480 at K = 0;
-                     min -20
-                  )
+                    (
+                       hint: where K < 20, d($) is plus positive;
+                       max plus  1910 at K = 0;
+                       min plus -90
+                    )
                  r results from *N:
-                     s = sum(sgn(r - R(@)))
-                     d($) = d($) + 10 * s
+                     x = r mod T
+                     d($) = d($) + 10 * round(
+                          (10 + 10*sgn(x)) * (
+                              e^(-x/(2*pi)) - sgn(x)*e^(-1/(2*pi))
+                          )
+                     )
+                     (
+                       hint: d($) plus 100 at x = 0;
+                       otherwise d($) plus negative number;
+                       min plus -120
+                     )
       8. The real modify of $, is k($) * d($)
       9.  95% probability at most,
           AI hallucination 
@@ -884,18 +893,19 @@ cause one of following:
                         let K = Math.abs((val - 20) - S);
                         
                         ds = ds + 10 * Math.round(
-                            50 * (
-                                Math.exp(-K/Math.PI) - Math.exp(-Math.PI)
+                            200 * (
+                                Math.exp(-K/(2*Math.PI)) - Math.exp(-Math.PI)
                             )
                         );
                     }else if(f === game.#mul){
-                        let s = Math.sumPrecise(
-                            other_results.map(
-                                p => Math.sign(val - p)
+                        let x = val % target;
+
+                        ds = ds + 10 * Math.round(
+                            (10 + 10 * Math.sign(x)) * (
+                                Math.exp(-x/(2*Math.PI)) 
+                              - Math.sign(x) * Math.exp(-1/(2*Math.PI))
                             )
                         );
-
-                        ds = ds + 10 * s;
                     }else{
                         //pass
                     }
@@ -1035,23 +1045,20 @@ cause one of following:
             let empty_counts = peer.#empty_counts();
             let min = (200 + peer.#min_scope);
             let sup = (peer.#max_scope - 800);
-            if(
-                peer.#deside(
-                    [peer.#my_scope,peer.#it_scope].every(
-                        s => s >= min 
-                          && s < sup
-                    ),
-                    Math.max(
-                        0,
-                        peer.#it_scope - peer.#my_scope
-                    ),
-                    sup - min
-                ) === true ||
-                peer.#deside(
-                    2 * empty_counts > peer.#card_counts,
-                    empty_counts,
-                    peer.#card_counts
-                ) === true
+            if( peer.#deside(
+                   [peer.#my_scope,peer.#it_scope].every(
+                       s => s >= min && s < sup
+                   ),
+                   Math.max(
+                       0,
+                       peer.#it_scope - peer.#my_scope
+                   ),
+                   sup - min
+                 ) === true || peer.#deside(
+                       2 * empty_counts > peer.#card_counts,
+                       empty_counts,
+                       peer.#card_counts
+                 ) === true
             ){
                 game.vent(false);
             }else{
@@ -1136,7 +1143,7 @@ cause one of following:
                 if((r % 10) === peer.#target){
                     s = s + 5;
                 }else if(
-                    K(r) <= 10
+                    K(r) <= 20
                 ){
                     s = s + 10;
                 }else{
@@ -1154,31 +1161,16 @@ cause one of following:
         static #mul_card(card){
             let result = peer.#seeds.map( s => s * card );
             let S = peer.#seeds.length;
-            
-            let max = Math.max(...peer.#seeds);
-            let min = Math.min(...peer.#seeds);
-            let fmock = t => (mc,i) => (mc / 8) * (
-                (t + (i + 1) * 25)
-              + (t * (i + 1) * 25)
-            );
-            let mock = [1,1,2];
-            max = Math.sumPrecise(
-                mock.map(fmock(max))
-            );
-            min = Math.sumPrecise(
-                mock.map(fmock(min))
-            );
-            let E = (max + min) / 2;
-            
-            
             let s = 0;
             for(let r of result){
                 if((r % 10) === peer.#target){
                     s = s + 5;
-                }else if(r >= E){
+                }else if((r % peer.#target) <= 1){
                     s = s + 10;
-                }else{
+                }else if((r % peer.#target) <= 3){
                     s = Math.max(0,s - 5);
+                }else{
+                    s = Math.max(0,s - 10);
                 }
             }
             
