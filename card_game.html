@@ -960,7 +960,11 @@ cause one of following:
                 //pass
             }
             
-            peer.notice_take_action();
+            if(isplayer=== true){
+                peer.notice_take_action();
+            }else{
+                //pass
+            }
             
         }
         
