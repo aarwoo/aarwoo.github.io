@@ -21,17 +21,17 @@
         static #min_scope = 0;
         // max_scope % 10 === 0
         // && max_scope >= min_scope + 200
-        static #max_scope = 32000;
+        static #max_scope = 64000;
         // flex_scope >= 0 && flex_scope % 10 === 0
-        static #flex_scope = 8000;
+        static #flex_scope = 64000;
         //    min_scope <= init_scope
         // && init_scope <= max_scope
         // && init_scope % 10 === 0
-        static #init_scope = 16000;
+        static #init_scope = 32000;
         // max chars of N, where
         //    (min_scope - flex_scope) <= N
         // && N <= (max_scope + flex_scope)
-        static #scope_fix = 5;
+        static #scope_fix = 6;
 
         //display duration, in ms
         static #each_event_display = 3000;
