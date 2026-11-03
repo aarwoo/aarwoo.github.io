@@ -7,7 +7,37 @@
                                    user-scalable=no"/>
 </head>
 <script>
-    let MAN = `\
+    class game{
+
+        static #player = true;
+        
+        static #scope = new Map();
+
+        static #peer_selected = new Set();
+
+        /*NOTE: those requires unchecked*/
+        
+        // min_scope % 10 === 0
+        static #min_scope = 0;
+        // max_scope % 10 === 0
+        // && max_scope >= min_scope + 200
+        static #max_scope = 64000;
+        // flex_scope >= 0 && flex_scope % 10 === 0
+        static #flex_scope = 64000;
+        //    min_scope <= init_scope
+        // && init_scope <= max_scope
+        // && init_scope % 10 === 0
+        static #init_scope = 32000;
+        // max chars of N, where
+        //    (min_scope - flex_scope) <= N
+        // && N <= (max_scope + flex_scope)
+        static #scope_fix = 6;
+
+        //display duration, in ms
+        static #each_event_display = 3000;
+        
+        static #event_promise = Promise.resolve();
+        static #MAN = `\
 $: you or peer
 @: other of $, 
      e.g. $ is you, then @ is peer
@@ -181,37 +211,7 @@ EVENT:
    0, the AI calms down
  'nice try patching':
    (fix failed) nothing`;
-
-    class game{
-
-        static #player = true;
         
-        static #scope = new Map();
-
-        static #peer_selected = new Set();
-
-        /*NOTE: those requires unchecked*/
-        
-        // min_scope % 10 === 0
-        static #min_scope = 0;
-        // max_scope % 10 === 0
-        // && max_scope >= min_scope + 200
-        static #max_scope = 64000;
-        // flex_scope >= 0 && flex_scope % 10 === 0
-        static #flex_scope = 64000;
-        //    min_scope <= init_scope
-        // && init_scope <= max_scope
-        // && init_scope % 10 === 0
-        static #init_scope = 32000;
-        // max chars of N, where
-        //    (min_scope - flex_scope) <= N
-        // && N <= (max_scope + flex_scope)
-        static #scope_fix = 6;
-
-        //display duration, in ms
-        static #each_event_display = 3000;
-        
-        static #event_promise = Promise.resolve();
 
         static #id(isplayer){
             return (
@@ -768,7 +768,7 @@ EVENT:
             if(is_load === false){
                 return;
             }else{
-                dialog.notice(MAN);                );
+                dialog.notice(game.#MAN);
             }
         }
         
@@ -1392,6 +1392,7 @@ EVENT:
         height:30dvh;
         visibility: hidden;
         z-index: 1;
+        font-size:1.5rem;
     }
 
 </style>
