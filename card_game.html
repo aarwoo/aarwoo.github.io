@@ -795,20 +795,21 @@ EVENT:
                     id === game.#player   
                 );
                 
-                let empty_slot = new Set();
+                let empty_slot = [];
                 for(let c of cards){
                     if(c.dataset[id] === ""){
-                        empty_slot.add(c);
+                        empty_slot.push(c);
                     }else{
                         //pass
                     }
                 }
                 
                 for(let i = 0; i < 4; i++){
-                    let c = empty_slot[game.#get_random(empty.size)];
+                    let k = game.get_random(empty_slot.length);
+                    let c = empty_slot[k];
                     c.dataset[id] = game.#new_card_content();
                     c.textContent = c.dataset[game.#player];
-                    empty_slot.delete(c);
+                    empty_slot.splice(k,1);
                 }
             }else{
                 //pass
