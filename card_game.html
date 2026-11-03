@@ -7,6 +7,181 @@
                                    user-scalable=no"/>
 </head>
 <script>
+    let MAN = `\
+$: you or peer
+@: other of $, 
+     e.g. $ is you, then @ is peer
+-------
+S:  blue, 0~9, shared
+C($):  cards for $, tap to select(green),
+    #N:  N is 0~99, # is + or *
+    <empty slot>: tap to buy,
+    empty = count of empty slots,
+    2/3 probability cost 10*empty,
+    otherwise free
+T: cadetblue, 0~9, shared
+------
+PLAY:
+ 1. each PLAY: 5‰ chance,
+    animal breaks in
+ 2. either side selects 0 cards:
+    referee attacks both
+ 3. R($) = (S C($)),
+    for each S and selected C($)
+    e.g. S = [1,2],
+         C($) = [+3,*4]
+         R($) = [(1 +3),(2 +3),
+                 (1 *4),(2 *4)]
+              = [4,5,4,8]
+ 4. C($) turn into <empty slot>
+ 5. m(@): sign factor for @,
+    init m(@) = 1
+ 6. d($): score gain of $,
+    init d($) = 0
+ 7. for each r of R:
+    (a) r mod 10 = T (hit):
+        d($) gets nothing,
+        m(@) = m(@) * (-1)
+    (b) r from +N:
+        q(@): share of even
+        results of @, this PLAY
+        E = round(q(@) * 60)
+        (classic: half + half *,
+         E is about 37)
+        K = abs((r-20) - E)
+        d($) += 10 * round(
+          200 * (e^(-K/(2*pi))
+                 - e^(-pi)))
+        K = 0:        +1910
+        1 <= K <= 19: positive
+        K = 20:       0
+        K >= 21:      negative,
+                      min -90
+        e.g. T=3, E=37,
+             S=[5,7], C=+50
+             r=[55,57], K=[2,0]
+             d = 1370 + 1910
+               = 3280
+    (c) r from *N:
+        x = r mod (T + 1)
+        d($) += 10 * round(
+          (10 + 10*sgn(x)) * (
+            e^(-x/(2*pi))
+            - sgn(x)*e^(-1/(2*pi))))
+        x = 0:  +100
+        x = 1:  0
+        x >= 2: negative,
+                min -120 (x = 9)
+ 8. real change of $ is
+    m($) * d($)
+ 9. after each PLAY, AI may
+    hallucinate; chance grows
+    with PLAY count, max 95%
+VENT:  when you need or just
+       want to attack referee.
+       so does peer.
+       each VENT (either side)
+       adds 10% to the chance
+       that referee attacks
+       both; certain at the
+       10th, then resets.
+------
+SCOPE:  P = peer, Y = you
+ start at ${game.#init_scope}
+ goal:  >= ${game.#max_scope}
+ you only:   (you) Win
+ peer only:  (peer) Win,
+             aka (You) Fail
+ both:       Draw
+ safe range:
+   ${game.#min_scope - game.#flex_scope} ~ ${game.#max_scope + game.#flex_scope}
+ either one outside:
+   Rule Violation
+   (restart, hands half stolen)
+ scope moves by:
+   PLAY (7, 8)
+   buying card (-10*empty)
+   events below
+------
+EVENT:
+ many events can fire.
+ '....' = keyword you see in
+ the message on top.
+ no list under it: the
+ message is just for info.
+
+[VENT]
+ one of:
+ 'turf war' (mug):
+   a random slot of one side
+   is overwritten by a random
+   slot of the other, which
+   becomes empty. who takes
+   is random, repeats at 1/2
+ 'master thief' (steal):
+   each card of you and peer
+   vanishes at 1/2
+ 'nice scope' (demand):
+   venting side +200,
+   other side -200
+ 'generous donation' (discard):
+   venting side -200,
+   other side +200
+ 'goalposts' (retarget):
+   new random target
+ 'uno reverse' (switch):
+   swap you and peer
+ 'dealing from the bottom':
+   whole new cards for both
+ then the referee may hit
+ back, see [referee attacks
+ both]
+
+[referee attacks both]
+ when: either side plays 0
+ cards, the VENT count hits,
+ or the monkey decides so.
+ one of:
+ 'master thief':  as above
+ 'goalposts':     as above
+ 'uno reverse':   as above
+ 'inflation strikes' (rescope):
+   both scopes random,
+   ${game.#min_scope + 100} ~ ${game.#max_scope - 100}
+
+[animal breaks in]
+ 5‰ each PLAY, one of:
+ 'cat walking on keyboard':
+   swap cards across you and
+   peer, repeats at 1/2
+ 'seagull stole my fries':
+   negative scopes turn
+   positive
+ 'squirrel hoarded the seeds':
+   new seeds
+ 'monkey stole':
+   1/5 each: Rule Violation,
+   Draw, Win, Fail (round
+   ends); other 1/5: the
+   referee attacks both
+
+[AI hallucination]
+ after PLAY, chance rises with
+ PLAY count (max 95%), one of:
+ 'slipped out':
+   AI leaks how many +cards
+   and *cards each side has
+   played. may be disordered:
+   [peer] and [you] swapped,
+   you can't tell which
+ 'bribing the scoreboard' etc:
+   nonsense lines, info only
+ 'wrench applied':
+   (fix) PLAY count back to
+   0, the AI calms down
+ 'nice try patching':
+   (fix failed) nothing`;
+
     class game{
 
         static #player = true;
@@ -593,151 +768,7 @@
             if(is_load === false){
                 return;
             }else{
-                dialog.notice(
-`\
-$: you or peer
-@: other of $, 
-     e.g. $ is you, then @ is peer
--------
-S:  blue, 0~9, shared
-C($):  cards for $, tap to select(green),
-    #N:  N is 0~99, # is + or *
-    <empty slot>: tap to buy,
-    2/3 probability cost 10* empty,
-    otherwise free
-T: cadetblue, 0~9, shared
-------
-PLAY: 
-      1. 5 ‰, animal break in
-      2. anyone play 0 cards
-         referee attack boths
-      3.  R($) = (S C($)),
-          for each S and selected C($)
-          e.g. S = [1,2] and C($) = [+3,*4],
-               R($) = [(1 +3),(2 +3),(1 *4),(2 *4)]
-                    = [4,5,4,8]
-      4. C($) turn into <empty slot>
-      5. k(@)  factor for @,
-         init k(@) = 1
-      6. d($) diff scope of $,
-         init d($) = 0
-      7. how to prepare modify:
-            for each r of R:
-                r mod 10 = T: 
-                    k(@) = k(@) * (-1)
-                r results from +N:
-                    P(@) evens probilitiy of @
-                    E($) = round(P(@)* 60)
-                    (hint:  E = 37, in classic)
-                    K = abs((r-20) - E($))
-
-                    d($) = d($) + 10 * round(
-                        200 * (
-                           e^(-K/(2*π)) - e^(-π)
-                        )
-                    )
-                    (
-                       hint: where K < 20, d($) is plus positive;
-                       max plus  1910 at K = 0;
-                       min plus -90
-                    )
-                 r results from *N:
-                     x = r mod (T + 1)
-                     d($) = d($) + 10 * round(
-                          (10 + 10*sgn(x)) * (
-                              e^(-x/(2*pi)) - sgn(x)*e^(-1/(2*pi))
-                          )
-                     )
-                     (
-                       hint: d($) plus 100 at x = 0;
-                       otherwise d($) plus negative number;
-                       min plus -120
-                     )
-      8. The real modify of $, is k($) * d($)
-      9.  95% probability at most,
-          AI hallucination 
-VENT:  when you need or just
-            want to attack referee.
-           so does other.
-          referee promise attack boths 
-          in each 10 VENT(includes others).
-<following is not updated>
-------
-scope: 
-      outside ${game.#min_scope - game.#flex_scope}~${game.#max_scope + game.#flex_scope}:
-        Rule Violation
-      if both >= ${game.#max_scope}
-        Draw
-      else if only you >= ${game.#max_scope}:
-        (you) Win
-      else if only peer >= ${game.#max_scope}:
-        (peer) Win, aka (You) Fail
-      NOTE： Y = you, P = peer
-------
-EVENT:
-there is many even will be fired.
-'....' a keyword you can see in the message
-on top.
-If their is not list, 
-that this message just for info.
-
-
-[attack a referee] will 
-cause one of following:
-   mug:  you and peer are muggings each other,
-         at least one times.
-         if you succeed, you discard your card
-         and get peer card, includes used.
-   steal: random marked used card,
-          for you and peer
-   demand: (scope + 200) for you,
-           (scope - 200) for peer,
-   discard: (scope - 200) for you,
-            (scope + 200) for peer
-   retarget: random new target
-   switch: swap you and peer
-   deal: you and peer will get 
-         whole new cards
-[attack you and peer] will
-cause one of following:
-   steal: random marked used card,
-          for you and peer
-   rescope: random scope,
-            ${(game.#min_scope + 100) + (0) * 10} <= scope and 
-            scope <= ${
-                (game.#min_scope + 100) + (
-                    (game.#max_scope - game.#min_scope) / 10 - 20
-                ) * 10
-            },
-            for you and peer
-   retarget: random new target
-   switch: swap you and peer
-[animal breaking in] will
-cause one of following:
-   'cat': cat rush on table,
-        swap card across
-        you and peer
-   'seagull': seagull eats fries,
-            aka minus
-   'squirrel': squirrel treats seeds
-             as nuts, so we need
-             new seeds
-   'monkey': monkey imitate referee,
-           maybe it end the game,
-           maybe it desides to
-           attack you and peer
-[hallucination] will
-cause one of following:
-    leak: AI leat you and peer
-          count of +card 
-          and *card in past
-    disorder: same as leak,
-              but disorder
-    crazy: nonsense of AI
-    fix: referee try to fix AI,
-         maybe failed
-`
-                );
+                dialog.notice(MAN);                );
             }
         }
         
