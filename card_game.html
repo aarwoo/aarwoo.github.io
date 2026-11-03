@@ -46,9 +46,7 @@ S:  blue, 0~9, shared
 C($):  cards for $, tap to select(green),
     #N:  N is 0~99, # is + or *
     <empty slot>: tap to buy,
-    empty = count of empty slots,
-    2/3 probability cost 10*empty,
-    otherwise free
+    price: see BUY
 T: cadetblue, 0~9, shared
 ------
 PLAY:
@@ -63,7 +61,8 @@ PLAY:
          R($) = [(1 +3),(2 +3),
                  (1 *4),(2 *4)]
               = [4,5,4,8]
- 4. C($) turn into <empty slot>
+ 4. C($) turn into <empty slot>,
+    then KYC (see KYC)
  5. m(@): sign factor for @,
     init m(@) = 1
  6. d($): score gain of $,
@@ -115,6 +114,35 @@ VENT:  when you need or just
        that referee attacks
        both; certain at the
        10th, then resets.
+------
+BUY:
+ empty = empty slots of $
+ before this purchase
+ empty <= 12:
+   pay 10*empty
+ empty >= 13:
+   pay round(2*e^(empty-8))
+   13: 297    14: 807
+   15: 2193   16: 5962
+ always pay, no free buys.
+ refill all 16 slots from
+ nothing: 10039
+------
+KYC:
+ after PLAY, n = count of
+ C($) that $ played
+ n <= 4:
+   'Minimum spend unmet'
+   all C($) of $ are wiped,
+   next buy is the priciest
+   (empty = 16)
+ n >= 12:
+   'Over-spending bonus'
+   4 random <empty slot>
+   of $ get new cards, free
+ 5 <= n <= 11: nothing
+ you only see the message
+ for your own cards
 ------
 SCOPE:  P = peer, Y = you
  start at ${game.#init_scope}
@@ -682,17 +710,21 @@ EVENT:
             }
             
             if(self.dataset[id] === ``){
-                
-                let P = (
-                    game.get_random(3) < 2
-                  ? 1
-                  : 0
-                );
-                game.#scope.set(
-                    id,
-                    game.#scope.get(id) 
-                  - 10 * empty * P
-                );
+                if(empty <= 12){
+                    game.#scope.set(
+                        id,
+                        game.#scope.get(id) 
+                        - 10 * empty
+                    );
+                }else{
+                    game.#scope.set(
+                        id,
+                        game.#scope.get(id) 
+                        - Math.round(
+                            2 * Math.exp(empty - 8)
+                        )
+                    );
+                }
                 
                 self.dataset[id] = content;
             }else{
@@ -730,6 +762,57 @@ EVENT:
             ];
             
             return f[game.get_random(f.length)](count);
+        }
+
+        static #kyc(selected_cards,id){
+            let cards = document.getElementsByClassName("card");
+            
+            if(selected_cards.length <= 4){
+                game.#event(
+                    "Minimum spend unmet. Auto-upgraded to maximum tariff. You're welcome.",
+                    id === (!game.#player),
+                    id === game.#player   
+                );
+                
+                for(let c of cards){
+                    c.dataset[id] = "";
+                    c.textContent = c.dataset[game.#player];
+                    if(c.dataset[game.#player] === ``){
+                        c.className = `card`;
+                    }else{
+                        //pass
+                    }
+                    if(c.dataset[!game.#player] === ``){
+                        game.#peer_selected.delete(c);
+                    }else{
+                        //pass
+                    }
+                }
+            }else if(selected_cards.length >= 12){
+                game.#event(
+                    "Over-spending bonus triggered: complimentary cards injected. No refunds.",
+                    id === (!game.#player),
+                    id === game.#player   
+                );
+                
+                let empty_slot = new Set();
+                for(let c of cards){
+                    if(c.dataset[id] === ""){
+                        empty_slot.add(c);
+                    }else{
+                        //pass
+                    }
+                }
+                
+                for(let i = 0; i < 4; i++){
+                    let c = empty_slot[game.#get_random(empty.size)];
+                    c.dataset[id] = game.#new_card_content();
+                    c.textContent = c.dataset[game.#player];
+                    empty_slot.delete(c);
+                }
+            }else{
+                //pass
+            }
         }
 
         static get_random(sup){
@@ -877,6 +960,11 @@ EVENT:
                     return trans(t,false);
                 }
             );
+
+            game.#kyc(player, game.#player);
+            game.#kyc(peer, !game.#player);
+
+            
 
             
             let calculate = (cards) => cards.flatMap(
