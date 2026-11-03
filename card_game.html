@@ -37,6 +37,7 @@
         static #each_event_display = 3000;
         
         static #event_promise = Promise.resolve();
+        //manual by Claude
         static #MAN = `\
 $: you or peer
 @: other of $, 
@@ -1107,19 +1108,22 @@ EVENT:
         
     }
 
-    //a simple peer
+    //peer by Claude
+    //a peer with moods and hunches
     class peer{
-        static #seeds;
-        static #target;
-        static #my_scope;
-        static #it_scope;
-        static #card_counts;
-        static #min_scope;
-        static #max_scope;
-        static #flex_scope;
-        
+        static #seeds = [];
+        static #target = 0;
+        static #my_scope = 0;
+        static #it_scope = 0;
+        static #my_last = null;
+        static #card_counts = 16;
+        static #min_scope = 0;
+        static #max_scope = 0;
+        static #flex_scope = 0;
+
         static #P_plus = 0.5;
-        
+        static #anger = 0;
+
         static notice_init(
             card_counts,
             min_scope,
@@ -1130,14 +1134,19 @@ EVENT:
             peer.#min_scope = min_scope;
             peer.#max_scope = max_scope;
             peer.#flex_scope = flex_scope;
+
+            peer.#P_plus = 0.5;
+            peer.#anger = 0;
+            peer.#my_last = peer.#my_scope;
         }
-        
+
         static notice_next_seed(seeds){
             peer.#seeds = seeds.map(
                 s => Number.parseInt(s,10)
             );
+            peer.#anger = peer.#anger * 0.8;
         }
-        
+
         static notice_retarget(target){
             peer.#target = Number.parseInt(
                 target,
@@ -1154,6 +1163,20 @@ EVENT:
                 player_scope,
                 10
             );
+
+            if(peer.#my_last === null){
+                //pass
+            }else{
+                let move = peer.#my_scope - peer.#my_last;
+                if(move > 300){
+                    peer.#anger = Math.max(0,peer.#anger - 0.5);
+                }else if(move < -300){
+                    peer.#anger = peer.#anger + 0.3;
+                }else{
+                    //pass
+                }
+            }
+            peer.#my_last = peer.#my_scope;
         }
 
         static watch_event(content){
@@ -1162,152 +1185,231 @@ EVENT:
                 let { plus,mul } = match.groups;
                 plus = Number.parseInt(plus,10);
                 mul =  Number.parseInt(mul,10);
-                peer.#P_plus = plus / (plus + mul);
+                if(plus + mul > 0){
+                    peer.#P_plus = plus / (plus + mul);
+                }else{
+                    //pass
+                }
             }else{
                 //pass
+            }
+
+            let mood = [
+                ["player screaming",0.6],
+                ["chose violence",0.8],
+                ["you: nice scope",1.2],
+                ["master thief",0.5],
+                ["turf war",0.5],
+                ["uno reverse",0.3],
+                ["Minimum spend unmet",2],
+                ["Over-spending bonus",-1],
+                ["dealing from the bottom",-0.5]
+            ];
+            for(let [word,delta] of mood){
+                if(content.includes(word) === true){
+                    peer.#anger = Math.max(0,peer.#anger + delta);
+                }else{
+                    //pass
+                }
             }
         }
 
         static notice_take_action(){
-            let empty_counts = peer.#empty_counts();
-            let min = (200 + peer.#min_scope);
-            let sup = (peer.#max_scope - 800);
-            if( peer.#deside(
-                   [peer.#my_scope,peer.#it_scope].every(
-                       s => s >= min && s < sup
-                   ),
-                   Math.max(
-                       0,
-                       peer.#it_scope - peer.#my_scope
-                   ),
-                   sup - min
-                 ) === true || peer.#deside(
-                       2 * empty_counts > peer.#card_counts,
-                       empty_counts,
-                       peer.#card_counts
-                 ) === true
-            ){
-                game.vent(false);
+            if(peer.#seeds.length === 0){
+                return;
             }else{
-                let cards = game.peer_select();
-                let select_it = false;
-                for(
-                    let card = cards.next();
-                    card.done === false;
-                    card = cards.next(select_it)
-                ){
-                    if(card.value === ``){
-                        select_it = peer.#deside(
-                            peer.#my_scope >= (
-                                peer.#min_scope - peer.#flex_scope + (10 * empty_counts)
-                            ),
-                            2 * peer.#card_counts - empty_counts,
-                            2 * peer.#card_counts + 1
-                        );
-                        empty_counts = empty_counts - (
-                            (select_it === true)? 1 : 0
-                        );
-                    }else if(card.value[0] === "+"){
-                        select_it = peer.#add_card(
-                            Number.parseInt(
-                                card.value.slice(1),
-                                10
-                            )
-                        );
-                    }else if(card.value[0] === "*"){
-                        select_it = peer.#mul_card(
-                            Number.parseInt(
-                                card.value.slice(1),
-                                10
-                            )
-                        );
+                //pass
+            }
+
+            let hand = [...game.peer_select()];
+            let index = hand.map( (c,i) => i );
+            let own = hand.filter( c => c !== `` ).length;
+
+            let target = (
+                peer.#roll(1/12) === true
+              ? game.get_random(10)
+              : peer.#target
+            );
+            let E = Math.round(45 - 15 * peer.#P_plus);
+            let feels = hand.map(
+                c => (c === ``)
+                   ? null
+                   : peer.#feel(c,target,E) + (game.get_random(101) - 50) / 100
+            );
+
+            if(peer.#roll(peer.#heat(own,feels)) === true){
+                peer.#anger = peer.#anger * 0.4;
+                game.vent(false);
+                return;
+            }else{
+                //pass
+            }
+
+            let tilt = Math.min(1,peer.#anger / 8);
+            let picks = feels.map(
+                f => {
+                    if(f === null){
+                        return false;
                     }else{
-                        select_it = false;
+                        let p = Math.min(0.9,Math.max(0.1,0.15 + 0.28 * (f + 1)));
+                        return peer.#roll(p * (1 - tilt) + 0.5 * tilt);
+                    }
+                }
+            );
+
+            let order = index.filter(
+                i => hand[i] !== ``
+            ).sort(
+                (a,b) => feels[b] - feels[a]
+            );
+            let n = picks.filter( p => p === true ).length;
+            if(n <= 4 && peer.#roll(0.8) === true){
+                for(let i of order){
+                    if(picks[i] === false && n < 5){
+                        picks[i] = true;
+                        n = n + 1;
+                    }else{
+                        //pass
+                    }
+                }
+            }else if(n >= 12 && peer.#roll(0.7) === true){
+                for(let i of [...order].reverse()){
+                    if(picks[i] === true && n > 11){
+                        picks[i] = false;
+                        n = n - 1;
+                    }else{
+                        //pass
+                    }
+                }
+            }else{
+                //pass
+            }
+
+            let empties = hand.length - own;
+            for(let i of index){
+                if(hand[i] === ``){
+                    let price = peer.#price(empties);
+                    let fund = peer.#my_scope >= (
+                        peer.#min_scope - peer.#flex_scope + price
+                    );
+                    if(peer.#roll(peer.#buy_p(price,n),fund) === true){
+                        picks[i] = true;
+                        empties = empties - 1;
+                        n = n + 1;
+                    }else{
+                        //pass
+                    }
+                }else{
+                    //pass
+                }
+            }
+
+            let cards = game.peer_select();
+            let select_it = false;
+            let k = 0;
+            for(
+                let card = cards.next();
+                card.done === false;
+                card = cards.next(select_it)
+            ){
+                select_it = picks[k];
+                k = k + 1;
+            }
+        }
+
+        static #roll(p,base = true){
+            return base && game.get_random(1000) < Math.round(p * 1000);
+        }
+
+        static #heat(own,feels){
+            let heat = 0.15 + peer.#anger;
+
+            let poor = own / peer.#card_counts;
+            if(poor < 0.25){
+                heat = heat + 2.5;
+            }else if(poor < 0.5){
+                heat = heat + 1;
+            }else{
+                //pass
+            }
+
+            let span = peer.#max_scope - peer.#min_scope;
+            heat = heat + Math.min(
+                3,
+                Math.max(0,peer.#it_scope - peer.#my_scope) / (0.05 * span)
+            );
+
+            let best = feels.filter(
+                f => f !== null
+            ).sort(
+                (a,b) => b - a
+            ).slice(0,4);
+            if(best.length > 0 && best.reduce( (a,b) => a + b ,0) / best.length < 0.3){
+                heat = heat + 1;
+            }else{
+                //pass
+            }
+
+            return heat / (heat + 5);
+        }
+
+        static #feel(card,target,E){
+            let N = Number.parseInt(card.slice(1),10);
+            let sum = 0;
+            for(let s of peer.#seeds){
+                let r = (card[0] === "+") ? (s + N) : (s * N);
+                if((r % 10) === target){
+                    sum = sum + 0.5;
+                }else if(card[0] === "+"){
+                    let d = Math.abs((r - 20) - E);
+                    if(d <= 8){
+                        sum = sum + 2;
+                    }else if(d <= 19){
+                        sum = sum + 1;
+                    }else{
+                        sum = sum - 1;
+                    }
+                }else{
+                    let x = r % (target + 1);
+                    if(x === 0){
+                        sum = sum + 2;
+                    }else if(x === 1){
+                        //pass
+                    }else{
+                        sum = sum - 1;
                     }
                 }
             }
+            return sum / peer.#seeds.length;
         }
 
-
-        static #deside(base,p,q){
-            return base && game.get_random(q) < p;
-        }
-
-        static #empty_counts(){
-            let counts = 0;
-            for(let c of game.peer_select()){
-                counts = counts + (
-                    c === `` ? 1 : 0
-                );
+        static #price(empty){
+            if(empty <= 12){
+                return 10 * empty;
+            }else{
+                return Math.round(2 * Math.exp(empty - 8));
             }
-            return counts;
         }
 
-        static #add_card(card){
-            let result = peer.#seeds.map( s => s + card);
-            let S = peer.#seeds.length;
-
-            let odds = Math.sumPrecise(
-                peer.#seeds.map( p => p % 2)
-            );
-            let evens = S - odds;
-            let E = 60 * (
-                peer.#P_plus * (
-                    (1/2) * (odds/S)
-                  + (1/2) * (evens/S)
-                ) + (1 - peer.#P_plus) * (
-                    (1/2) * (odds/S)
-                  + (1) * (evens/S)
-                )
-            );
-            E = Math.round(E);
-            
-            let s = 0;
-            let K = (R) => Math.abs((R - 20) - E);
-            
-            
-            for(let r of result){ 
-                if((r % 10) === peer.#target){
-                    s = s + 5;
-                }else if(
-                    K(r) <= 20
-                ){
-                    s = s + 10;
-                }else{
-                    s = s + 5;
-                }
+        static #buy_p(price,n){
+            let p = 0.08;
+            if(price <= 200){
+                p = 0.75;
+            }else if(price <= 1000){
+                p = 0.35;
+            }else{
+                //pass
             }
 
-            return peer.#deside(
-                true,
-                s,
-                10 * S
-            );
-        }
-
-        static #mul_card(card){
-            let result = peer.#seeds.map( s => s * card );
-            let S = peer.#seeds.length;
-            let K = peer.#target + 1;
-            
-            let s = 0;
-            for(let r of result){
-                if((r % 10) === peer.#target){
-                    s = s + 5;
-                }else if((r % K) <= 1){
-                    s = s + 10;
-                }else if((r % K) <= 3){
-                    s = Math.max(0,s - 5);
-                }else{
-                    s = Math.max(0,s - 10);
-                }
+            p = p + Math.min(0.2,peer.#anger / 20);
+            if(n < 5){
+                p = p + 0.15;
+            }else if(n >= 11){
+                p = p * 0.2;
+            }else{
+                //pass
             }
-            
-            return peer.#deside(
-                true,
-                s,
-                10 * S
-            );
+            return Math.min(0.95,p);
         }
     }
     
