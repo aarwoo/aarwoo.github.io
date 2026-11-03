@@ -664,17 +664,24 @@ VENT:  when you need or just
 <following is not updated>
 ------
 scope: 
-      if anyone scope < ${game.#min_scope - game.#flex_scope} 
-      or scope > ${game.#max_scope + game.#flex_scope}:
+      outside ${game.#min_scope - game.#flex_scope}~${game.#max_scope + game.#flex_scope}:
         Rule Violation
-      else if both >= ${game.#max_scope}
+      if both >= ${game.#max_scope}
         Draw
-      else if only your >= ${game.#max_scope}:
+      else if only you >= ${game.#max_scope}:
         (you) Win
       else if only peer >= ${game.#max_scope}:
         (peer) Win, aka (You) Fail
       NOTE： Y = you, P = peer
 ------
+EVENT:
+there is many even will be fired.
+'....' a keyword you can see in the message
+on top.
+If their is not list, 
+that this message just for info.
+
+
 [attack a referee] will 
 cause one of following:
    mug:  you and peer are muggings each other,
@@ -707,15 +714,15 @@ cause one of following:
    switch: swap you and peer
 [animal breaking in] will
 cause one of following:
-   cat: cat rush on table,
+   'cat': cat rush on table,
         swap card across
         you and peer
-   seagull: seagull eats fries,
+   'seagull': seagull eats fries,
             aka minus
-   squirrel: squirrel treats seeds
+   'squirrel': squirrel treats seeds
              as nuts, so we need
              new seeds
-   monkey: monkey imitate referee,
+   'monkey': monkey imitate referee,
            maybe it end the game,
            maybe it desides to
            attack you and peer
