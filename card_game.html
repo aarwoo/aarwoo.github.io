@@ -32,6 +32,9 @@
         //    (min_scope - flex_scope) <= N
         // && N <= (max_scope + flex_scope)
         static #scope_fix = 6;
+        
+        static #d_player = 0;
+        static #d_peer = 0;
 
         //display duration, in ms
         static #each_event_display = 3000;
@@ -207,6 +210,26 @@ EVENT:
  'inflation strikes' (rescope):
    both scopes random,
    ${game.#min_scope + 100} ~ ${game.#max_scope - 100}
+ 'forced purchase' (force_buy):
+   every <empty slot> of you
+   and peer is bought, each
+   at the price of that
+   moment (from nothing:
+   10039 each)
+ 'Replay attack' (replay):
+   last PLAY's change (m * d)
+   is added again to 'you'
+   and 'peer' as they are
+   now, so after 'uno reverse'
+   it lands on the other side.
+   starts at 0, never cleared
+   (not even by a restart)
+ 'auto-dump' (insteadOf):
+   a side that selected
+   nothing gets all 16 slots
+   bought and selected,
+   then PLAY runs at once
+   (KYC applies)
 
 [animal breaks in]
  5‰ each PLAY, one of:
@@ -434,6 +457,64 @@ EVENT:
             game.#update_scope();
         }
 
+        static #force_buy(_ = null){
+            game.#event("Umpire turned Vendor: forced purchase!");
+            let card = document.getElementsByClassName("card");
+            for(let c of card){
+                game.#new_card(c,true);
+                game.#new_card(c,false);
+            }
+        }
+
+        static #replay(_ = null){
+            game.#event("Replay attack: double pain!");
+            
+            game.#scope.set(
+                game.#player,
+                game.#scope.get(game.#player)
+              + game.#d_player
+            );
+            
+            game.#scope.set(
+                !game.#player,
+                game.#scope.get(!game.#player)
+              + game.#d_peer
+            );
+            
+            game.#update_scope();
+        }
+
+        static #insteadOf(_ = null){
+            game.#event("Umpire playing empty hands: full auto-dump!");
+            
+            let player = document.getElementsByClassName("selected").length;
+            let peer = game.#peer_selected.size;
+            
+            if(player === 0){
+                let card = document.getElementsByClassName("card");
+                for(let c of card){
+                    game.#new_card(c,true);
+                    c.className = `card selected`;
+                }
+            }else{
+                //pass
+            }
+
+            if(peer === 0){
+                let cards= game.peer_select();
+                for(
+                    let card = cards.next();
+                    card.done === false;
+                    card = cards.next(true)
+                ){}
+            }else{
+                //pass
+            }
+
+            game.play();
+        }
+        
+
         static #leak(count){
             let player = referee.publish(true);
             let peer = referee.publish(false);
@@ -506,7 +587,7 @@ EVENT:
                 game.#peer_selected.delete(c);
             }
         }
-
+        
         static #cat(){
             game.#event("cat walking on keyboard");
             
@@ -744,7 +825,10 @@ EVENT:
                 game.#steal,
                 game.#rescope,
                 game.#retarget,
-                game.#switch
+                game.#switch,
+                game.#force_buy,
+                game.#replay,
+                game.#insteadOf
             ];
             
             f[game.get_random(f.length)]();
@@ -1051,17 +1135,20 @@ EVENT:
                 peer,
                 result(player)
             );
+
+            game.#d_player = player_sgn * player_ds;
+            game.#d_peer = peer_sgn * peer_ds;
             
             game.#scope.set(
                 game.#player,
                 game.#scope.get(game.#player)
-              + player_sgn * player_ds
+              + game.#d_player
             );
             
             game.#scope.set(
                 !game.#player,
                 game.#scope.get(!game.#player)
-              + peer_sgn * peer_ds
+              + game.#d_peer
             );
 
             game.#next_seed();
@@ -1203,7 +1290,10 @@ EVENT:
                 ["uno reverse",0.3],
                 ["Minimum spend unmet",2],
                 ["Over-spending bonus",-1],
-                ["dealing from the bottom",-0.5]
+                ["dealing from the bottom",-0.5],
+                ["forced purchase",0.4],
+                ["Replay attack",0.4],
+                ["auto-dump",0.6]
             ];
             for(let [word,delta] of mood){
                 if(content.includes(word) === true){
