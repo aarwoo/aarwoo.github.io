@@ -40,8 +40,8 @@
         static #each_event_display = 3000;
         
         static #event_promise = Promise.resolve();
+        
         //manual by Claude
-        //doc is not update.
         static #MAN = `\
 $: you or peer
 @: other of $, 
@@ -55,7 +55,7 @@ C($):  cards for $, tap to select(green),
 T: cadetblue, 0~9, shared
 ------
 PLAY:
- 1. each PLAY: 5‰ chance,
+ 1. each PLAY: 5% chance,
     animal breaks in
  2. either side selects 0 cards:
     referee attacks both
@@ -70,11 +70,13 @@ PLAY:
     then KYC (see KYC)
  5. m(@): sign factor for @,
     init m(@) = 1
- 6. d($): score gain of $,
+ 6. d($): +N score gain of $,
     init d($) = 0
+    c($): *N points dropped
+    on $ by @, init c($) = 0
  7. for each r of R:
     (a) r mod 10 = T (hit):
-        d($) gets nothing,
+        r gives nothing,
         m(@) = m(@) * (-1)
     (b) r from +N:
         q(@): share of even
@@ -98,16 +100,21 @@ PLAY:
                = 3280
     (c) r from *N:
         x = r mod (T + 1)
-        d($) += 10 * round(
-          (10 + 10*sgn(x)) * (
-            e^(-x/(2*pi))
-            - sgn(x)*e^(-1/(2*pi))))
-        x = 0:  +100
-        x = 1:  0
-        x >= 2: negative,
-                min -120 (x = 9)
+        k = x - (x mod 2)
+        s = +1 if x is odd,
+            -1 if x is even
+        c(@) += s * 10 * round(
+          100 * e^(-k/pi))
+        goes to @, m not applied
+        even x hurts @,
+        odd x helps @:
+        x=0 -1000, x=1 +1000
+        x=2  -530, x=3  +530
+        x=4  -280, x=5  +280
+        x=6  -150, x=7  +150
+        x=8   -80, x=9   +80
  8. real change of $ is
-    m($) * d($)
+    m($) * d($) + c($)
  9. after each PLAY, AI may
     hallucinate; chance grows
     with PLAY count, max 95%
@@ -132,6 +139,8 @@ BUY:
  always pay, no free buys.
  refill all 16 slots from
  nothing: 10039
+ paying down to ${game.#min_scope}
+ or below: broke (see SCOPE)
 ------
 KYC:
  after PLAY, n = count of
@@ -151,10 +160,17 @@ KYC:
 ------
 SCOPE:  P = peer, Y = you
  start at ${game.#init_scope}
- goal:  >= ${game.#max_scope}
+ goal:   >= ${game.#max_scope}
+ broke:  <= ${game.#min_scope}
+ goal is checked first:
  you only:   (you) Win
  peer only:  (peer) Win,
              aka (You) Fail
+ both:       Draw
+ then broke:
+ you only:   (you) Fail
+ peer only:  (peer) Fail,
+             aka (You) Win
  both:       Draw
  safe range:
    ${game.#min_scope - game.#flex_scope} ~ ${game.#max_scope + game.#flex_scope}
@@ -218,22 +234,24 @@ EVENT:
    moment (from nothing:
    10039 each)
  'Replay attack' (replay):
-   last PLAY's change (m * d)
-   is added again to 'you'
-   and 'peer' as they are
-   now, so after 'uno reverse'
-   it lands on the other side.
+   last PLAY's change
+   (m * d + c) is added
+   again to 'you' and 'peer'
+   as they are now, so after
+   'uno reverse' it lands on
+   the other side.
    starts at 0, never cleared
    (not even by a restart)
- 'auto-dump' (insteadOf):
-   a side that selected
-   nothing gets all 16 slots
-   bought and selected,
-   then PLAY runs at once
-   (KYC applies)
+ 'takes over' (insteadOf):
+   every <empty slot> of you
+   and peer is bought, then
+   all 16 cards of both are
+   selected and PLAY runs
+   at once (KYC applies:
+   n = 16, so the bonus)
 
 [animal breaks in]
- 5‰ each PLAY, one of:
+ 5% each PLAY, one of:
  'cat walking on keyboard':
    swap cards across you and
    peer, repeats at 1/2
@@ -1199,7 +1217,7 @@ EVENT:
         }
         
     }
-
+    
     //peer by Claude
     //a peer with moods and hunches
     class peer{
@@ -1298,7 +1316,7 @@ EVENT:
                 ["dealing from the bottom",-0.5],
                 ["forced purchase",0.4],
                 ["Replay attack",0.4],
-                ["auto-dump",0.6]
+                ["takes over",0.6]
             ];
             for(let [word,delta] of mood){
                 if(content.includes(word) === true){
@@ -1384,9 +1402,7 @@ EVENT:
             for(let i of index){
                 if(hand[i] === ``){
                     let price = peer.#price(empties);
-                    let fund = peer.#my_scope >= (
-                        peer.#min_scope - peer.#flex_scope + price
-                    );
+                    let fund = (peer.#my_scope - price) > peer.#min_scope;
                     if(peer.#roll(peer.#buy_p(price,n),fund) === true){
                         picks[i] = true;
                         empties = empties - 1;
@@ -1429,6 +1445,12 @@ EVENT:
             }
 
             let span = peer.#max_scope - peer.#min_scope;
+            if((peer.#my_scope - peer.#min_scope) / span < 0.1){
+                heat = heat + 2;
+            }else{
+                //pass
+            }
+
             heat = heat + Math.min(
                 3,
                 Math.max(0,peer.#it_scope - peer.#my_scope) / (0.05 * span)
@@ -1466,12 +1488,11 @@ EVENT:
                     }
                 }else{
                     let x = r % (target + 1);
-                    if(x === 0){
-                        sum = sum + 2;
-                    }else if(x === 1){
-                        //pass
+                    let strong = (x <= 3);
+                    if(x % 2 === 0){
+                        sum = sum + (strong ? 2 : 0.5);
                     }else{
-                        sum = sum - 1;
+                        sum = sum - (strong ? 2 : 0.5);
                     }
                 }
             }
@@ -1507,7 +1528,7 @@ EVENT:
             return Math.min(0.95,p);
         }
     }
-    
+        
     class referee{
         static #history = new Map();
         static #be_vent = 0;
