@@ -72,8 +72,8 @@ PLAY:
     init m(@) = 1
  6. d($): +N score gain of $,
     init d($) = 0
-    c($): *N points dropped
-    on $ by @, init c($) = 0
+    c(@): *N score gain of @,
+    init c(@) = 0
  7. for each r of R:
     (a) r mod 10 = T (hit):
         r gives nothing,
