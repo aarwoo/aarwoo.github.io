@@ -68,13 +68,15 @@ PLAY:
               = [4,5,4,8]
  4. C($) turn into <empty slot>,
     then KYC (see KYC)
- 5. m(@): sign factor for @,
+ 5. g($) = ((G / 4) % 2) * 2 - 1,
+    where G is count of R($)
+ 6. m(@): sign factor for @,
     init m(@) = 1
- 6. d($): +N score gain of $,
+ 7. d($): +N score gain of $,
     init d($) = 0
     c(@): *N score gain of @,
     init c(@) = 0
- 7. for each r of R:
+ 8. for each r of R:
     (a) r mod 10 = T (hit):
         r gives nothing,
         m(@) = m(@) * (-1)
@@ -113,9 +115,9 @@ PLAY:
         x=4  -280, x=5  +280
         x=6  -150, x=7  +150
         x=8   -80, x=9   +80
- 8. real change of $ is
-    m($) * d($) + c($)
- 9. after each PLAY, AI may
+ 9. real change of $ is
+    m($) * d($) + g($) * c($)
+ 10. after each PLAY, AI may
     hallucinate; chance grows
     with PLAY count, max 95%
 VENT:  when you need or just
@@ -1112,6 +1114,7 @@ EVENT:
                 let other_sgn = 1;
                 let ds = 0;
                 let os = 0;
+                let my_sgn = ((calculated.length / 4) % 2) * 2 - 1;
                 
                 for(let c of calculated){
                     let val = c.get("val");
@@ -1146,21 +1149,21 @@ EVENT:
                     }
                 }
                 
-                return [other_sgn,ds,os];
+                return [other_sgn,ds,os,my_sgn];
             };
 
-            let [peer_sgn, player_ds,peer_C] = fscope(
+            let [peer_sgn, player_ds,peer_C,player_C_sgn] = fscope(
                 player,
                 result(peer)
             );
 
-            let [player_sgn,peer_ds,player_C] = fscope(
+            let [player_sgn,peer_ds,player_C,peer_C_sgn] = fscope(
                 peer,
                 result(player)
             );
 
-            game.#d_player = player_sgn * player_ds + player_C;
-            game.#d_peer = peer_sgn * peer_ds + peer_C;
+            game.#d_player = player_sgn * player_ds + player_C_sgn * player_C;
+            game.#d_peer = peer_sgn * peer_ds + peer_C_sgn * peer_C;
             
             game.#scope.set(
                 game.#player,
@@ -1218,6 +1221,7 @@ EVENT:
         
     }
     
+    //not updated
     //peer by Claude
     //a peer with moods and hunches
     class peer{
