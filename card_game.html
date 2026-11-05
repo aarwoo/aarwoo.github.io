@@ -18,16 +18,16 @@
         /*NOTE: those requires unchecked*/
         
         // min_scope % 10 === 0
-        static #min_scope = 0;
+        static #min_scope = -64000;
         // max_scope % 10 === 0
         // && max_scope >= min_scope + 200
         static #max_scope = 64000;
         // flex_scope >= 0 && flex_scope % 10 === 0
-        static #flex_scope = 64000;
+        static #flex_scope = 32000;
         //    min_scope <= init_scope
         // && init_scope <= max_scope
         // && init_scope % 10 === 0
-        static #init_scope = 32000;
+        static #init_scope = 0;
         // max chars of N, where
         //    (min_scope - flex_scope) <= N
         // && N <= (max_scope + flex_scope)
@@ -486,32 +486,20 @@ EVENT:
         }
 
         static #insteadOf(_ = null){
-            game.#event("Umpire playing empty hands: full auto-dump!");
+            game.#event("Umpire takes over: playing for you!");
             
-            let player = document.getElementsByClassName("selected").length;
-            let peer = game.#peer_selected.size;
+            let card = document.getElementsByClassName("card");
+            for(let c of card){
+                game.#new_card(c,true);
+                c.className = `card selected`;
+            }
             
-            if(player === 0){
-                let card = document.getElementsByClassName("card");
-                for(let c of card){
-                    game.#new_card(c,true);
-                    c.className = `card selected`;
-                }
-            }else{
-                //pass
-            }
-
-            if(peer === 0){
-                let cards= game.peer_select();
-                for(
-                    let card = cards.next();
-                    card.done === false;
-                    card = cards.next(true)
-                ){}
-            }else{
-                //pass
-            }
-
+            let cards= game.peer_select();
+            for(
+                let card = cards.next();
+                card.done === false;
+                card = cards.next(true)
+            ){}
             game.play();
         }
         
@@ -989,7 +977,7 @@ EVENT:
 
         static play(){
             if(
-                game.get_random(1000) < 5
+                game.get_random(100) < 5
             &&  game.#animal_breaking_in() === false
             ){
                 return;
@@ -1132,11 +1120,8 @@ EVENT:
                     }else if(f === game.#mul){
                         let x = val % (target + 1);
 
-                        os = os + 10 * Math.round(
-                            (10 + 10 * Math.sign(x)) * (
-                                Math.exp(-x/(2*Math.PI)) 
-                              - Math.sign(x) * Math.exp(-1/(2*Math.PI))
-                            )
+                        os = os + ((x%2)*2-1)*10*Math.round(
+                            100*Math.exp(-(x-(x%2))/Math.PI)
                         );
                     }else{
                         //pass
